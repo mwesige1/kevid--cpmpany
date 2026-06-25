@@ -1,0 +1,281 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Routers{% endblock %}
+{% block page_title %}Routers{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Routers</h5>
+        <p>Monitor and manage all MikroTik routers in your network</p>
+    </div>
+    <a href="{% url 'dashboard:create_router' %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg"></i> Add Router
+    </a>
+</div>
+
+<!-- ── Summary Cards ─────────────────────────────────── -->
+<div class="stats-row mb-2">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-primary">
+            <i class="bi bi-router-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Total Routers</p>
+            <h4>{{ routers.count }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-success">
+            <i class="bi bi-wifi"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Online</p>
+            <h4>{{ online_count|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-danger">
+            <i class="bi bi-wifi-off"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Offline</p>
+            <h4>{{ offline_count|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-warning">
+            <i class="bi bi-hourglass-split"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Pending Setup</p>
+            <h4>{{ pending_count|default:"0" }}</h4>
+        </div>
+    </div>
+</div>
+
+<!-- ── Search Bar ─────────────────────────────────────── -->
+<form method="get" class="search-box">
+    {% if status_filter %}
+    <input type="hidden" name="status" value="{{ status_filter }}">
+    {% endif %}
+    <div class="search-input-wrap">
+        <i class="bi bi-search"></i>
+        <input type="text" name="search" value="{{ search|default:'' }}"
+               placeholder="Search by location or name..."
+               class="search-input">
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm">
+        <i class="bi bi-search"></i>
+    </button>
+    {% if search %}
+    <a href="?{% if status_filter %}status={{ status_filter }}{% endif %}"
+       class="btn btn-outline btn-sm">Clear</a>
+    {% endif %}
+</form>
+
+<!-- ── Filter Tabs ────────────────────────────────────── -->
+<div class="tab-pills">
+    <a href="?{% if search %}search={{ search }}{% endif %}"
+       class="tab-pill {% if not status_filter %}active{% endif %}">All</a>
+    <a href="?status=online{% if search %}&search={{ search }}{% endif %}"
+       class="tab-pill {% if status_filter == 'online' %}active{% endif %}">Online</a>
+    <a href="?status=offline{% if search %}&search={{ search }}{% endif %}"
+       class="tab-pill {% if status_filter == 'offline' %}active{% endif %}">Offline</a>
+    <a href="?status=pending{% if search %}&search={{ search }}{% endif %}"
+       class="tab-pill {% if status_filter == 'pending' %}active{% endif %}">Pending</a>
+</div>
+
+<!-- ── Routers Table ──────────────────────────────────── -->
+<div class="dash-table routers-table">
+    <div class="dash-table-header">
+        <h6>All Routers</h6>
+    </div>
+    <div class="table-wrap">
+        <table class="table">
+           <thead>
+    <tr>
+        <th class="col-num mobile-hide">#</th>
+        <th class="col-name mobile-hide">Router Name</th>
+        <th class="col-location">Location</th>
+        <th class="col-ip mobile-hide">IP Address</th>
+        <th class="col-connection mobile-hide">Connection</th>
+        <th class="col-sessions mobile-hide">Active Sessions</th>
+        <th class="col-status">Status</th>
+        <th class="col-last-seen mobile-hide">Last Seen</th>
+        <th class="col-action">Actions</th>
+    </tr>
+</thead>
+<tbody>
+    {% for router in routers %}
+    <tr>
+        <td class="col-num mobile-hide text-muted" style="font-size:12px;">
+            {{ forloop.counter }}
+        </td>
+        <td class="col-name mobile-hide font-bold">
+            <a href="{% url 'network:router_detail' router.id %}"
+               style="color:var(--c-text);">
+                {{ router.identity }}
+            </a>
+        </td>
+        <td class="col-location">
+            <i class="bi bi-geo-alt text-muted"></i>
+            {{ router.location|default:"—" }}
+        </td>
+        <td class="col-ip mobile-hide" style="font-family:monospace; font-size:12px;">
+            {{ router.connection_address|default:"Not set" }}
+        </td>
+        <td class="col-connection mobile-hide">
+            {% if router.connection_type == 'wireguard' %}
+                <span class="badge badge-purple">WireGuard</span>
+            {% else %}
+                <span class="badge badge-info">Direct</span>
+            {% endif %}
+        </td>
+        <td class="col-sessions mobile-hide font-bold" style="color:var(--c-primary); font-size:15px;">
+            {{ router.active_session_count|default:"0" }}
+        </td>
+        <td class="col-status">
+            {% if router.status == 'online' %}
+                <span class="badge-active-dot">
+                    <span class="dot"></span> Online
+                </span>
+            {% elif router.status == 'offline' %}
+                <span class="badge badge-failed">Offline</span>
+            {% else %}
+                <span class="badge badge-pending">Pending</span>
+            {% endif %}
+        </td>
+        <td class="col-last-seen mobile-hide text-muted" style="font-size:12px;">
+            {{ router.last_seen|date:"d M Y, H:i"|default:"Never" }}
+        </td>
+
+
+<td class="col-action">
+    <div class="action-group">
+        <a href="{% url 'network:router_detail' router.id %}"
+           class="btn-view">
+            <i class="bi bi-bar-chart-line"></i> Details
+        </a>
+        <a href="{% url 'dashboard:edit_router' router.id %}"
+           class="btn-icon btn-icon-warning mobile-hide">
+            <i class="bi bi-pencil"></i>
+        </a>
+        <button onclick="refreshRouter({{ router.id }}, this)"
+                class="btn-icon btn-icon-success">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+        <button onclick="rebootRouter({{ router.id }}, '{{ router.identity }}')"
+                class="btn-icon btn-icon-danger">
+            <i class="bi bi-power"></i>
+        </button>
+        <form method="post"
+              action="{% url 'dashboard:delete_router' router.id %}"
+              id="del-router-{{ router.id }}"
+              class="mobile-hide"
+              style="display:inline-flex;">
+            {% csrf_token %}
+            <div class="block-confirm" id="confirm-router-{{ router.id }}">
+                <button type="submit" class="btn-cut-yes">Yes</button>
+                <button type="button"
+                        onclick="cancelRouterDel('{{ router.id }}')"
+                        class="btn-cut-no">No</button>
+            </div>
+            <button type="button"
+                    id="btn-router-{{ router.id }}"
+                    onclick="confirmRouterDel('{{ router.id }}')"
+                    class="btn-icon btn-icon-danger">
+                <i class="bi bi-trash"></i>
+            </button>
+        </form>
+    </div>
+</td>
+
+
+
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="9" class="empty-state">
+            <i class="bi bi-router" style="display:block;"></i>
+            <p class="font-semibold" style="color:var(--c-text-2); margin:0 0 6px;">
+                {% if search or status_filter %}
+                    No routers found for your search.
+                {% else %}
+                    No routers added yet
+                {% endif %}
+            </p>
+            {% if not search and not status_filter %}
+            <a href="{% url 'dashboard:create_router' %}" class="btn btn-primary btn-sm">
+                Add Your First Router
+            </a>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function refreshRouter(id, btn) {
+    btn.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+    btn.disabled  = true;
+
+    fetch('/network/router/' + id + '/refresh/')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        btn.innerHTML = '<i class="bi bi-arrow-clockwise"></i>';
+        btn.disabled  = false;
+        if (data.status === 'success') {
+            location.reload();
+        } else {
+            alert('Router is offline or unreachable.');
+        }
+    })
+    .catch(function() {
+        btn.innerHTML = '<i class="bi bi-arrow-clockwise"></i>';
+        btn.disabled  = false;
+    });
+}
+
+function rebootRouter(id, name) {
+    if (!confirm('Reboot ' + name + '?\nAll connected customers will lose internet for ~30 seconds.')) return;
+
+    fetch('/network/router/' + id + '/reboot/', {
+        method : 'POST',
+        headers: { 'X-CSRFToken': getCookie('csrftoken') }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) { alert(data.message); })
+    .catch(function() { alert('Network error.'); });
+}
+
+function confirmRouterDel(id) {
+    document.getElementById('btn-router-' + id).style.display     = 'none';
+    document.getElementById('confirm-router-' + id).style.display = 'flex';
+}
+
+function cancelRouterDel(id) {
+    document.getElementById('confirm-router-' + id).style.display = 'none';
+    document.getElementById('btn-router-' + id).style.display     = 'inline-flex';
+}
+
+function getCookie(name) {
+    var val = null;
+    document.cookie.split(';').forEach(function(c) {
+        c = c.trim();
+        if (c.startsWith(name + '=')) val = decodeURIComponent(c.slice(name.length + 1));
+    });
+    return val;
+}
+</script>
+{% endblock %}

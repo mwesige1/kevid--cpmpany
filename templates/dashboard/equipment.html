@@ -1,0 +1,209 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Equipment{% endblock %}
+{% block page_title %}Equipment{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Equipment</h5>
+        <p>Track all physical assets — routers, access points, cables and more</p>
+    </div>
+    <a href="{% url 'dashboard:create_equipment' %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg"></i> Add Equipment
+    </a>
+</div>
+
+<!-- ── Summary Cards ─────────────────────────────────── -->
+<div class="stats-row mb-2">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-primary">
+            <i class="bi bi-hdd-stack-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Total Assets</p>
+            <h4>{{ total_equipment|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-success">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Available</p>
+            <h4>{{ available_count|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-warning">
+            <i class="bi bi-activity"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>In Use</p>
+            <h4>{{ in_use_count|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-danger">
+            <i class="bi bi-cash-coin"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Total Investment</p>
+            <h4>UGX {{ total_investment|floatformat:0 }}</h4>
+        </div>
+    </div>
+</div>
+
+<!-- ── Search Bar ─────────────────────────────────────── -->
+<form method="get" class="search-box">
+    {% if status_filter %}
+    <input type="hidden" name="status" value="{{ status_filter }}">
+    {% endif %}
+    <div class="search-input-wrap">
+        <i class="bi bi-search"></i>
+        <input type="text" name="search" value="{{ search|default:'' }}"
+               placeholder="Search by name, model or serial..."
+               class="search-input">
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm">
+        <i class="bi bi-search"></i>
+    </button>
+    {% if search %}
+    <a href="?{% if status_filter %}status={{ status_filter }}{% endif %}"
+       class="btn btn-outline btn-sm">Clear</a>
+    {% endif %}
+</form>
+
+<!-- ── Filter Tabs ────────────────────────────────────── -->
+<div class="tab-pills">
+    <a href="?{% if search %}search={{ search }}{% endif %}"
+       class="tab-pill {% if not status_filter %}active{% endif %}">All</a>
+    {% for label, value in statuses %}
+    <a href="?status={{ value }}{% if search %}&search={{ search }}{% endif %}"
+       class="tab-pill {% if status_filter == value %}active{% endif %}">{{ label }}</a>
+    {% endfor %}
+</div>
+
+<!-- ── Equipment Table ───────────────────────────────── -->
+<div class="dash-table equipment-table">
+    <div class="dash-table-header">
+        <h6>Asset Register</h6>
+    </div>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-num">#</th>
+                    <th class="col-name">Name</th>
+                    <th class="col-type">Type</th>
+                    <th class="col-model">Model</th>
+                    <th class="col-serial">Serial Number</th>
+                    <th class="col-status">Status</th>
+                    <th class="col-location">Location</th>
+                    <th class="col-date">Purchase Date</th>
+                    <th class="col-price">Price (UGX)</th>
+                    <th class="col-action">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in equipment_list %}
+                <tr>
+                    <td class="col-num text-muted" style="font-size:12px;">
+                        {{ forloop.counter }}
+                    </td>
+                    <td class="col-name font-semibold">
+                        {{ item.name }}
+                        {% if item.notes %}
+                        <br>
+                        <span class="text-muted" style="font-size:11px; font-weight:400;">
+                            {{ item.notes|truncatechars:30 }}
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="col-type">
+                        <span class="badge-neutral">{{ item.equipment_type|default:"—" }}</span>
+                    </td>
+                    <td class="col-model">{{ item.model|default:"—" }}</td>
+                    <td class="col-serial text-muted" style="font-family:monospace; font-size:12px;">
+                        {{ item.serial_number|default:"—" }}
+                    </td>
+                    <td class="col-status">
+                        {% if item.status == 'available' %}
+                            <span class="badge badge-success">Available</span>
+                        {% elif item.status == 'in_use' %}
+                            <span class="badge badge-warning">In Use</span>
+                        {% elif item.status == 'faulty' %}
+                            <span class="badge badge-failed">Faulty</span>
+                        {% else %}
+                            <span class="badge badge-muted">Retired</span>
+                        {% endif %}
+                    </td>
+                    <td class="col-location">{{ item.location|default:"—" }}</td>
+                    <td class="col-date text-muted" style="font-size:12px;">
+                        {{ item.purchase_date|date:"d M Y"|default:"—" }}
+                    </td>
+                    <td class="col-price font-bold">
+                        {{ item.purchase_price|floatformat:0|default:"—" }}
+                    </td>
+                    <td class="col-action">
+                        <div class="action-group">
+                            <a href="{% url 'dashboard:edit_equipment' item.id %}"
+                               class="btn-edit">Edit</a>
+                            <form method="post"
+                                  action="{% url 'dashboard:delete_equipment' item.id %}"
+                                  id="del-eq-{{ item.id }}">
+                                {% csrf_token %}
+                                <div class="block-confirm" id="confirm-eq-{{ item.id }}">
+                                    <button type="submit" class="btn-cut-yes">Yes</button>
+                                    <button type="button"
+                                            onclick="cancelEqDel('{{ item.id }}')"
+                                            class="btn-cut-no">No</button>
+                                </div>
+                                <button type="button"
+                                        id="btn-eq-{{ item.id }}"
+                                        onclick="confirmEqDel('{{ item.id }}')"
+                                        class="btn-cut">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="10" class="empty-state">
+                        <i class="bi bi-hdd-stack" style="display:block;"></i>
+                        {% if search or status_filter %}
+                            No equipment found for your search.
+                        {% else %}
+                            No equipment recorded yet.
+                            <a href="{% url 'dashboard:create_equipment' %}"
+                               style="color:var(--c-primary); font-weight:600;">
+                                Add your first asset →
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function confirmEqDel(id) {
+    document.getElementById('btn-eq-' + id).style.display     = 'none';
+    document.getElementById('confirm-eq-' + id).style.display = 'flex';
+}
+function cancelEqDel(id) {
+    document.getElementById('confirm-eq-' + id).style.display = 'none';
+    document.getElementById('btn-eq-' + id).style.display     = 'inline-flex';
+}
+</script>
+{% endblock %}

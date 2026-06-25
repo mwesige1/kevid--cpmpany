@@ -1,0 +1,153 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Expired Sessions{% endblock %}
+{% block page_title %}Expired Sessions{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Expired Sessions</h5>
+        <p>Customers whose sessions have ended — potential renewals</p>
+    </div>
+</div>
+
+<!-- ── Summary Cards ─────────────────────────────────── -->
+<div class="stats-row mb-2">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-danger">
+            <i class="bi bi-clock-history"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Total Expired</p>
+            <h4>{{ sessions|length }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-warning">
+            <i class="bi bi-calendar-x"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Expired Today</p>
+            <h4>{{ expired_today|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon" style="background:#f3f4f6; color:#6b7280;">
+            <i class="bi bi-x-circle-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Manually Cut</p>
+            <h4>{{ cancelled_count|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-primary">
+            <i class="bi bi-arrow-repeat"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Renewal Opportunities</p>
+            <h4>{{ renewal_opportunities|default:"0" }}</h4>
+        </div>
+    </div>
+</div>
+
+<!-- ── Filter Bar ────────────────────────────────────── -->
+<form method="get" class="filter-bar">
+    <input type="text"
+           name="search"
+           value="{{ request.GET.search }}"
+           placeholder="Search MAC or customer..."
+           class="filter-input">
+
+    <select name="reason" onchange="this.form.submit()" class="filter-select">
+        <option value="">All Reasons</option>
+        <option value="expired"   {% if request.GET.reason == 'expired'   %}selected{% endif %}>Expired</option>
+        <option value="cancelled" {% if request.GET.reason == 'cancelled' %}selected{% endif %}>Manually Cut</option>
+    </select>
+
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+
+    {% if request.GET.search or request.GET.reason %}
+    <a href="{% url 'dashboard:expired_sessions' %}" class="btn btn-outline btn-sm">Clear</a>
+    {% endif %}
+</form>
+
+<!-- ── Expired Sessions Table ────────────────────────── -->
+<div class="dash-table expired-table">
+    <div class="dash-table-header">
+        <h6>Expired Session History</h6>
+    </div>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-num">#</th>
+                    <th class="col-mac">MAC Address</th>
+                    <th class="col-customer">Customer</th>
+                    <th class="col-package">Package</th>
+                    <th class="col-amount">Amount Paid</th>
+                    <th class="col-started">Started</th>
+                    <th class="col-expired">Expired</th>
+                    <th class="col-duration">Duration</th>
+                    <th class="col-reason">Reason</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for session in sessions %}
+                <tr>
+                    <td class="col-num text-muted" style="font-size:12px;">
+                        {{ forloop.counter }}
+                    </td>
+                    <td class="col-mac" style="font-family:monospace; font-size:12px;">
+                        {{ session.device.mac_address }}
+                    </td>
+                    <td class="col-customer font-semibold">
+                        {{ session.device.phone_number|default:session.device.customer.full_name|default:"Unknown" }}
+                    </td>
+                    <td class="col-package">
+                        {{ session.package.name|default:"—" }}
+                    </td>
+                    <td class="col-amount font-bold">
+                        {% if session.order %}
+                            UGX {{ session.order.amount|floatformat:0 }}
+                        {% else %}
+                            <span class="text-muted">Free Trial</span>
+                        {% endif %}
+                    </td>
+                    <td class="col-started text-muted" style="font-size:12px;">
+                        {{ session.created_at|date:"d M Y, H:i" }}
+                    </td>
+                    <td class="col-expired text-danger font-semibold" style="font-size:12px;">
+                        {{ session.expiry_time|date:"d M Y, H:i" }}
+                    </td>
+                    <td class="col-duration" style="font-size:12px;">
+                        {{ session.package.duration }}
+                        {{ session.package.duration_unit }}
+                    </td>
+                    <td class="col-reason">
+                        {% if session.status == 'cancelled' %}
+                            <span class="badge badge-muted">Manually Cut</span>
+                        {% else %}
+                            <span class="badge badge-failed">Expired</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="empty-state">
+                        <i class="bi bi-clock-history" style="display:block;"></i>
+                        No expired sessions yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

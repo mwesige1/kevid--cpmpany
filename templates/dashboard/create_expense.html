@@ -1,0 +1,130 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Record Expense{% endblock %}
+{% block page_title %}Record Expense{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Record Expense</h5>
+        <p>Log a new business expense with full details</p>
+    </div>
+    <a href="{% url 'dashboard:expenses' %}" class="btn-back">← Back to Expenses</a>
+</div>
+
+<!-- ── Form ──────────────────────────────────────────── -->
+<form method="post" action="{% url 'dashboard:create_expense' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="grid-8-4">
+
+        <!-- Left Column -->
+        <div>
+            <div class="dash-table mb-2">
+                <div class="dash-table-header"><h6>Expense Details</h6></div>
+                <div class="card-body">
+                    <div class="form-grid">
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Expense Name <span class="required">*</span></label>
+                            <input type="text" name="name" required
+                                   placeholder="e.g. Router Purchase, Internet Bill, Staff Salary"
+                                   class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Category <span class="required">*</span></label>
+                            <select name="expense_type" required class="form-select">
+                                <option value="">— Select Category —</option>
+                                <option value="Equipment">Equipment</option>
+                                <option value="Internet">Internet</option>
+                                <option value="Salaries">Salaries</option>
+                                <option value="Transport">Transport</option>
+                                <option value="Utilities">Utilities</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Maintenance">Maintenance</option>
+                                <option value="Office">Office Supplies</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Amount (UGX) <span class="required">*</span></label>
+                            <input type="number" name="amount" required
+                                   placeholder="e.g. 150000" min="0" step="100" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Date <span class="required">*</span></label>
+                            <input type="date" name="date" required class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Payment Method</label>
+                            <select name="payment_method" class="form-select">
+                                <option value="">— Select Method —</option>
+                                <option value="Cash">Cash</option>
+                                <option value="MTN MoMo">MTN MoMo</option>
+                                <option value="Airtel Money">Airtel Money</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="Cheque">Cheque</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Vendor / Supplier</label>
+                            <input type="text" name="vendor"
+                                   placeholder="e.g. Roke Telkom, Jumia, Nasser Road shop"
+                                   class="form-input">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" rows="3"
+                                      placeholder="Any additional details about this expense..."
+                                      class="form-textarea"></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div>
+            <div class="dash-table mb-2">
+                <div class="dash-table-header"><h6>Receipt</h6></div>
+                <div class="card-body">
+                    <label class="form-label">Upload Receipt (optional)</label>
+                    <input type="file" name="receipt" accept="image/*,.pdf" class="form-input">
+                    <p class="form-hint">Accepted: JPG, PNG, PDF. Max 5MB.</p>
+                </div>
+            </div>
+
+            <div class="dash-table">
+                <div class="card-body">
+                    <button type="submit" class="btn btn-primary w-full">
+                        <i class="bi bi-save"></i> Save Expense
+                    </button>
+                    <a href="{% url 'dashboard:expenses' %}" class="cancel-link">Cancel</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var dateInput = document.querySelector('input[name="date"]');
+    if (dateInput && !dateInput.value) {
+        dateInput.value = new Date().toISOString().split('T')[0];
+    }
+});
+</script>
+{% endblock %}

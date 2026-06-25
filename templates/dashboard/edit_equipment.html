@@ -1,0 +1,164 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Edit Equipment{% endblock %}
+{% block page_title %}Edit Equipment{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Edit Equipment</h5>
+        <p>Update details for {{ item.name }}</p>
+    </div>
+    <a href="{% url 'dashboard:equipment' %}" class="btn-back">← Back to Equipment</a>
+</div>
+
+<!-- ── Form ──────────────────────────────────────────── -->
+<form method="post" action="{% url 'dashboard:edit_equipment' item.id %}">
+    {% csrf_token %}
+
+    <div class="grid-8-4">
+
+        <!-- Left Column -->
+        <div>
+
+            <!-- Basic Info -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header">
+                    <h6>Equipment Details</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Equipment Name <span class="required">*</span>
+                            </label>
+                            <input type="text" name="name" required
+                                   value="{{ item.name }}" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Equipment Type <span class="required">*</span>
+                            </label>
+                            <select name="equipment_type" required class="form-select">
+                                <option value="Router" {% if item.equipment_type == "Router" %}selected{% endif %}>Router</option>
+                                <option value="Access Point" {% if item.equipment_type == "Access Point" %}selected{% endif %}>Access Point</option>
+                                <option value="Switch" {% if item.equipment_type == "Switch" %}selected{% endif %}>Switch</option>
+                                <option value="Cable" {% if item.equipment_type == "Cable" %}selected{% endif %}>Cable</option>
+                                <option value="Server" {% if item.equipment_type == "Server" %}selected{% endif %}>Server</option>
+                                <option value="UPS" {% if item.equipment_type == "UPS" %}selected{% endif %}>UPS</option>
+                                <option value="Other" {% if item.equipment_type == "Other" %}selected{% endif %}>Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Model</label>
+                            <input type="text" name="model"
+                                   value="{{ item.model|default:'' }}" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Serial Number</label>
+                            <input type="text" name="serial_number"
+                                   value="{{ item.serial_number|default:'' }}" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Vendor</label>
+                            <input type="text" name="vendor"
+                                   value="{{ item.vendor|default:'' }}" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Assigned To</label>
+                            <input type="text" name="assigned_to"
+                                   value="{{ item.assigned_to|default:'' }}" class="form-input">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Location</label>
+                            <input type="text" name="location"
+                                   value="{{ item.location|default:'' }}" class="form-input">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Notes</label>
+                            <textarea name="notes" rows="3"
+                                      class="form-textarea">{{ item.notes|default:'' }}</textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Purchase Info -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header">
+                    <h6>Purchase Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid-3">
+
+                        <div class="form-group">
+                            <label class="form-label">Purchase Date</label>
+                            <input type="date" name="purchase_date"
+                                   value="{{ item.purchase_date|date:'Y-m-d'|default:'' }}"
+                                   class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Purchase Price (UGX)</label>
+                            <input type="number" name="purchase_price"
+                                   value="{{ item.purchase_price|default:'' }}"
+                                   min="0" step="1000" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Warranty Expiry</label>
+                            <input type="date" name="warranty_expiry"
+                                   value="{{ item.warranty_expiry|date:'Y-m-d'|default:'' }}"
+                                   class="form-input">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column -->
+        <div>
+
+            <!-- Status -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header">
+                    <h6>Status</h6>
+                </div>
+                <div class="card-body">
+                    <select name="status" class="form-select">
+                        <option value="available" {% if item.status == "available" %}selected{% endif %}>Available</option>
+                        <option value="in_use" {% if item.status == "in_use" %}selected{% endif %}>In Use</option>
+                        <option value="faulty" {% if item.status == "faulty" %}selected{% endif %}>Faulty</option>
+                        <option value="retired" {% if item.status == "retired" %}selected{% endif %}>Retired</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Save -->
+            <div class="dash-table">
+                <div class="card-body">
+                    <button type="submit" class="btn btn-primary w-full">
+                        <i class="bi bi-save"></i> Save Changes
+                    </button>
+                    <a href="{% url 'dashboard:equipment' %}" class="cancel-link">Cancel</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+{% endblock %}

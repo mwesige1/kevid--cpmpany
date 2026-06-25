@@ -1,0 +1,204 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Add Router{% endblock %}
+{% block page_title %}Add Router{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Add Router</h5>
+        <p>Register a new MikroTik router into the system</p>
+    </div>
+    <a href="{% url 'dashboard:routers' %}" class="btn-back">← Back to Routers</a>
+</div>
+
+<form method="post" action="{% url 'dashboard:create_router' %}">
+    {% csrf_token %}
+    <div class="grid-8-4">
+
+        <!-- Left Column -->
+        <div>
+
+            <!-- Identity & Location -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header"><h6>Router Identity</h6></div>
+                <div class="card-body">
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                MikroTik Identity <span class="required">*</span>
+                            </label>
+                            <input type="text" name="identity" required
+                                   placeholder="e.g. MikroTik-RB951"
+                                   class="form-input">
+                            <p class="form-hint">The system identity set on the MikroTik device.</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Location</label>
+                            <input type="text" name="location"
+                                   placeholder="e.g. Hotel Kampala, Entebbe Petrol Station"
+                                   class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Connection Type <span class="required">*</span>
+                            </label>
+                            <select name="connection_type" required
+                                    id="connectionType"
+                                    onchange="toggleWireguard()"
+                                    class="form-select">
+                                <option value="direct">Direct API (Same Network)</option>
+                                <option value="wireguard">WireGuard VPN</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Gateway / Router IP <span class="required">*</span>
+                            </label>
+                            <input type="text" name="gateway_ip" required
+                                   placeholder="e.g. 192.168.88.1"
+                                   class="form-input">
+                        </div>
+
+                        <div class="form-group" id="wireguardField" style="display:none;">
+                            <label class="form-label">WireGuard Tunnel IP</label>
+                            <input type="text" name="wireguard_tunnel_ip"
+                                   placeholder="e.g. 10.0.0.2"
+                                   class="form-input">
+                            <p class="form-hint">The VPN tunnel IP assigned to this router.</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Hotspot Network (IP Range)</label>
+                            <input type="text" name="hotspot_network"
+                                   placeholder="e.g. 192.168.88.0/24"
+                                   class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">DNS Server</label>
+                            <input type="text" name="dns_server"
+                                   placeholder="e.g. 8.8.8.8"
+                                   class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-check">
+                                <input type="checkbox" name="has_wireless" checked>
+                                This router has WiFi
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-check">
+                                <input type="checkbox" name="hotspot_enabled" checked>
+                                Hotspot service is active
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Credentials -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header"><h6>API Credentials</h6></div>
+                <div class="card-body">
+                    <div class="form-grid-3">
+
+                        <div class="form-group">
+                            <label class="form-label">API Username</label>
+                            <input type="text" name="api_username"
+                                   value="admin" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">API Password</label>
+                            <input type="password" name="api_password"
+                                   placeholder="Router API password"
+                                   class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">API Port</label>
+                            <input type="number" name="api_port"
+                                   value="8728" class="form-input">
+                        </div>
+
+                    </div>
+
+                    <div class="notice-warning mt-2">
+                        <i class="bi bi-shield-lock-fill"></i>
+                        <div>
+                            <p class="notice-text">
+                                API credentials are stored encrypted and only used for router
+                                provisioning and health monitoring. Use a dedicated API-only user
+                                on your MikroTik, not the main admin account.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column -->
+        <div>
+
+            <!-- Status -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header"><h6>Initial Status</h6></div>
+                <div class="card-body">
+                    <select name="status" class="form-select">
+                        <option value="pending">Pending Setup</option>
+                        <option value="online">Online</option>
+                        <option value="offline">Offline</option>
+                    </select>
+                    <p class="form-hint mt-1">Set to Pending if you haven't provisioned it yet.</p>
+                </div>
+            </div>
+
+            <!-- Quick Setup Guide -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header"><h6>Quick Setup Guide</h6></div>
+                <div class="card-body">
+                    {% for step, text in steps %}
+                    <div class="step-item">
+                        <div class="step-number">{{ step }}</div>
+                        <p class="step-text">{{ text }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Save -->
+            <div class="dash-table">
+                <div class="card-body">
+                    <button type="submit" class="btn btn-primary w-full">
+                        <i class="bi bi-router-fill"></i> Add Router
+                    </button>
+                    <a href="{% url 'dashboard:routers' %}" class="cancel-link">Cancel</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleWireguard() {
+    var type  = document.getElementById('connectionType').value;
+    var field = document.getElementById('wireguardField');
+    field.style.display = type === 'wireguard' ? 'block' : 'none';
+}
+</script>
+{% endblock %}

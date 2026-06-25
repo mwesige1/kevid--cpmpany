@@ -1,0 +1,147 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Lead — {{ lead.full_name }}{% endblock %}
+{% block page_title %}Lead Detail{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>{{ lead.full_name }}</h5>
+        <p>Lead details and pipeline status</p>
+    </div>
+    <a href="{% url 'dashboard:leads' %}" class="btn-back">← Back to Leads</a>
+</div>
+
+<form method="post">
+{% csrf_token %}
+<div class="grid-8-4">
+
+    <!-- Left Column -->
+    <div>
+        <div class="dash-table mb-2">
+            <div class="dash-table-header">
+                <h6>Contact Information</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" name="full_name"
+                               value="{{ lead.full_name }}" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="text" name="phone_number"
+                               value="{{ lead.phone_number }}" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email"
+                               value="{{ lead.email }}" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Source</label>
+                        <input type="text" name="source"
+                               value="{{ lead.source }}" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Interested Package</label>
+                        <input type="text"
+                               value="{{ lead.interested_package|default:'—' }}"
+                               disabled class="form-input"
+                               style="background:var(--c-body); color:#6b7280;">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Assigned To</label>
+                        <input type="text"
+                               value="{{ lead.assigned_to|default:'—' }}"
+                               disabled class="form-input"
+                               style="background:var(--c-body); color:#6b7280;">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Last Contacted</label>
+                        <input type="date" name="last_contacted"
+                               value="{{ lead.last_contacted|date:'Y-m-d' }}"
+                               class="form-input">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label class="form-label">Notes</label>
+                        <textarea name="notes" rows="4"
+                                  class="form-textarea">{{ lead.notes }}</textarea>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column -->
+    <div>
+
+        <!-- Pipeline Status -->
+        <div class="dash-table mb-2">
+            <div class="dash-table-header">
+                <h6>Pipeline Status</h6>
+            </div>
+            <div class="card-body">
+                <select name="status" class="form-select">
+                    <option value="new" {% if lead.status == 'new' %}selected{% endif %}>New</option>
+                    <option value="contacted" {% if lead.status == 'contacted' %}selected{% endif %}>Contacted</option>
+                    <option value="free_trial" {% if lead.status == 'free_trial' %}selected{% endif %}>Free Trial</option>
+                    <option value="converted" {% if lead.status == 'converted' %}selected{% endif %}>Converted</option>
+                    <option value="lost" {% if lead.status == 'lost' %}selected{% endif %}>Lost</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Meta Info -->
+        <div class="dash-table mb-2">
+            <div class="dash-table-header">
+                <h6>Meta Info</h6>
+            </div>
+            <div class="card-body">
+                <p class="text-muted" style="font-size:12px; margin:0 0 8px;">
+                    <span class="font-bold">Created:</span>
+                    {{ lead.created_at|date:"d M Y, H:i" }}
+                </p>
+                <p class="text-muted" style="font-size:12px; margin:0;">
+                    <span class="font-bold">Last Updated:</span>
+                    {{ lead.updated_at|date:"d M Y, H:i" }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="dash-table">
+            <div class="card-body">
+                <button type="submit" class="btn btn-primary w-full mb-1">
+                    <i class="bi bi-save"></i> Save Changes
+                </button>
+
+                <form method="post"
+                      action="{% url 'dashboard:delete_lead' lead.id %}">
+                    {% csrf_token %}
+                    <button type="submit"
+                            onclick="return confirm('Delete this lead permanently?')"
+                            class="btn btn-danger w-full">
+                        <i class="bi bi-trash"></i> Delete Lead
+                    </button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+</form>
+
+{% endblock %}

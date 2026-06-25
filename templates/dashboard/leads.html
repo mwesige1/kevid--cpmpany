@@ -1,0 +1,223 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Leads{% endblock %}
+{% block page_title %}Leads{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Leads</h5>
+        <p>Track potential customers and manage your sales pipeline</p>
+    </div>
+    <a href="{% url 'dashboard:create_lead' %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg"></i> Add Lead
+    </a>
+</div>
+
+<!-- ── Pipeline Summary Cards ────────────────────────── -->
+<div class="stats-row mb-2">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-primary">
+            <i class="bi bi-person-plus-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>New</p>
+            <h4>{{ status_counts.new|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-warning">
+            <i class="bi bi-telephone-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Contacted</p>
+            <h4>{{ status_counts.contacted|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-success">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Converted</p>
+            <h4>{{ status_counts.converted|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-danger">
+            <i class="bi bi-x-circle-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Lost</p>
+            <h4>{{ status_counts.lost|default:"0" }}</h4>
+        </div>
+    </div>
+</div>
+
+<!-- ── Search Bar ─────────────────────────────────────── -->
+<form method="get" class="search-box">
+    {% if status_filter %}
+    <input type="hidden" name="status" value="{{ status_filter }}">
+    {% endif %}
+    <div class="search-input-wrap">
+        <i class="bi bi-search"></i>
+        <input type="text"
+               name="search"
+               value="{{ search|default:'' }}"
+               placeholder="Search by name or phone..."
+               class="search-input">
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm">
+        <i class="bi bi-search"></i>
+    </button>
+    {% if search %}
+    <a href="?{% if status_filter %}status={{ status_filter }}{% endif %}"
+       class="btn btn-outline btn-sm">Clear</a>
+    {% endif %}
+</form>
+
+<!-- ── Filter Tabs ────────────────────────────────────── -->
+<div class="tab-pills">
+    <a href="?" class="tab-pill {% if not status_filter %}active{% endif %}">All</a>
+    <a href="?status=new" class="tab-pill {% if status_filter == 'new' %}active{% endif %}">New</a>
+    <a href="?status=contacted" class="tab-pill {% if status_filter == 'contacted' %}active{% endif %}">Contacted</a>
+    <a href="?status=free_trial{% if search %}&search={{ search }}{% endif %}"
+       class="tab-pill {% if status_filter == 'free_trial' %}active{% endif %}">Free Trial</a>
+    <a href="?status=converted" class="tab-pill {% if status_filter == 'converted' %}active{% endif %}">Converted</a>
+    <a href="?status=lost" class="tab-pill {% if status_filter == 'lost' %}active{% endif %}">Lost</a>
+</div>
+
+<!-- ── Leads Table ───────────────────────────────────── -->
+<div class="dash-table leads-table">
+    <div class="dash-table-header">
+        <h6>
+            {% if status_filter %}{{ status_filter|title }}{% else %}All{% endif %}
+            Leads
+        </h6>
+    </div>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-num">#</th>
+                    <th class="col-name">Name</th>
+                    <th class="col-phone">Phone</th>
+                    <th class="col-source">Source</th>
+                    <th class="col-package">Interested Package</th>
+                    <th class="col-assigned">Assigned To</th>
+                    <th class="col-status">Status</th>
+                    <th class="col-date">Last Contact</th>
+                    <th class="col-action">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lead in leads %}
+                <tr>
+                    <td class="col-num text-muted" style="font-size:12px;">
+                        {{ forloop.counter }}
+                    </td>
+                    <td class="col-name font-semibold">
+                        {{ lead.full_name }}
+                        {% if lead.email %}
+                        <br>
+                        <span class="text-muted" style="font-size:11px; font-weight:400;">
+                            {{ lead.email }}
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="col-phone">
+                        {{ lead.phone_number|default:"—" }}
+                    </td>
+                    <td class="col-source">
+                        <span class="badge-neutral">{{ lead.source|default:"—" }}</span>
+                    </td>
+                    <td class="col-package">
+                        {{ lead.interested_package|default:"—" }}
+                    </td>
+                    <td class="col-assigned">
+                        {{ lead.assigned_to|default:"—" }}
+                    </td>
+                    <td class="col-status">
+                        {% if lead.status == 'new' %}
+                            <span class="badge badge-info">New</span>
+                        {% elif lead.status == 'contacted' %}
+                            <span class="badge badge-warning">Contacted</span>
+                        {% elif lead.status == 'converted' %}
+                            <span class="badge badge-success">Converted</span>
+                        {% elif lead.status == 'free_trial' %}
+                            <span class="badge badge-purple">Free Trial</span>
+                        {% else %}
+                            <span class="badge badge-failed">Lost</span>
+                        {% endif %}
+                    </td>
+                    <td class="col-date text-muted" style="font-size:12px;">
+                        {% if lead.last_contacted %}
+                            {{ lead.last_contacted|date:"d M Y" }}
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td class="col-action">
+                        <div class="action-group">
+                            <a href="{% url 'dashboard:lead_detail' lead.id %}"
+                               class="btn-view">View</a>
+                            <form method="post"
+                                  action="{% url 'dashboard:delete_lead' lead.id %}"
+                                  id="del-lead-{{ lead.id }}">
+                                {% csrf_token %}
+                                <div class="block-confirm" id="confirm-lead-{{ lead.id }}">
+                                    <button type="submit" class="btn-cut-yes">
+                                        <i class="bi bi-check-lg"></i> Yes
+                                    </button>
+                                    <button type="button"
+                                            onclick="cancelLeadDelete('{{ lead.id }}')"
+                                            class="btn-cut-no">
+                                        <i class="bi bi-x-lg"></i> No
+                                    </button>
+                                </div>
+                                <button type="button"
+                                        id="btn-lead-{{ lead.id }}"
+                                        onclick="confirmLeadDelete('{{ lead.id }}')"
+                                        class="btn-cut">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="empty-state">
+                        <i class="bi bi-funnel" style="display:block;"></i>
+                        No leads found.<br>
+                        <a href="{% url 'dashboard:create_lead' %}"
+                           style="color:var(--c-primary); font-weight:600;">
+                            Add your first lead →
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function confirmLeadDelete(id) {
+    document.getElementById('btn-lead-' + id).style.display     = 'none';
+    document.getElementById('confirm-lead-' + id).style.display = 'flex';
+}
+function cancelLeadDelete(id) {
+    document.getElementById('confirm-lead-' + id).style.display = 'none';
+    document.getElementById('btn-lead-' + id).style.display     = 'inline-flex';
+}
+</script>
+{% endblock %}

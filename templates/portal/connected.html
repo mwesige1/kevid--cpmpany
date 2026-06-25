@@ -1,0 +1,217 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+
+{% block title %}Connected — Enjoy Your WiFi{% endblock %}
+
+{% block content %}
+
+<div class="bg-canvas bg-canvas-green"></div>
+<div class="bg-grid bg-grid-green"></div>
+
+<div class="page">
+
+  <header class="app-header" style="animation:fadeDown .7s ease both;">
+    <div class="logo-pill">
+      <div class="wifi-bars"><span></span><span></span><span></span><span></span></div>
+      <div class="logo-txt">You're Connected!</div>
+    </div>
+  </header>
+
+  <main class="main-content">
+
+    <!-- Success Banner -->
+    <div class="success-banner">
+      <div class="success-icon">✅</div>
+      <h2>Internet Active</h2>
+      <p>
+        {% if session %}
+          {{ session.package.name }} — {{ session.package.duration }} {{ session.package.duration_unit }}
+        {% else %}
+          Your session is active
+        {% endif %}
+      </p>
+    </div>
+
+    <!-- Session Details -->
+    <div class="section-card">
+      <div class="section-head">📦 Session Details</div>
+      <div class="section-body">
+        {% if session %}
+        <div class="sess-grid">
+          <div class="sess-cell">
+            <div class="sess-lbl">Package</div>
+            <div class="sess-val" style="font-size:.85rem;">{{ session.package.name }}</div>
+          </div>
+          <div class="sess-cell green">
+            <div class="sess-lbl">Amount Paid</div>
+            <div class="sess-val">
+              {% if session.package.is_free_trial %}FREE{% else %}UGX {{ session.package.price|floatformat:0 }}{% endif %}
+            </div>
+          </div>
+          <div class="sess-cell full">
+            <div class="sess-lbl">Session Expires</div>
+            <div class="sess-val" style="font-size:.78rem;">{{ session.expiry_time|date:"l, d M Y \a\t H:i" }}</div>
+          </div>
+        </div>
+        {% else %}
+        <p style="text-align:center;color:var(--txt-muted);font-size:.82rem;padding:12px 0;">Session details not available.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Countdown -->
+    <div class="section-card">
+      <div class="section-head">⏱ Time Remaining</div>
+      <div class="section-body">
+        <div class="countdown-row">
+          <span>Session countdown</span>
+          {% if session %}<span style="font-size:.68rem;color:var(--txt-muted);">Expires {{ session.expiry_time|date:"H:i, d M" }}</span>{% endif %}
+        </div>
+        <div class="timer" id="countdownTimer">--:--:--</div>
+        <div class="bar-track"><div class="bar-fill" id="countdownBar" style="width:100%;"></div></div>
+      </div>
+    </div>
+
+    <!-- Feedback -->
+    <div class="section-card">
+      <div class="section-head">⭐ Rate Your Experience</div>
+      <div class="section-body">
+        {% if not feedback_submitted %}
+        <p style="font-size:.78rem;color:var(--txt-sec);margin-bottom:12px;">How is your connection quality?</p>
+        <div id="feedbackWrap">
+          <form id="feedbackForm" method="post" action="{% url 'portal:submit_feedback' %}">
+            {% csrf_token %}
+            <input type="hidden" name="session_id" value="{{ session.id }}">
+            <input type="hidden" name="rating" id="ratingInput" value="0">
+            <div class="stars">
+              <span class="star" onclick="setRating(1)" id="star1">⭐</span>
+              <span class="star" onclick="setRating(2)" id="star2">⭐</span>
+              <span class="star" onclick="setRating(3)" id="star3">⭐</span>
+              <span class="star" onclick="setRating(4)" id="star4">⭐</span>
+              <span class="star" onclick="setRating(5)" id="star5">⭐</span>
+            </div>
+            <textarea class="feedback-ta" name="comment" rows="2" placeholder="Tell us more (optional)..."></textarea>
+            <button type="submit" class="btn-submit" id="feedbackBtn" disabled>Submit Feedback</button>
+          </form>
+          <div class="fb-success" id="feedbackSuccess">🎉 Thank you for your feedback!</div>
+        </div>
+        {% else %}
+        <div class="fb-success" style="display:block;">🎉 Thank you for your feedback!</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Renew -->
+    <div style="padding: 4px 14px 0;">
+      <a href="{% url 'portal:landing' %}" class="btn-renew">🔄 Renew or Upgrade</a>
+      <p style="font-size:.75rem;color:var(--txt-muted);text-align:center;margin-top:8px;">
+        Need help? Call
+        <a href="tel:{{ settings.support_phone|default:'' }}" style="color:var(--gold);font-weight:700;text-decoration:none;">
+          {{ settings.support_phone|default:"Support" }}
+        </a>
+      </p>
+    </div>
+
+  </main>
+
+  <footer class="app-footer">
+    🔒 Secure connection · Powered by {{ settings.business_name|default:"Optimum" }}
+  </footer>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+{% if session %}
+var expiryTime = new Date("{{ session.expiry_time|date:'c' }}");
+var startTime  = new Date("{{ session.created_at|date:'c' }}");
+var totalMs    = expiryTime - startTime;
+var timerEl    = document.getElementById('countdownTimer');
+var barEl      = document.getElementById('countdownBar');
+
+function updateTimer() {
+    var now  = new Date();
+    var diff = expiryTime - now;
+    if (diff <= 0) {
+        timerEl.textContent = '00:00:00';
+        timerEl.className   = 'timer crit';
+        barEl.style.width   = '0%';
+        barEl.style.background = '#ef4444';
+        setTimeout(function() { window.location.href = 'https://kevidtechhotspot.com/'; }, 3000);
+        return;
+    }
+    var h = Math.floor(diff / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    timerEl.textContent =
+        String(h).padStart(2,'0') + ':' +
+        String(m).padStart(2,'0') + ':' +
+        String(s).padStart(2,'0');
+    var pct = Math.max(0, Math.min(100, (diff / totalMs) * 100));
+    barEl.style.width = pct + '%';
+    if (diff < 300000) {
+        timerEl.className = 'timer crit';
+        barEl.style.background = '#ef4444';
+    } else if (diff < 600000) {
+        timerEl.className = 'timer warn';
+        barEl.style.background = '#f59e0b';
+    } else {
+        timerEl.className = 'timer';
+        barEl.style.background = 'linear-gradient(90deg,#22c55e,#86efac)';
+    }
+}
+updateTimer();
+setInterval(updateTimer, 1000);
+{% else %}
+document.getElementById('countdownTimer').textContent = 'No active session';
+{% endif %}
+
+var currentRating = 0;
+function setRating(r) {
+    currentRating = r;
+    document.getElementById('ratingInput').value = r;
+    for (var i = 1; i <= 5; i++) {
+        document.getElementById('star' + i).classList.toggle('on', i <= r);
+    }
+    document.getElementById('feedbackBtn').disabled = false;
+}
+
+var ff = document.getElementById('feedbackForm');
+if (ff) {
+    ff.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (currentRating === 0) return;
+        fetch(this.action, {
+            method: 'POST', body: new FormData(this),
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(function() {
+            document.getElementById('feedbackForm').style.display    = 'none';
+            document.getElementById('feedbackSuccess').style.display = 'block';
+        })
+        .catch(function() {
+            document.getElementById('feedbackForm').style.display    = 'none';
+            document.getElementById('feedbackSuccess').style.display = 'block';
+        });
+    });
+}
+
+function checkSessionStatus() {
+    var mac = '{{ mac_address }}';
+    if (!mac) return;
+    fetch('https://kevidtechhotspot.com/session-status/?mac=' + mac)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.status === 'blocked') {
+            window.location.href = 'https://kevidtechhotspot.com/blocked/?mac=' + mac;
+        } else if (data.status === 'expired') {
+            window.location.href = 'https://kevidtechhotspot.com/?mac=' + mac;
+        }
+    })
+    .catch(function() {});
+}
+setInterval(checkSessionStatus, 3000);
+</script>
+{% endblock %}

@@ -1,0 +1,242 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+
+{% block title %}Customers{% endblock %}
+{% block page_title %}Customers{% endblock %}
+
+{% block content %}
+
+<!-- ── Header ────────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Customers</h5>
+        <p>Everyone who has connected to your network</p>
+    </div>
+</div>
+
+<!-- ── Cards ─────────────────────────────────────────── -->
+<div class="stats-row mb-2">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-primary">
+            <i class="bi bi-people-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>All Time</p>
+            <h4>{{ total_count }}</h4>
+        </div>
+    </div>
+
+    <a href="?status=active" class="dash-stat-card">
+        <div class="dash-stat-icon icon-success">
+            <i class="bi bi-wifi"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Connected Now</p>
+            <h4>{{ active_count }}</h4>
+        </div>
+    </a>
+
+    <a href="?status=expired" class="dash-stat-card">
+        <div class="dash-stat-icon icon-danger">
+            <i class="bi bi-wifi-off"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Expired</p>
+            <h4>{{ expired_count }}</h4>
+        </div>
+    </a>
+
+    <a href="?status=blocked" class="dash-stat-card">
+        <div class="dash-stat-icon icon-warning">
+            <i class="bi bi-slash-circle"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Blocked</p>
+            <h4>{{ blocked_count }}</h4>
+        </div>
+    </a>
+</div>
+
+<!-- ── Search ─────────────────────────────────────────── -->
+<form method="get" class="search-box">
+    {% if status_filter %}
+        <input type="hidden" name="status" value="{{ status_filter }}">
+    {% endif %}
+    <div class="search-input-wrap">
+        <i class="bi bi-search"></i>
+        <input type="text"
+               name="search"
+               value="{{ search }}"
+               placeholder="Search by phone number or sessions..."
+               class="search-input">
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+    {% if search or status_filter %}
+    <a href="{% url 'dashboard:customers' %}" class="btn btn-outline btn-sm">Clear</a>
+    {% endif %}
+</form>
+
+<!-- ── Filter Tabs ────────────────────────────────────── -->
+<div class="tab-pills">
+    <a href="?{% if search %}search={{ search }}{% endif %}"
+       class="tab-pill {% if not status_filter %}active{% endif %}">
+        All ({{ total_count }})
+    </a>
+    <a href="?status=active{% if search %}&search={{ search }}{% endif %}"
+       class="tab-pill {% if status_filter == 'active' %}active{% endif %}">
+        Active ({{ active_count }})
+    </a>
+    <a href="?status=expired{% if search %}&search={{ search }}{% endif %}"
+       class="tab-pill {% if status_filter == 'expired' %}active{% endif %}">
+        Expired ({{ expired_count }})
+    </a>
+    <a href="?status=blocked{% if search %}&search={{ search }}{% endif %}"
+       class="tab-pill {% if status_filter == 'blocked' %}active{% endif %}">
+        Blocked ({{ blocked_count }})
+    </a>
+</div>
+
+<!-- ── Table ──────────────────────────────────────────── -->
+<div class="dash-table customers-table">
+    <div class="dash-table-header">
+        <h6>
+            {% if status_filter %}{{ status_filter|title }}{% else %}All{% endif %}
+            Customers
+            {% if search %}&mdash; "{{ search }}"{% endif %}
+        </h6>
+    </div>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-num">#</th>
+                    <th class="col-customer">Phone Number</th>
+                    <th class="col-mac">MAC Address</th>
+                    <th class="col-package">Last Package</th>
+                    <th class="col-spent">Total Spent</th>
+                    <th class="col-sessions">Sessions</th>
+                    <th class="col-status">Status</th>
+                    <th class="col-joined">Joined</th>
+                    <th class="col-action">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device in devices %}
+                {% with last_session=device.wifisession_set.first %}
+                <tr>
+                    <td class="col-num text-muted" style="font-size:12px;">
+                        {{ forloop.counter }}
+                    </td>
+
+                    <td class="col-customer">
+                        <div class="customer-cell">
+                            <div class="customer-avatar">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                            <div>
+                                <p class="customer-name">
+                                    {{ device.phone_number|default:"Unknown" }}
+                                </p>
+                                <p class="customer-sub">
+                                    Last seen {{ device.last_seen|timesince }} ago
+                                </p>
+                            </div>
+                        </div>
+                    </td>
+
+                    <td class="col-mac" style="font-family:monospace; font-size:12px;">
+                        {{ device.mac_address }}
+                    </td>
+
+                    <td class="col-package">
+                        {{ last_session.package.name|default:"—" }}
+                    </td>
+
+                    <td class="col-spent font-bold text-success">
+                        UGX {{ device.total_spent|floatformat:0|intcomma }}
+                    </td>
+
+                    <td class="col-sessions font-bold text-center"
+                        style="color:var(--c-primary);">
+                        {{ device.session_count }}
+                    </td>
+
+                    <td class="col-status">
+                        {% if device.is_blocked %}
+                            <span class="badge badge-warning">Blocked</span>
+                        {% elif last_session.status == 'active' %}
+                            <span class="badge badge-success">Active</span>
+                        {% elif last_session %}
+                            <span class="badge badge-failed">Expired</span>
+                        {% else %}
+                            <span class="badge badge-muted">No Sessions</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="col-joined text-muted" style="font-size:12px;">
+                        {{ device.first_seen|date:"d M Y" }}
+                    </td>
+
+                    <td class="col-action">
+                        <div class="action-group">
+                            <a href="{% url 'dashboard:customer_detail' device.id %}"
+                               class="btn-view">
+                                <i class="bi bi-eye"></i> View
+                            </a>
+                            <form method="post"
+                                  action="{% url 'dashboard:customer_delete' device.id %}"
+                                  class="delete-form">
+                                {% csrf_token %}
+                                <div class="delete-initial">
+                                    <button type="button" onclick="showDelete(this)"
+                                            class="btn-cut">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </div>
+                                <div class="delete-confirm" style="display:none;">
+                                    <button type="submit" class="btn-cut-yes">
+                                        <i class="bi bi-check-lg"></i> Yes
+                                    </button>
+                                    <button type="button" onclick="hideDelete(this)"
+                                            class="btn-cut-no">
+                                        <i class="bi bi-x-lg"></i> No
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endwith %}
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="empty-state">
+                        <i class="bi bi-people" style="display:block;"></i>
+                        {% if search %}
+                            No customers found for "{{ search }}".
+                        {% else %}
+                            No customers yet. They will appear here once someone connects.
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showDelete(btn) {
+    var form = btn.closest('.delete-form');
+    form.querySelector('.delete-initial').style.display = 'none';
+    form.querySelector('.delete-confirm').style.display = 'flex';
+}
+function hideDelete(btn) {
+    var form = btn.closest('.delete-form');
+    form.querySelector('.delete-initial').style.display = 'block';
+    form.querySelector('.delete-confirm').style.display = 'none';
+}
+</script>
+{% endblock %}

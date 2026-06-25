@@ -1,0 +1,105 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Voucher Agents{% endblock %}
+{% block page_title %}Voucher Agents{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Voucher Agents</h5>
+        <p>{{ agents.count }} agent{{ agents.count|pluralize }} registered</p>
+    </div>
+    <a href="{% url 'dashboard:create_voucher_agent' %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg"></i> New Agent
+    </a>
+</div>
+
+<!-- ── Search Bar ─────────────────────────────────────── -->
+<form method="get" class="search-box">
+    <div class="search-input-wrap">
+        <i class="bi bi-search"></i>
+        <input type="text" name="search" value="{{ search }}"
+               placeholder="Search agent by name..."
+               class="search-input">
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm">
+        <i class="bi bi-search"></i>
+    </button>
+    {% if search %}
+    <a href="{% url 'dashboard:voucher_agents' %}" class="btn btn-outline btn-sm">Clear</a>
+    {% endif %}
+</form>
+
+<!-- ── Agents Table ───────────────────────────────────── -->
+<div class="dash-table agents-table">
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-name">Agent Name</th>
+                    <th class="col-phone">Phone</th>
+                    <th class="col-location">Location</th>
+                    <th class="col-commission">Commission</th>
+                    <th class="col-assigned">Assigned</th>
+                    <th class="col-sold">Sold</th>
+                    <th class="col-available">Available</th>
+                    <th class="col-revenue">Revenue</th>
+                    <th class="col-status">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for agent in agents %}
+                <tr style="cursor:pointer;"
+                    onclick="window.location='{% url 'dashboard:agent_detail' agent.id %}'">
+                    <td class="col-name">
+                        <a href="{% url 'dashboard:agent_detail' agent.id %}"
+                           style="font-weight:700; color:var(--c-primary);">
+                            {{ agent.name }}
+                        </a>
+                    </td>
+                    <td class="col-phone">{{ agent.phone|default:"—" }}</td>
+                    <td class="col-location text-muted" style="font-size:12px;">
+                        {{ agent.location|default:"—" }}
+                    </td>
+                    <td class="col-commission">
+                        <span class="font-bold" style="color:var(--c-primary);">{{ agent.commission_display }}</span>
+                        <span class="text-muted" style="font-size:11px;"> per sale</span>
+                    </td>
+                    <td class="col-assigned font-semibold">{{ agent.vouchers_assigned }}</td>
+                    <td class="col-sold font-semibold text-success">{{ agent.vouchers_sold }}</td>
+                    <td class="col-available font-semibold text-warning">{{ agent.vouchers_available }}</td>
+                    <td class="col-revenue font-bold">
+                        UGX {{ agent.total_revenue|floatformat:0|default:"0" }}
+                    </td>
+                    <td class="col-status">
+                        {% if agent.status == 'active' %}
+                            <span class="badge badge-success">Active</span>
+                        {% else %}
+                            <span class="badge badge-muted">Inactive</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="empty-state">
+                        <i class="bi bi-people" style="display:block;"></i>
+                        {% if search %}
+                            No agents found for "{{ search }}".
+                        {% else %}
+                            No agents registered yet.
+                            <a href="{% url 'dashboard:create_voucher_agent' %}"
+                               style="color:var(--c-primary); font-weight:600;">
+                                Add your first agent →
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

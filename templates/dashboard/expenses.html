@@ -1,0 +1,272 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Expenses{% endblock %}
+{% block page_title %}Expenses{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Expenses</h5>
+        <p>Track all business expenses to calculate net profit</p>
+    </div>
+    <a href="{% url 'dashboard:create_expense' %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg"></i> Record Expense
+    </a>
+</div>
+
+<!-- ── Summary Cards ─────────────────────────────────── -->
+<div class="card-grid mb-2">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-danger">
+            <i class="bi bi-calendar-week"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>This Week</p>
+            <h4>UGX {{ week_expenses|floatformat:0 }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-orange">
+            <i class="bi bi-calendar-month"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>This Month</p>
+            <h4>UGX {{ month_expenses|floatformat:0 }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-purple">
+            <i class="bi bi-calendar"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>This Year</p>
+            <h4>UGX {{ year_expenses|floatformat:0 }}</h4>
+        </div>
+    </div>
+</div>
+
+<!-- ── Search ────────────────────────────────────────── -->
+<form method="get" class="search-box">
+    {% if category_filter %}
+    <input type="hidden" name="category" value="{{ category_filter }}">
+    {% endif %}
+    <div class="search-input-wrap">
+        <i class="bi bi-search"></i>
+        <input type="text" name="search" value="{{ search }}"
+               placeholder="Search by name, vendor or description..."
+               class="search-input">
+    </div>
+    <button type="submit" class="btn btn-primary btn-sm">
+        <i class="bi bi-search"></i>
+    </button>
+    {% if search %}
+    <a href="?{% if category_filter %}category={{ category_filter }}{% endif %}"
+       class="btn btn-outline btn-sm">Clear</a>
+    {% endif %}
+</form>
+
+<!-- ── Category Filter Tabs ──────────────────────────── -->
+<div class="tab-pills">
+    <a href="?{% if search %}search={{ search }}{% endif %}"
+       class="tab-pill {% if not category_filter %}active{% endif %}">All</a>
+    {% for cat in categories %}
+    <a href="?category={{ cat }}{% if search %}&search={{ search }}{% endif %}"
+       class="tab-pill {% if category_filter == cat %}active{% endif %}">{{ cat }}</a>
+    {% endfor %}
+</div>
+
+<!-- ── Expenses Table ─────────────────────────────────── -->
+<div class="dash-table expenses-table">
+    <div class="dash-table-header">
+        <h6>
+            {% if search or category_filter %}Filtered Expenses{% else %}All Expenses{% endif %}
+        </h6>
+    </div>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-num">#</th>
+                    <th class="col-name">Expense Name</th>
+                    <th class="col-category">Category</th>
+                    <th class="col-amount">Amount</th>
+                    <th class="col-method">Payment Method</th>
+                    <th class="col-vendor">Vendor</th>
+                    <th class="col-date">Date</th>
+                    <th class="col-receipt">Receipt</th>
+                    <th class="col-action">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr>
+                    <td class="col-num text-muted" style="font-size:12px;">
+                        {{ forloop.counter }}
+                    </td>
+                    <td class="col-name font-semibold">
+                        {{ expense.name }}
+                        {% if expense.description %}
+                        <br>
+                        <span class="text-muted" style="font-size:11px; font-weight:400;">
+                            {{ expense.description|truncatechars:40 }}
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="col-category">
+                        <span class="badge badge-info">{{ expense.expense_type|default:"General" }}</span>
+                    </td>
+                    <td class="col-amount font-bold text-danger">
+                        UGX {{ expense.amount|floatformat:0 }}
+                    </td>
+                    <td class="col-method">
+                        {{ expense.payment_method|default:"—" }}
+                    </td>
+                    <td class="col-vendor">
+                        {{ expense.vendor|default:"—" }}
+                    </td>
+                    <td class="col-date text-muted" style="font-size:12px;">
+                        {{ expense.date|date:"d M Y" }}
+                    </td>
+                    <td class="col-receipt">
+                        {% if expense.receipt %}
+                            <button type="button"
+                                    onclick="viewReceipt('{{ expense.receipt.url }}', '{{ expense.name }}')"
+                                    class="btn-view">
+                                <i class="bi bi-paperclip"></i> View
+                            </button>
+                        {% else %}
+                            <span class="text-muted" style="font-size:12px;">None</span>
+                        {% endif %}
+                    </td>
+                    <td class="col-action">
+                        <div class="action-group">
+                            <a href="{% url 'dashboard:edit_expense' expense.id %}"
+                               class="btn-edit">Edit</a>
+                            <form method="post"
+                                  action="{% url 'dashboard:delete_expense' expense.id %}"
+                                  id="del-exp-{{ expense.id }}">
+                                {% csrf_token %}
+                                <div class="block-confirm" id="confirm-exp-{{ expense.id }}">
+                                    <button type="submit" class="btn-cut-yes">Yes</button>
+                                    <button type="button"
+                                            onclick="cancelExpDel('{{ expense.id }}')"
+                                            class="btn-cut-no">No</button>
+                                </div>
+                                <button type="button"
+                                        id="btn-exp-{{ expense.id }}"
+                                        onclick="confirmExpDel('{{ expense.id }}')"
+                                        class="btn-cut">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="empty-state">
+                        <i class="bi bi-receipt" style="display:block;"></i>
+                        {% if search or category_filter %}
+                            No expenses found for your search.
+                        {% else %}
+                            No expenses recorded yet.
+                            <a href="{% url 'dashboard:create_expense' %}"
+                               style="color:var(--c-primary); font-weight:600;">
+                                Record your first expense →
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ── Receipt Modal ─────────────────────────────────── -->
+<div class="modal-overlay" id="receiptModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 id="receiptTitle">Receipt</h3>
+            <div class="action-group">
+                <a id="receiptDownload" href="#" download class="btn-view">
+                    <i class="bi bi-download"></i> Download
+                </a>
+                <button onclick="closeReceipt()" class="modal-close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+        </div>
+        <div style="text-align:center;">
+            <img id="receiptImage" src="" alt="Receipt"
+                 style="max-width:100%; border-radius:var(--r-sm);
+                        box-shadow:var(--shadow-md);">
+            <iframe id="receiptPdf" src=""
+                    style="display:none; width:100%; height:500px;
+                           border:none; border-radius:var(--r-sm);"></iframe>
+            <p id="receiptError" style="display:none;" class="text-muted">
+                Cannot preview this file type.
+                <a id="receiptErrorLink" href="#" target="_blank"
+                   style="color:var(--c-primary); font-weight:600;">
+                    Open in new tab
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+/* ── Receipt Modal ──────────────────────────── */
+function viewReceipt(url, name) {
+    document.getElementById('receiptTitle').textContent = name + ' — Receipt';
+    document.getElementById('receiptDownload').href     = url;
+    document.getElementById('receiptErrorLink').href    = url;
+
+    var img = document.getElementById('receiptImage');
+    var pdf = document.getElementById('receiptPdf');
+    var err = document.getElementById('receiptError');
+
+    img.style.display = 'none';
+    pdf.style.display = 'none';
+    err.style.display = 'none';
+
+    if (url.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+        img.src           = url;
+        img.style.display = 'block';
+    } else if (url.match(/\.pdf$/i)) {
+        pdf.src           = url;
+        pdf.style.display = 'block';
+    } else {
+        err.style.display = 'block';
+    }
+
+    document.getElementById('receiptModal').classList.add('active');
+}
+
+function closeReceipt() {
+    document.getElementById('receiptModal').classList.remove('active');
+    document.getElementById('receiptImage').src = '';
+    document.getElementById('receiptPdf').src   = '';
+}
+
+document.getElementById('receiptModal').addEventListener('click', function(e) {
+    if (e.target === this) closeReceipt();
+});
+
+/* ── Delete Expense ─────────────────────────── */
+function confirmExpDel(id) {
+    document.getElementById('btn-exp-' + id).style.display     = 'none';
+    document.getElementById('confirm-exp-' + id).style.display = 'flex';
+}
+
+function cancelExpDel(id) {
+    document.getElementById('confirm-exp-' + id).style.display = 'none';
+    document.getElementById('btn-exp-' + id).style.display     = 'inline-flex';
+}
+</script>
+{% endblock %}

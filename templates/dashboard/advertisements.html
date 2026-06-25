@@ -1,0 +1,218 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Advertisements{% endblock %}
+{% block page_title %}Advertisements{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Advertisements</h5>
+        <p>Manage ads displayed on the captive portal to customers</p>
+    </div>
+    <a href="{% url 'dashboard:create_advertisement' %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg"></i> Create Ad
+    </a>
+</div>
+
+<!-- ── Summary Cards ─────────────────────────────────── -->
+<div class="stats-row mb-2">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-primary">
+            <i class="bi bi-megaphone-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Total Ads</p>
+            <h4>{{ total_ads|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-success">
+            <i class="bi bi-broadcast"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Active</p>
+            <h4>{{ active_ads|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-warning">
+            <i class="bi bi-eye-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Total Impressions</p>
+            <h4>{{ total_impressions|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-purple">
+            <i class="bi bi-calendar-event-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Scheduled</p>
+            <h4>{{ scheduled_ads|default:"0" }}</h4>
+        </div>
+    </div>
+</div>
+
+<!-- ── Filter Tabs ────────────────────────────────────── -->
+<div class="tab-pills">
+    <a href="{% url 'dashboard:advertisements' %}"
+       class="tab-pill {% if not status_filter %}active{% endif %}">All</a>
+    <a href="?status=active"
+       class="tab-pill {% if status_filter == 'active' %}active{% endif %}">Active</a>
+    <a href="?status=inactive"
+       class="tab-pill {% if status_filter == 'inactive' %}active{% endif %}">Inactive</a>
+</div>
+
+<!-- ── Ads Table ─────────────────────────────────────── -->
+<div class="dash-table ads-table">
+    <div class="dash-table-header">
+        <h6>All Advertisements</h6>
+    </div>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-num">#</th>
+                    <th class="col-preview">Preview</th>
+                    <th class="col-title">Title</th>
+                    <th class="col-type">Type</th>
+                    <th class="col-duration">Duration</th>
+                    <th class="col-schedule">Schedule</th>
+                    <th class="col-impressions">Impressions</th>
+                    <th class="col-status">Status</th>
+                    <th class="col-action">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ad in ads %}
+                <tr>
+                    <td class="col-num text-muted" style="font-size:12px;">
+                        {{ forloop.counter }}
+                    </td>
+                    <td class="col-preview">
+                        {% if ad.media_file %}
+                            {% if ad.ad_type == 'video' %}
+                                <video src="{{ ad.media_file.url }}"
+                                       style="width:60px; height:40px;
+                                              border-radius:6px; object-fit:cover;"></video>
+                            {% else %}
+                                <img src="{{ ad.media_file.url }}"
+                                     style="width:60px; height:40px;
+                                            border-radius:6px; object-fit:cover;"
+                                     alt="{{ ad.title }}">
+                            {% endif %}
+                        {% else %}
+                            <div style="width:60px; height:40px; background:var(--c-border-light);
+                                        border-radius:6px; display:flex;
+                                        align-items:center; justify-content:center;">
+                                <i class="bi bi-image text-muted"></i>
+                            </div>
+                        {% endif %}
+                    </td>
+                    <td class="col-title font-semibold">
+                        {{ ad.title }}
+                        {% if ad.description %}
+                        <br>
+                        <span class="text-muted" style="font-size:11px; font-weight:400;">
+                            {{ ad.description|truncatechars:40 }}
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="col-type">
+                        <span class="badge badge-info" style="text-transform:capitalize;">
+                            {{ ad.ad_type }}
+                        </span>
+                    </td>
+                    <td class="col-duration">{{ ad.display_duration }}s</td>
+                    <td class="col-schedule" style="font-size:12px;">
+                        {% if ad.start_date and ad.end_date %}
+                            {{ ad.start_date|date:"d M" }} → {{ ad.end_date|date:"d M Y" }}
+                        {% else %}
+                            <span class="text-muted">Always</span>
+                        {% endif %}
+                    </td>
+                    <td class="col-impressions font-bold" style="color:var(--c-primary);">
+                        {{ ad.total_impressions|default:"0" }}
+                        {% if ad.max_impressions %}
+                        <span class="text-muted" style="font-size:11px; font-weight:400;">
+                            / {{ ad.max_impressions }}
+                        </span>
+                        {% endif %}
+                    </td>
+                    <td class="col-status">
+                        {% if ad.is_active %}
+                            <span class="badge badge-success">Active</span>
+                        {% else %}
+                            <span class="badge badge-muted">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td class="col-action">
+                        <div class="action-group">
+                            <a href="{% url 'dashboard:edit_advertisement' ad.id %}"
+                               class="btn-edit">Edit</a>
+                            <form method="post"
+                                  action="{% url 'dashboard:toggle_advertisement' ad.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-toggle">
+                                    {% if ad.is_active %}Deactivate{% else %}Activate{% endif %}
+                                </button>
+                            </form>
+                            <form method="post"
+                                  action="{% url 'dashboard:delete_advertisement' ad.id %}"
+                                  id="del-ad-{{ ad.id }}">
+                                {% csrf_token %}
+                                <div class="block-confirm" id="confirm-ad-{{ ad.id }}">
+                                    <button type="submit" class="btn-cut-yes">Yes</button>
+                                    <button type="button"
+                                            onclick="cancelAdDel('{{ ad.id }}')"
+                                            class="btn-cut-no">No</button>
+                                </div>
+                                <button type="button"
+                                        id="btn-ad-{{ ad.id }}"
+                                        onclick="confirmAdDel('{{ ad.id }}')"
+                                        class="btn-cut">Delete</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="empty-state">
+                        <i class="bi bi-megaphone" style="display:block;"></i>
+                        <p class="font-semibold" style="color:var(--c-text-2); margin:0 0 6px;">
+                            No advertisements yet
+                        </p>
+                        <p class="text-muted" style="font-size:13px; margin:0 0 16px;">
+                            Create ads to display on your captive portal
+                        </p>
+                        <a href="{% url 'dashboard:create_advertisement' %}" class="btn btn-primary btn-sm">
+                            Create First Ad
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function confirmAdDel(id) {
+    document.getElementById('btn-ad-' + id).style.display     = 'none';
+    document.getElementById('confirm-ad-' + id).style.display = 'flex';
+}
+function cancelAdDel(id) {
+    document.getElementById('confirm-ad-' + id).style.display = 'none';
+    document.getElementById('btn-ad-' + id).style.display     = 'inline-flex';
+}
+</script>
+{% endblock %}

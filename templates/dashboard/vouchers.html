@@ -1,0 +1,106 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Vouchers{% endblock %}
+{% block page_title %}Vouchers{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Vouchers</h5>
+        <p>Manage prepaid voucher codes for internet access</p>
+    </div>
+    <a href="{% url 'dashboard:generate_vouchers' %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg"></i> Generate Vouchers
+    </a>
+</div>
+
+<!-- ── Status Filter Tabs ────────────────────────────── -->
+<div class="tab-pills">
+    <a href="{% url 'dashboard:vouchers' %}"
+       class="tab-pill {% if not status_filter %}active{% endif %}">
+        All
+    </a>
+    {% for status, count in status_counts.items %}
+    <a href="?status={{ status }}"
+       class="tab-pill {% if status_filter == status %}active{% endif %}">
+        {{ status|title }} ({{ count }})
+    </a>
+    {% endfor %}
+</div>
+
+<!-- ── Vouchers Table ─────────────────────────────────── -->
+<div class="dash-table vouchers-table">
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-code">Code</th>
+                    <th class="col-package">Package</th>
+                    <th class="col-status">Status</th>
+                    <th class="col-sale-type">Sale Type</th>
+                    <th class="col-agent">Agent</th>
+                    <th class="col-price">Price Sold</th>
+                    <th class="col-used">Used At</th>
+                    <th class="col-created">Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for voucher in vouchers %}
+                <tr>
+                    <td class="col-code">
+                        <span class="voucher-code">{{ voucher.code }}</span>
+                    </td>
+                    <td class="col-package font-semibold">
+                        {{ voucher.package.name }}
+                    </td>
+                    <td class="col-status">
+                        {% if voucher.status == 'available' %}
+                            <span class="badge badge-success">Available</span>
+                        {% elif voucher.status == 'used' %}
+                            <span class="badge badge-muted">Used</span>
+                        {% elif voucher.status == 'giveaway' %}
+                            <span class="badge badge-pending">Giveaway</span>
+                        {% else %}
+                            <span class="badge badge-failed">{{ voucher.status|title }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="col-sale-type text-muted" style="font-size:12px;">
+                        {{ voucher.get_sale_type_display }}
+                    </td>
+                    <td class="col-agent text-muted" style="font-size:12px;">
+                        {{ voucher.agent.name|default:"—" }}
+                    </td>
+                    <td class="col-price font-bold">
+                        {% if voucher.is_giveaway %}
+                            <span class="text-muted">Free</span>
+                        {% else %}
+                            {{ voucher.price_sold|floatformat:0 }} UGX
+                        {% endif %}
+                    </td>
+                    <td class="col-used text-muted" style="font-size:12px;">
+                        {{ voucher.used_at|date:"d M Y, h:i A"|default:"—" }}
+                    </td>
+                    <td class="col-created text-muted" style="font-size:12px;">
+                        {{ voucher.created_at|date:"d M Y" }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        <i class="bi bi-ticket-perforated" style="display:block;"></i>
+                        No vouchers yet.
+                        <a href="{% url 'dashboard:generate_vouchers' %}"
+                           style="color:var(--c-primary); font-weight:600;">
+                            Generate your first batch →
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

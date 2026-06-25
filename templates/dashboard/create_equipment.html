@@ -1,0 +1,151 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Add Equipment{% endblock %}
+{% block page_title %}Add Equipment{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Add Equipment</h5>
+        <p>Record a new physical asset into the equipment register</p>
+    </div>
+    <a href="{% url 'dashboard:equipment' %}" class="btn-back">← Back to Equipment</a>
+</div>
+
+<!-- ── Form ──────────────────────────────────────────── -->
+<form method="post" action="{% url 'dashboard:create_equipment' %}">
+    {% csrf_token %}
+
+    <div class="grid-8-4">
+
+        <!-- Left Column -->
+        <div>
+
+            <!-- Basic Info -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header">
+                    <h6>Equipment Details</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Equipment Name <span class="required">*</span>
+                            </label>
+                            <input type="text" name="name" required
+                                   placeholder="e.g. MikroTik hAP ac2"
+                                   class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Equipment Type <span class="required">*</span>
+                            </label>
+                            <select name="equipment_type" required class="form-select">
+                                <option value="">— Select Type —</option>
+                                <option value="Router">Router</option>
+                                <option value="Access Point">Access Point</option>
+                                <option value="Switch">Switch</option>
+                                <option value="Cable">Cable</option>
+                                <option value="Server">Server</option>
+                                <option value="UPS">UPS</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Model</label>
+                            <input type="text" name="model"
+                                   placeholder="e.g. RB952Ui-5ac2nD"
+                                   class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Serial Number</label>
+                            <input type="text" name="serial_number"
+                                   placeholder="e.g. HF809X1234"
+                                   class="form-input">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Location / Assignment</label>
+                            <input type="text" name="location"
+                                   placeholder="e.g. Nakawa Branch, Server Room, Client Site"
+                                   class="form-input">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Notes</label>
+                            <textarea name="notes" rows="3"
+                                      placeholder="Any additional details, configuration notes, warranty info..."
+                                      class="form-textarea"></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Purchase Info -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header">
+                    <h6>Purchase Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label class="form-label">Purchase Date</label>
+                            <input type="date" name="purchase_date" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Purchase Price (UGX)</label>
+                            <input type="number" name="purchase_price"
+                                   placeholder="e.g. 350000"
+                                   min="0" step="1000"
+                                   class="form-input">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column -->
+        <div>
+
+            <!-- Status -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header">
+                    <h6>Status</h6>
+                </div>
+                <div class="card-body">
+                    <select name="status" class="form-select">
+                        <option value="available">Available</option>
+                        <option value="in_use">In Use</option>
+                        <option value="faulty">Faulty</option>
+                        <option value="retired">Retired</option>
+                    </select>
+                    <p class="form-hint mt-1">Set the current condition of this equipment.</p>
+                </div>
+            </div>
+
+            <!-- Save -->
+            <div class="dash-table">
+                <div class="card-body">
+                    <button type="submit" class="btn btn-primary w-full">
+                        <i class="bi bi-save"></i> Save Equipment
+                    </button>
+                    <a href="{% url 'dashboard:equipment' %}" class="cancel-link">Cancel</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+{% endblock %}

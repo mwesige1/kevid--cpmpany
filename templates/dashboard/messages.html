@@ -1,0 +1,164 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Messages{% endblock %}
+{% block page_title %}Messages{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Messages</h5>
+        <p>Send SMS and WhatsApp messages to your customers</p>
+    </div>
+    <a href="{% url 'dashboard:send_message' %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-send-fill"></i> Send Message
+    </a>
+</div>
+
+<!-- ── Summary Cards ─────────────────────────────────── -->
+<div class="stats-row mb-2">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-primary">
+            <i class="bi bi-envelope-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Total Sent</p>
+            <h4>{{ total_messages|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-warning">
+            <i class="bi bi-phone-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>SMS</p>
+            <h4>{{ sms_count|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-success">
+            <i class="bi bi-whatsapp"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>WhatsApp</p>
+            <h4>{{ whatsapp_count|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-danger">
+            <i class="bi bi-x-circle-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Failed</p>
+            <h4>{{ failed_count|default:"0" }}</h4>
+        </div>
+    </div>
+</div>
+
+<!-- ── Filter Tabs ────────────────────────────────────── -->
+<div class="tab-pills">
+    <a href="?" class="tab-pill {% if not channel_filter %}active{% endif %}">All</a>
+    <a href="?channel=SMS" class="tab-pill {% if channel_filter == 'SMS' %}active{% endif %}">SMS</a>
+    <a href="?channel=WhatsApp" class="tab-pill {% if channel_filter == 'WhatsApp' %}active{% endif %}">WhatsApp</a>
+</div>
+
+<!-- ── Messages Table ────────────────────────────────── -->
+<div class="dash-table messages-table">
+    <div class="dash-table-header">
+        <h6>Message History</h6>
+    </div>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-num">#</th>
+                    <th class="col-channel">Channel</th>
+                    <th class="col-recipient">Recipient</th>
+                    <th class="col-message">Message</th>
+                    <th class="col-status">Status</th>
+                    <th class="col-date">Sent At</th>
+                    <th class="col-action">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for message in messages %}
+                <tr>
+                    <td class="col-num text-muted" style="font-size:12px;">
+                        {{ forloop.counter }}
+                    </td>
+                    <td class="col-channel">
+                        {% if message.channel == 'SMS' %}
+                            <span class="badge badge-warning"><i class="bi bi-phone-fill"></i> SMS</span>
+                        {% else %}
+                            <span class="badge badge-success"><i class="bi bi-whatsapp"></i> WhatsApp</span>
+                        {% endif %}
+                    </td>
+                    <td class="col-recipient font-semibold">
+                        {{ message.phone_number|default:"—" }}
+                    </td>
+                    <td class="col-message">
+                        {{ message.message|truncatechars:80 }}
+                    </td>
+                    <td class="col-status">
+                        {% if message.status == 'sent' %}
+                            <span class="badge badge-success">Sent</span>
+                        {% else %}
+                            <span class="badge badge-failed">Failed</span>
+                        {% endif %}
+                    </td>
+                    <td class="col-date text-muted" style="font-size:12px;">
+                        {{ message.sent_at|date:"d M Y, H:i" }}
+                    </td>
+                    <td class="col-action">
+                        <form method="post"
+                              action="{% url 'dashboard:delete_message' message.id %}"
+                              id="del-msg-{{ message.id }}">
+                            {% csrf_token %}
+                            <div class="block-confirm" id="confirm-msg-{{ message.id }}">
+                                <button type="submit" class="btn-cut-yes">Yes</button>
+                                <button type="button"
+                                        onclick="cancelMsgDelete('{{ message.id }}')"
+                                        class="btn-cut-no">No</button>
+                            </div>
+                            <button type="button"
+                                    id="btn-msg-{{ message.id }}"
+                                    onclick="confirmMsgDelete('{{ message.id }}')"
+                                    class="btn-cut">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <i class="bi bi-chat-dots" style="display:block;"></i>
+                        No messages sent yet.<br>
+                        <a href="{% url 'dashboard:send_message' %}"
+                           style="color:var(--c-primary); font-weight:600;">
+                            Send your first message →
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function confirmMsgDelete(id) {
+    document.getElementById('btn-msg-' + id).style.display     = 'none';
+    document.getElementById('confirm-msg-' + id).style.display = 'flex';
+}
+function cancelMsgDelete(id) {
+    document.getElementById('confirm-msg-' + id).style.display = 'none';
+    document.getElementById('btn-msg-' + id).style.display     = 'inline-flex';
+}
+</script>
+{% endblock %}

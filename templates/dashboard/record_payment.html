@@ -1,0 +1,97 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Record Payment{% endblock %}
+{% block page_title %}Record Payment{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Record Manual Payment</h5>
+        <p>Record a walk-in or cash payment manually</p>
+    </div>
+    <a href="{% url 'dashboard:payments' %}" class="btn-back">← Back to Payments</a>
+</div>
+
+<!-- ── Form ──────────────────────────────────────────── -->
+<form method="post" action="{% url 'dashboard:record_payment' %}">
+    {% csrf_token %}
+
+    <div class="grid-8-4">
+
+        <!-- Left Column -->
+        <div>
+            <div class="dash-table">
+                <div class="dash-table-header">
+                    <h6>Payment Details</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Package <span class="required">*</span>
+                            </label>
+                            <select name="package" required class="form-select">
+                                <option value="">— Select Package —</option>
+                                {% for package in packages %}
+                                <option value="{{ package.id }}">
+                                    {{ package.name }} — UGX {{ package.price|floatformat:0 }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Amount (UGX) <span class="required">*</span>
+                            </label>
+                            <input type="number" name="amount" required
+                                   placeholder="e.g. 2000"
+                                   min="0" step="500" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Customer Phone</label>
+                            <input type="text" name="phone_number"
+                                   placeholder="e.g. 0771234567" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Payment Method</label>
+                            <select name="payment_method" class="form-select">
+                                <option value="cash">Cash</option>
+                                <option value="mtn">MTN MoMo</option>
+                                <option value="airtel">Airtel Money</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Notes</label>
+                            <textarea name="notes" rows="3"
+                                      placeholder="Any additional notes..."
+                                      class="form-textarea"></textarea>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div>
+            <div class="dash-table">
+                <div class="card-body">
+                    <button type="submit" class="btn btn-primary w-full">
+                        <i class="bi bi-save"></i> Record Payment
+                    </button>
+                    <a href="{% url 'dashboard:payments' %}" class="cancel-link">Cancel</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+{% endblock %}

@@ -1,0 +1,302 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}{{ router.identity }} — Router Detail{% endblock %}
+{% block page_title %}Router Detail{% endblock %}
+
+{% block content %}
+
+<!-- ── Header ────────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>{{ router.identity }}</h5>
+        <p><i class="bi bi-geo-alt-fill"></i> {{ router.location|default:"Location not set" }}</p>
+    </div>
+    <div class="btn-group">
+        <button onclick="refreshStats()" id="refreshBtn" class="btn-icon btn-icon-success">
+            <i class="bi bi-arrow-clockwise"></i> Refresh
+        </button>
+        <button onclick="rebootRouter()" class="btn-icon btn-icon-danger">
+            <i class="bi bi-power"></i> Reboot
+        </button>
+        <form method="post" action="{% url 'dashboard:provision_router' router.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-icon btn-icon-success">
+                <i class="bi bi-terminal"></i> Provision
+            </button>
+        </form>
+        <a href="{% url 'dashboard:edit_router' router.id %}" class="btn-icon btn-icon-warning">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+        <a href="{% url 'dashboard:routers' %}" class="btn btn-outline btn-sm">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+</div>
+
+<!-- ── Status Banner ─────────────────────────────────── -->
+<div class="status-banner {% if router.status == 'online' %}status-banner-online{% else %}status-banner-offline{% endif %}">
+    <span class="status-dot-lg"
+          style="background:{% if router.status == 'online' %}var(--c-success){% else %}var(--c-danger){% endif %};
+                 {% if router.status == 'online' %}animation:pulse 2s infinite;{% endif %}"></span>
+    <span class="font-bold" style="font-size:14px;
+          color:{% if router.status == 'online' %}var(--c-success){% else %}var(--c-danger){% endif %};">
+        {{ router.status|upper }}
+    </span>
+    <span class="text-muted" style="font-size:12px;">
+        Last seen: {{ router.last_seen|date:"d M Y, H:i"|default:"Never" }}
+    </span>
+    {% if router.wireguard_tunnel_ip %}
+    <span class="text-muted mobile-hide" style="font-size:12px; margin-left:auto;">
+        WireGuard: {{ router.wireguard_tunnel_ip }}
+    </span>
+    {% endif %}
+</div>
+
+<!-- ── Stats Cards ───────────────────────────────────── -->
+<div class="stats-row mb-2">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-primary">
+            <i class="bi bi-cpu"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>CPU Usage</p>
+            <h4 id="cpuStat">{{ router.cpu_display }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-warning">
+            <i class="bi bi-memory"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Memory Usage</p>
+            <h4 id="memoryStat">{{ router.memory_display }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-success">
+            <i class="bi bi-wifi"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Active Sessions</p>
+            <h4>{{ active_sessions|length }}</h4>
+            <small>Today: {{ today_sessions }}</small>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-purple">
+            <i class="bi bi-cash-stack"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Today's Revenue</p>
+            <h4>UGX {{ today_revenue|floatformat:0 }}</h4>
+            <small>Total: {{ total_sessions }} sessions</small>
+        </div>
+    </div>
+</div>
+
+<!-- ── Revenue Cards ─────────────────────────────────── -->
+<div class="card-grid mb-2">
+    <div class="dash-stat-card">
+        <div class="dash-stat-info">
+            <p>This Week</p>
+            <h4>UGX {{ week_revenue|floatformat:0 }}</h4>
+        </div>
+    </div>
+    <div class="dash-stat-card">
+        <div class="dash-stat-info">
+            <p>This Month</p>
+            <h4>UGX {{ month_revenue|floatformat:0 }}</h4>
+        </div>
+    </div>
+    <div class="dash-stat-card">
+        <div class="dash-stat-info">
+            <p>All Time Revenue</p>
+            <h4>UGX {{ total_revenue|floatformat:0 }}</h4>
+        </div>
+    </div>
+</div>
+
+<!-- ── Charts (hidden on mobile) ─────────────────────── -->
+<div class="grid-2 mb-2 mobile-hide">
+    <div class="card">
+        <h6 class="font-bold mb-2" style="color:var(--c-text);">Daily Revenue — Last 7 Days</h6>
+        <canvas id="revenueChart" height="200"></canvas>
+    </div>
+    <div class="card">
+        <h6 class="font-bold mb-2" style="color:var(--c-text);">Daily Sessions — Last 7 Days</h6>
+        <canvas id="sessionsChart" height="200"></canvas>
+    </div>
+</div>
+
+<!-- ── Router Configuration ───────────────────────────── -->
+<div class="card mb-2">
+    <h6 class="font-bold mb-2" style="color:var(--c-text);">Router Configuration</h6>
+    <div class="config-grid">
+        <div class="config-item">
+            <p class="config-label">IP ADDRESS</p>
+            <p class="config-value">{{ router.ip_address|default:"—" }}</p>
+        </div>
+        <div class="config-item">
+            <p class="config-label">GATEWAY IP</p>
+            <p class="config-value">{{ router.gateway_ip|default:"—" }}</p>
+        </div>
+        <div class="config-item">
+            <p class="config-label">HOTSPOT NETWORK</p>
+            <p class="config-value">{{ router.hotspot_network|default:"—" }}</p>
+        </div>
+        <div class="config-item">
+            <p class="config-label">DNS SERVERS</p>
+            <p class="config-value">{{ router.dns_servers|default:"—" }}</p>
+        </div>
+        <div class="config-item">
+            <p class="config-label">API PORT</p>
+            <p class="config-value">{{ router.api_port|default:"8728" }}</p>
+        </div>
+        <div class="config-item">
+            <p class="config-label">CONNECTION</p>
+            {% if router.connection_type == 'wireguard' %}
+                <span class="badge badge-purple">WireGuard</span>
+            {% else %}
+                <span class="badge badge-info">Direct API</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- ── Active Sessions Table ─────────────────────────── -->
+<div class="dash-table router-sessions">
+    <div class="dash-table-header">
+        <h6>Active Sessions</h6>
+        <span class="text-muted" style="font-size:12px;">
+            {{ active_sessions|length }} device{{ active_sessions|length|pluralize }} connected
+        </span>
+    </div>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-num">#</th>
+                    <th class="col-mac">MAC Address</th>
+                    <th class="col-phone">Phone</th>
+                    <th class="col-package">Package</th>
+                    <th class="col-started">Started</th>
+                    <th class="col-time">Time Remaining</th>
+                    <th class="col-ip">IP Address</th>
+                    <th class="col-action">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for session in active_sessions %}
+                <tr>
+                    <td class="col-num text-muted" style="font-size:12px;">{{ forloop.counter }}</td>
+                    <td class="col-mac" style="font-family:monospace; font-size:12px;">
+                        {{ session.device.mac_address }}
+                    </td>
+                    <td class="col-phone font-semibold">
+                        {{ session.device.phone_number|default:"—" }}
+                    </td>
+                    <td class="col-package">{{ session.package.name }}</td>
+                    <td class="col-started text-muted" style="font-size:12px;">
+                        {{ session.created_at|date:"d M, H:i" }}
+                    </td>
+                    <td class="col-time">
+                        <span class="countdown" data-expiry="{{ session.expiry_time|date:'c' }}">—</span>
+                    </td>
+                    <td class="col-ip text-muted" style="font-family:monospace; font-size:12px;">
+                        {{ session.ip_address|default:"—" }}
+                    </td>
+                    <td class="col-action">
+                        <form method="post"
+                              action="{% url 'dashboard:disconnect_session' session.id %}"
+                              onsubmit="return confirm('Disconnect this device?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-cut">
+                                <i class="bi bi-wifi-off"></i> Cut
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        <i class="bi bi-wifi" style="display:block;"></i>
+                        No active sessions on this router.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+var routerId    = {{ router.id }};
+var dayLabels   = {{ day_labels|safe }};
+var revenueData = {{ daily_revenue|safe }};
+var usersData   = {{ daily_users|safe }};
+
+new Chart(document.getElementById('revenueChart'), {
+    type: 'bar',
+    data: { labels: dayLabels, datasets: [{ label: 'Revenue (UGX)', data: revenueData, backgroundColor: 'rgba(37,99,235,0.75)', borderRadius: 6 }] },
+    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { callback: function(v) { return 'UGX ' + v.toLocaleString(); }, font: { family: 'Inter', size: 11 } } } } }
+});
+
+new Chart(document.getElementById('sessionsChart'), {
+    type: 'line',
+    data: { labels: dayLabels, datasets: [{ label: 'Sessions', data: usersData, backgroundColor: 'rgba(22,163,74,0.1)', borderColor: '#16a34a', borderWidth: 2, tension: 0.4, fill: true, pointBackgroundColor: '#16a34a' }] },
+    options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0, font: { family: 'Inter', size: 11 } } } } }
+});
+
+function updateCountdowns() {
+    document.querySelectorAll('.countdown').forEach(function(el) {
+        var expiry = new Date(el.dataset.expiry);
+        var diff = expiry - new Date();
+        if (diff <= 0) { el.textContent = 'Expired'; el.className = 'countdown expired'; return; }
+        var h = Math.floor(diff / 3600000);
+        var m = Math.floor((diff % 3600000) / 60000);
+        var s = Math.floor((diff % 60000) / 1000);
+        el.textContent = h > 0 ? h + 'h ' + m + 'm ' + s + 's' : m > 0 ? m + 'm ' + s + 's' : s + 's';
+        el.className = diff < 600000 ? 'countdown expiring' : 'countdown';
+    });
+}
+updateCountdowns();
+setInterval(updateCountdowns, 1000);
+
+function refreshStats() {
+    var btn = document.getElementById('refreshBtn');
+    btn.textContent = 'Refreshing...';
+    btn.disabled = true;
+    fetch('/network/router/' + routerId + '/refresh/')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.status === 'success') {
+            document.getElementById('cpuStat').textContent = data.cpu + '%';
+            document.getElementById('memoryStat').textContent = data.memory + '%';
+        }
+        btn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Refresh';
+        btn.disabled = false;
+    }).catch(function() { btn.innerHTML = '<i class="bi bi-arrow-clockwise"></i> Refresh'; btn.disabled = false; });
+}
+
+function rebootRouter() {
+    if (!confirm('Reboot {{ router.identity }}?\nAll connected customers will lose internet for ~30 seconds.')) return;
+    fetch('/network/router/' + routerId + '/reboot/', { method: 'POST', headers: { 'X-CSRFToken': getCookie('csrftoken') } })
+    .then(function(r) { return r.json(); })
+    .then(function(data) { alert(data.message); })
+    .catch(function() { alert('Network error.'); });
+}
+
+function getCookie(name) {
+    var val = null;
+    document.cookie.split(';').forEach(function(c) { c = c.trim(); if (c.startsWith(name + '=')) val = decodeURIComponent(c.slice(name.length + 1)); });
+    return val;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,412 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Overview{% endblock %}
+{% block page_title %}Overview{% endblock %}
+
+{% block content %}
+
+<!-- ── Greeting ───────────────────────────────────────── -->
+<div class="greeting-banner">
+    <div>
+        <p class="greeting-date">{% now "l, d F Y" %}</p>
+        <h4 class="greeting-title">
+            Good
+            {% now "H" as hr %}
+            {% if hr < "12" %}Morning
+            {% elif hr < "17" %}Afternoon
+            {% else %}Evening{% endif %},
+            {{ request.user.get_full_name|default:request.user.username }}! 👋
+        </h4>
+        <p class="greeting-sub">
+            Here's what's happening with your WiFi network today.
+        </p>
+    </div>
+    <div class="greeting-stat">
+        <p>Active Sessions</p>
+        <h2>{{ active_sessions|default:"0" }}</h2>
+    </div>
+</div>
+
+<!-- ── KPI Cards Row 1 ───────────────────────────────── -->
+<div class="card-grid mb-2">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-success">
+            <i class="bi bi-cash-coin"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Today's Revenue</p>
+            <h4>UGX {{ today_revenue|floatformat:0 }}</h4>
+            <small>{{ today_transactions }} transaction{{ today_transactions|pluralize }}</small>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-primary">
+            <i class="bi bi-graph-up-arrow"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>This Week</p>
+            <h4>UGX {{ week_revenue|floatformat:0 }}</h4>
+            <small>Last 7 days</small>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-warning">
+            <i class="bi bi-calendar-month"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>This Month</p>
+            <h4>UGX {{ month_revenue|floatformat:0 }}</h4>
+            <small>Last 30 days</small>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-purple">
+            <i class="bi bi-phone-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>MoMo Balance</p>
+            <h4>UGX {{ momo_balance|floatformat:0 }}</h4>
+            <small>Collected: {{ total_collected|floatformat:0 }}</small>
+        </div>
+    </div>
+</div>
+
+<!-- ── KPI Cards Row 2 ───────────────────────────────── -->
+<div class="card-grid mb-2">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-success">
+            <i class="bi bi-arrow-up-circle-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Month Profit</p>
+            <h4 class="{% if month_profit >= 0 %}text-success{% else %}text-danger{% endif %}">
+                UGX {{ month_profit|floatformat:0 }}
+            </h4>
+            <small>Expenses: {{ month_expenses|floatformat:0 }}</small>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-primary">
+            <i class="bi bi-people-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Total Customers</p>
+            <h4>{{ total_customers|default:"0" }}</h4>
+            <small>Devices: {{ total_devices }}</small>
+        </div>
+    </div>
+
+    <a href="{% url 'dashboard:routers' %}" class="dash-stat-card">
+        <div class="dash-stat-icon icon-danger">
+            <i class="bi bi-router-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Router Health</p>
+            <h4>{{ online_routers }}/{{ total_routers }}</h4>
+            <small>Online routers</small>
+        </div>
+    </a>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-success">
+            <i class="bi bi-box-seam-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Active Packages</p>
+            <h4>{{ active_packages|default:"0" }}</h4>
+            <small>Available to buy</small>
+        </div>
+    </div>
+</div>
+
+<!-- ── Recent Transactions ────────────────────────────── -->
+<div class="card mb-2">
+    <div class="section-header">
+        <h6>Recent Transactions</h6>
+        <a href="{% url 'dashboard:payments' %}">View All →</a>
+    </div>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Device</th>
+                    <th>Package</th>
+                    <th>Amount</th>
+                    <th>Provider</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in recent_orders %}
+                <tr>
+                    <td class="font-semibold" style="font-family:monospace; font-size:12px;">
+                        {{ order.device.mac_address|slice:"-8:" }}
+                    </td>
+                    <td>{{ order.package.name|default:"—" }}</td>
+                    <td class="font-bold text-success">
+                        UGX {{ order.amount|floatformat:0 }}
+                    </td>
+                    <td>
+                        {% if order.provider == 'mtn' %}
+                            <span class="badge badge-warning">MTN</span>
+                        {% elif order.provider == 'airtel' %}
+                            <span class="badge badge-danger">Airtel</span>
+                        {% else %}
+                            <span class="badge badge-muted">Walk-in</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if order.status == 'success' %}
+                            <span class="badge badge-success">Success</span>
+                        {% elif order.status == 'pending' %}
+                            <span class="badge badge-pending">Pending</span>
+                        {% else %}
+                            <span class="badge badge-failed">Failed</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-muted" style="font-size:12px;">
+                        {{ order.created_at|date:"d M Y, H:i" }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        No transactions yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ── Quick Stats Row ────────────────────────────────── -->
+<div class="card-grid mb-2">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-danger">
+            <i class="bi bi-ticket-perforated-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Vouchers Available</p>
+            <h4>{{ available_vouchers|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-primary">
+            <i class="bi bi-hdd-stack-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Equipment Assets</p>
+            <h4>{{ total_equipment|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-purple">
+            <i class="bi bi-funnel-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Active Leads</p>
+            <h4>{{ active_leads|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-success">
+            <i class="bi bi-cash-stack"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Total Expenses</p>
+            <h4>UGX {{ total_expenses|floatformat:0 }}</h4>
+        </div>
+    </div>
+</div>
+
+<!-- ── Active Sessions + Daily Sessions Chart ─────────── -->
+<div class="grid-2 mb-2">
+
+    <!-- Active Sessions Now -->
+    <div class="card">
+        <div class="section-header">
+            <h6>Active Sessions Now</h6>
+            <a href="{% url 'dashboard:active_sessions' %}">View All →</a>
+        </div>
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Device</th>
+                        <th>Package</th>
+                        <th class="text-right">Time Left</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for session in top_sessions %}
+                    <tr>
+                        <td class="text-muted">{{ forloop.counter }}</td>
+                        <td class="font-semibold">
+                            {{ session.device.mac_address|slice:"-8:" }}
+                        </td>
+                        <td>{{ session.package.name }}</td>
+                        <td class="text-right font-bold" style="color:var(--c-primary);">
+                            {{ session.time_remaining }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="empty-state">
+                            No active sessions right now.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Daily Sessions Chart -->
+    <div class="card">
+        <h6 class="font-bold mb-2" style="color:var(--c-text);">
+            Daily Sessions — Last 7 Days
+        </h6>
+        <canvas id="usersChart" height="130"></canvas>
+    </div>
+
+</div>
+
+<!-- ── Revenue Chart + Router Health ─────────────────── -->
+<div class="grid-8-4 mb-2">
+
+    <!-- Revenue Chart -->
+    <div class="card">
+        <div class="section-header">
+            <h6>Revenue — Last 7 Days</h6>
+            <span class="text-muted font-semibold" style="font-size:12px;">
+                UGX {{ week_revenue|floatformat:0 }} total
+            </span>
+        </div>
+        <canvas id="revenueChart" height="100"></canvas>
+    </div>
+
+    <!-- Router Health Detail -->
+    <div class="card">
+        <h6 class="font-bold mb-2" style="color:var(--c-text);">Router Health</h6>
+        {% for router in routers %}
+        <div class="router-item">
+            <div class="router-item-header">
+                <p>{{ router.identity|default:"Router" }}</p>
+                {% if router.status == 'online' %}
+                    <span class="badge badge-success">Online</span>
+                {% else %}
+                    <span class="badge badge-failed">Offline</span>
+                {% endif %}
+            </div>
+            <div class="router-meta">IP: {{ router.ip_address|default:"—" }}</div>
+            {% if router.last_seen %}
+            <div class="router-meta">Last seen: {{ router.last_seen|date:"d M, H:i" }}</div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="bi bi-router" style="display:block;"></i>
+            <p>No routers added yet.</p>
+            <a href="{% url 'dashboard:create_router' %}"
+               style="font-size:12px; color:var(--c-primary); font-weight:600;">
+                Add Router →
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+var dayLabels    = {{ day_labels|safe }};
+var dailyRevenue = {{ daily_revenue|safe }};
+var dailyUsers   = {{ daily_users|safe }};
+
+/* ── Revenue Chart ──────────────────────────── */
+var rCtx = document.getElementById('revenueChart').getContext('2d');
+new Chart(rCtx, {
+    type: 'line',
+    data: {
+        labels  : dayLabels,
+        datasets: [{
+            label          : 'Revenue (UGX)',
+            data           : dailyRevenue,
+            borderColor    : '#2563eb',
+            backgroundColor: 'rgba(37,99,235,0.08)',
+            borderWidth    : 2,
+            tension        : 0.4,
+            fill           : true,
+            pointBackgroundColor: '#2563eb',
+            pointRadius    : 4
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    font    : { family: 'Inter', size: 11 },
+                    callback: function(val) { return 'UGX ' + val.toLocaleString(); }
+                },
+                grid: { color: '#f3f4f6' }
+            },
+            x: {
+                ticks: { font: { family: 'Inter', size: 11 } },
+                grid : { display: false }
+            }
+        }
+    }
+});
+
+/* ── Daily Sessions Chart ───────────────────── */
+var uCtx = document.getElementById('usersChart').getContext('2d');
+new Chart(uCtx, {
+    type: 'bar',
+    data: {
+        labels  : dayLabels,
+        datasets: [{
+            label          : 'Sessions',
+            data           : dailyUsers,
+            backgroundColor: 'rgba(37,99,235,0.8)',
+            borderRadius   : 6
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { display: false } },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    font     : { family: 'Inter', size: 11 },
+                    precision: 0
+                },
+                grid: { color: '#f3f4f6' }
+            },
+            x: {
+                ticks: { font: { family: 'Inter', size: 11 } },
+                grid : { display: false }
+            }
+        }
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Devices{% endblock %}
+{% block page_title %}Devices{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Devices</h5>
+        <p>{{ devices.count }} unique device{{ devices.count|pluralize }} have connected to this network</p>
+    </div>
+</div>
+
+<!-- ── Devices Table ─────────────────────────────────── -->
+<div class="dash-table devices-table">
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-mac">MAC Address</th>
+                    <th class="col-phone">Phone Number</th>
+                    <th class="col-spent">Total Spent</th>
+                    <th class="col-sessions">Sessions</th>
+                    <th class="col-first-seen">First Seen</th>
+                    <th class="col-last-seen">Last Seen</th>
+                    <th class="col-status">Status</th>
+                    <th class="col-action">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device in devices %}
+                <tr>
+                    <td class="col-mac" style="font-family:monospace; font-size:12px;">
+                        {{ device.mac_address }}
+                    </td>
+
+                    <td class="col-phone font-semibold">
+                        {{ device.phone_number|default:"—" }}
+                    </td>
+
+                    <td class="col-spent font-bold text-success">
+                        {{ device.total_spent|floatformat:0 }} UGX
+                    </td>
+
+                    <td class="col-sessions font-semibold" style="color:var(--c-primary);">
+                        {{ device.session_count }}
+                    </td>
+
+                    <td class="col-first-seen text-muted" style="font-size:12px;">
+                        {{ device.first_seen|date:"d M Y, h:i A" }}
+                    </td>
+
+                    <td class="col-last-seen text-muted" style="font-size:12px;">
+                        {{ device.last_seen|date:"d M Y, h:i A" }}
+                    </td>
+
+                    <td class="col-status">
+                        {% if device.is_blocked %}
+                            <span class="badge badge-failed">Blocked</span>
+                        {% else %}
+                            <span class="badge badge-success">Allowed</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="col-action">
+                        <form method="post"
+                              action="{% url 'dashboard:block_device' device.id %}"
+                              id="block-form-{{ device.id }}">
+                            {% csrf_token %}
+                            <div class="block-confirm" id="confirm-block-{{ device.id }}">
+                                <button type="submit" class="btn-cut-yes">
+                                    <i class="bi bi-check-lg"></i> Yes
+                                </button>
+                                <button type="button"
+                                        onclick="cancelBlock('{{ device.id }}')"
+                                        class="btn-cut-no">
+                                    <i class="bi bi-x-lg"></i> No
+                                </button>
+                            </div>
+                            {% if device.is_blocked %}
+                            <button type="button"
+                                    id="btn-block-{{ device.id }}"
+                                    onclick="confirmBlock('{{ device.id }}')"
+                                    class="btn-unblock">
+                                <i class="bi bi-unlock"></i> Unblock
+                            </button>
+                            {% else %}
+                            <button type="button"
+                                    id="btn-block-{{ device.id }}"
+                                    onclick="confirmBlock('{{ device.id }}')"
+                                    class="btn-block">
+                                <i class="bi bi-ban"></i> Block
+                            </button>
+                            {% endif %}
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        <i class="bi bi-phone" style="display:block;"></i>
+                        No devices have connected yet
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function confirmBlock(id) {
+    document.getElementById('btn-block-' + id).style.display     = 'none';
+    document.getElementById('confirm-block-' + id).style.display = 'flex';
+}
+function cancelBlock(id) {
+    document.getElementById('confirm-block-' + id).style.display = 'none';
+    document.getElementById('btn-block-' + id).style.display     = 'inline-flex';
+}
+</script>
+{% endblock %}

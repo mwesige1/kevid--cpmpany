@@ -1,0 +1,206 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Edit Advertisement{% endblock %}
+{% block page_title %}Edit Advertisement{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Edit Advertisement</h5>
+        <p>Update advertisement details</p>
+    </div>
+    <a href="{% url 'dashboard:advertisements' %}" class="btn-back">← Back to Advertisements</a>
+</div>
+
+<!-- ── Form ──────────────────────────────────────────── -->
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="grid-8-4">
+
+        <!-- Left Column -->
+        <div>
+
+            <!-- Basic Info -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header">
+                    <h6>Basic Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+
+                        <div class="form-group full-width">
+                            <label class="form-label">
+                                Title <span class="required">*</span>
+                            </label>
+                            <input type="text" name="title"
+                                   value="{{ ad.title }}" required class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Ad Type</label>
+                            <select name="ad_type" class="form-select">
+                                <option value="banner" {% if ad.ad_type == 'banner' %}selected{% endif %}>Banner</option>
+                                <option value="text" {% if ad.ad_type == 'text' %}selected{% endif %}>Text</option>
+                                <option value="video" {% if ad.ad_type == 'video' %}selected{% endif %}>Video</option>
+                                <option value="popup" {% if ad.ad_type == 'popup' %}selected{% endif %}>Popup</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Display Duration (seconds)</label>
+                            <input type="number" name="display_duration"
+                                   value="{{ ad.display_duration }}"
+                                   min="1" max="120" class="form-input">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Description / Message</label>
+                            <textarea name="description" rows="3"
+                                      class="form-textarea">{{ ad.description }}</textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Click URL (optional)</label>
+                            <input type="url" name="click_url"
+                                   value="{{ ad.click_url }}"
+                                   placeholder="https://example.com" class="form-input">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Media File (image/video)</label>
+                            {% if ad.media_file %}
+                            <p class="text-muted" style="font-size:12px; margin-bottom:8px;">
+                                Current: <strong>{{ ad.media_file.name }}</strong>
+                            </p>
+                            {% endif %}
+                            <input type="file" name="media_file"
+                                   accept="image/*,video/*" class="form-input">
+                            <p class="form-hint">Leave empty to keep current file.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schedule -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header">
+                    <h6>Schedule</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" name="start_date"
+                                   value="{{ ad.start_date|date:'Y-m-d' }}" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">End Date</label>
+                            <input type="date" name="end_date"
+                                   value="{{ ad.end_date|date:'Y-m-d' }}" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Active From (time)</label>
+                            <input type="time" name="active_from"
+                                   value="{{ ad.active_from }}" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Active Until (time)</label>
+                            <input type="time" name="active_until"
+                                   value="{{ ad.active_until }}" class="form-input">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label" style="margin-bottom:10px;">Active Days</label>
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                {% for day in days %}
+                                <label class="form-check">
+                                    <input type="checkbox" name="active_days"
+                                           value="{{ day }}"
+                                           {% if day in ad.active_days %}checked{% endif %}>
+                                    {{ day }}
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column -->
+        <div>
+
+            <!-- Settings -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header">
+                    <h6>Settings</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">Priority (higher = shown first)</label>
+                        <input type="number" name="priority"
+                               value="{{ ad.priority }}"
+                               min="1" max="100" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Max Impressions (blank = unlimited)</label>
+                        <input type="number" name="max_impressions"
+                               value="{{ ad.max_impressions|default:'' }}"
+                               min="1" class="form-input">
+                    </div>
+
+                    <label class="form-check">
+                        <input type="checkbox" name="is_active"
+                               {% if ad.is_active %}checked{% endif %}>
+                        Active (show on portal)
+                    </label>
+                </div>
+            </div>
+
+            <!-- Current Stats -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header">
+                    <h6>Current Stats</h6>
+                </div>
+                <div class="card-body">
+                    <p style="font-size:13px; margin:0 0 8px;">
+                        <span class="font-bold">Impressions:</span>
+                        {{ ad.total_impressions|default:"0" }}
+                    </p>
+                    <p class="text-muted" style="font-size:12px; margin:0 0 8px;">
+                        <span class="font-bold">Created:</span>
+                        {{ ad.created_at|date:"d M Y, H:i" }}
+                    </p>
+                    <p class="text-muted" style="font-size:12px; margin:0;">
+                        <span class="font-bold">Last Updated:</span>
+                        {{ ad.updated_at|date:"d M Y, H:i" }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Save -->
+            <div class="dash-table">
+                <div class="card-body">
+                    <button type="submit" class="btn btn-primary w-full">
+                        <i class="bi bi-save"></i> Save Changes
+                    </button>
+                    <a href="{% url 'dashboard:advertisements' %}" class="cancel-link">Cancel</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+{% endblock %}

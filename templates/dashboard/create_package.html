@@ -1,0 +1,198 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Create Package{% endblock %}
+{% block page_title %}Create Package{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Create Package</h5>
+        <p>Configure a new WiFi package for customers</p>
+    </div>
+    <a href="{% url 'dashboard:packages' %}" class="btn-back">← Back to Packages</a>
+</div>
+
+<!-- ── Form ──────────────────────────────────────────── -->
+<form method="post" action="{% url 'dashboard:create_package' %}">
+    {% csrf_token %}
+
+    <!-- Basic Configuration -->
+    <div class="dash-table mb-2">
+        <div class="dash-table-header">
+            <h6>Basic Configuration</h6>
+        </div>
+        <div class="card-body">
+            <div class="form-grid">
+
+                <div class="form-group full-width">
+                    <label class="form-label">
+                        Package Name <span class="required">*</span>
+                    </label>
+                    <input type="text" name="name"
+                           placeholder="e.g. Daily Unlimited"
+                           required class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Duration <span class="required">*</span>
+                    </label>
+                    <input type="number" name="duration"
+                           value="1" min="1"
+                           required class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Duration Unit <span class="required">*</span>
+                    </label>
+                    <select name="duration_unit" class="form-select">
+                        <option value="minutes">Minutes</option>
+                        <option value="hours">Hours</option>
+                        <option value="days" selected>Days</option>
+                        <option value="weeks">Weeks</option>
+                        <option value="months">Months</option>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">Description</label>
+                    <textarea name="description" rows="2"
+                              placeholder="Optional description shown on portal"
+                              class="form-textarea"></textarea>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Speed & Performance -->
+    <div class="dash-table mb-2">
+        <div class="dash-table-header">
+            <h6>Speed & Performance</h6>
+        </div>
+        <div class="card-body">
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Upload Speed (Mbps) <span class="required">*</span>
+                    </label>
+                    <input type="number" name="upload_speed"
+                           value="10" min="1"
+                           required class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Download Speed (Mbps) <span class="required">*</span>
+                    </label>
+                    <input type="number" name="download_speed"
+                           value="10" min="1"
+                           required class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Data Limit (empty = unlimited)
+                    </label>
+                    <input type="number" name="data_limit"
+                           placeholder="e.g. 5" step="0.1"
+                           class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Data Unit</label>
+                    <select name="data_unit" class="form-select">
+                        <option value="GB" selected>GB</option>
+                        <option value="MB">MB</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing & Devices -->
+    <div class="dash-table mb-2">
+        <div class="dash-table-header">
+            <h6>Pricing & Devices</h6>
+        </div>
+        <div class="card-body">
+            <div class="form-grid-3">
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Price (UGX) <span class="required">*</span>
+                    </label>
+                    <input type="number" name="price"
+                           value="0" min="0"
+                           required class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Device Limit</label>
+                    <input type="number" name="device_limit"
+                           value="1" min="1"
+                           class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Sort Order</label>
+                    <input type="number" name="display_order"
+                           value="0" min="0"
+                           class="form-input">
+                </div>
+
+            </div>
+
+            <div class="form-group mt-2">
+                <label class="form-check">
+                    <input type="checkbox" name="is_free_trial">
+                    Free Trial Package (price set to 0)
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Availability -->
+    <div class="dash-table mb-2">
+        <div class="dash-table-header">
+            <h6>Availability & Visibility</h6>
+        </div>
+        <div class="card-body">
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="active">Active — Visible on portal</option>
+                        <option value="hidden">Hidden — Not on portal but vouchers work</option>
+                        <option value="disabled">Disabled — Completely off</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-check" style="margin-top:24px;">
+                        <input type="checkbox" name="is_featured">
+                        Featured Package (shows "Popular" badge)
+                    </label>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="btn-group">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-box-seam-fill"></i> Create Package
+        </button>
+        <a href="{% url 'dashboard:packages' %}" class="btn btn-outline">Cancel</a>
+    </div>
+
+</form>
+
+{% endblock %}

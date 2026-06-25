@@ -1,0 +1,107 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Create Voucher Agent{% endblock %}
+{% block page_title %}Create Voucher Agent{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Create Voucher Agent</h5>
+        <p>Register a new reseller agent</p>
+    </div>
+    <a href="{% url 'dashboard:voucher_agents' %}" class="btn-back">← Back to Agents</a>
+</div>
+
+<!-- ── Form ──────────────────────────────────────────── -->
+<form method="post" action="{% url 'dashboard:create_voucher_agent' %}">
+    {% csrf_token %}
+
+    <!-- Agent Information -->
+    <div class="dash-table mb-2">
+        <div class="dash-table-header">
+            <h6>Agent Information</h6>
+        </div>
+        <div class="card-body">
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Agent Name <span class="required">*</span>
+                    </label>
+                    <input type="text" name="name"
+                           placeholder="e.g. John Okello"
+                           required class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" name="phone"
+                           placeholder="e.g. 0771234567"
+                           class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Location (Area or Shop)</label>
+                    <input type="text" name="location"
+                           placeholder="e.g. Ggaba Road, Shop 12"
+                           class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Commission Configuration -->
+    <div class="dash-table mb-2">
+        <div class="dash-table-header">
+            <h6>Commission Configuration</h6>
+        </div>
+        <div class="card-body">
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label class="form-label">Commission Type</label>
+                    <select name="commission_type" class="form-select">
+                        <option value="percentage">Percentage (%)</option>
+                        <option value="fixed">Fixed Amount (UGX)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Commission Value</label>
+                    <input type="number" name="commission_value"
+                           value="0" min="0" step="0.01"
+                           class="form-input">
+                    <p class="form-hint">Enter % value or fixed UGX amount per sale</p>
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-label">Notes</label>
+                    <textarea name="notes" rows="3"
+                              placeholder="Additional notes about this agent..."
+                              class="form-textarea"></textarea>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="btn-group">
+        <button type="submit" class="btn btn-primary">Create Agent</button>
+        <a href="{% url 'dashboard:voucher_agents' %}" class="btn btn-outline">Cancel</a>
+    </div>
+
+</form>
+
+{% endblock %}

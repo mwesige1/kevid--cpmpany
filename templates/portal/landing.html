@@ -1,0 +1,737 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+
+{% block title %}{{ settings.business_name|default:"Kevid Tech" }}{% endblock %}
+
+{% block content %}
+
+<div class="bg-canvas"></div>
+<div class="bg-grid"></div>
+
+<div class="page">
+
+  <!-- ╔══════════ HEADER ══════════╗ -->
+  <header class="app-header">
+    <div class="logo-row">
+      <div class="wifi-bars">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div class="biz-name">{{ settings.business_name|default:"KEVID TECH CO.LTD" }}</div>
+    </div>
+    <div class="ad-strip">
+      <span class="ad-strip-inner">
+        {% if active_ad %}
+          ✧ {{ active_ad.title }} — {{ active_ad.description }} ✧
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          ✧ {{ active_ad.title }} — {{ active_ad.description }} ✧
+        {% else %}
+          ✧ Welcome — Fast &amp; Reliable WiFi Available 24/7 ✧
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          ✧ Connect now and enjoy unlimited internet access ✧
+        {% endif %}
+      </span>
+    </div>
+  </header>
+
+  <!-- ╔══════════ MAIN ══════════╗ -->
+  <main class="main-content">
+
+    <!-- TABS -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('buy',this)">💎 Buy Data</button>
+      <button class="tab-btn"        onclick="switchTab('buyvoucher',this)">🎟️ Buy Voucher</button>
+    </div>
+
+    <!-- ── TAB 1: BUY DATA ── -->
+    <div class="tab-panel active" id="panel-buy">
+      <div class="tv-notice">
+        <span>📺</span>
+        <span><strong>Smart TV?</strong> If login page doesn't appear, visit
+          <a href="http://neverssl.com" target="_blank">neverssl.com</a></span>
+      </div>
+
+  <div class="quick-voucher-row">
+  <input type="text" class="quick-voucher-input" id="quickVoucherInput"
+         placeholder="Enter voucher code"
+         maxlength="20" autocomplete="off"
+         oninput="formatVoucherInput(this)">
+  <button type="button" class="quick-voucher-btn" onclick="quickRedeemVoucher()">Enter</button>
+</div>
+      <span class="sec-label">⚡ Choose your plan &amp; connect instantly</span>
+
+      <div class="pkg-list">
+        {% for package in packages %}
+        <div class="pkg-row {% if package.is_featured %}featured{% endif %}"
+             onclick="openDirectPurchaseModal(
+               '{{ package.name }}',
+               '{{ package.duration }} {{ package.duration_unit }}',
+               '{{ package.price|floatformat:0 }}',
+               '{{ package.id }}',
+               '{{ package.is_free_trial|lower }}'
+             )">
+          <div class="pkg-left">
+            <div class="pkg-name">{{ package.name }}</div>
+            <div class="pkg-dur">{{ package.duration }} {{ package.duration_unit }}</div>
+          </div>
+          {% if package.is_free_trial %}
+            <div class="pkg-price free">FREE</div>
+            <button class="pkg-btn free-btn" type="button">GET FREE</button>
+          {% else %}
+            <div class="pkg-price">UGX {{ package.price|floatformat:0 }}</div>
+            <button class="pkg-btn" type="button">BUY</button>
+          {% endif %}
+        </div>
+        {% empty %}
+        <div style="padding:36px;text-align:center;color:var(--txt-muted);font-size:.85rem;">
+          No packages available right now.
+        </div>
+        {% endfor %}
+      </div>
+      <p class="pkg-hint">💳 Pay via Mobile Money and get connected instantly</p>
+    </div>
+
+    
+    <!-- ── TAB 3: BUY VOUCHER ── -->
+    <div class="tab-panel" id="panel-buyvoucher">
+      <div class="tv-notice">
+        <span>📺</span>
+        <span><strong>Smart TV?</strong> Open TV browser and visit
+          <a href="http://neverssl.com" target="_blank">neverssl.com</a></span>
+      </div>
+      <span class="sec-label">🛒 Buy a voucher code via SMS</span>
+
+      <div class="pkg-list">
+        {% for package in packages %}
+        <div class="pkg-row {% if package.is_featured %}featured{% endif %}"
+             onclick="openVoucherPurchaseModal(
+               '{{ package.name }}',
+               '{{ package.duration }} {{ package.duration_unit }}',
+               '{{ package.price|floatformat:0 }}',
+               '{{ package.id }}'
+             )">
+          <div class="pkg-left">
+            <div class="pkg-name">{{ package.name }}</div>
+            <div class="pkg-dur">{{ package.duration }} {{ package.duration_unit }}</div>
+          </div>
+          {% if package.is_free_trial %}
+            <div class="pkg-price free">FREE</div>
+          {% else %}
+            <div class="pkg-price">UGX {{ package.price|floatformat:0 }}</div>
+          {% endif %}
+          <button class="pkg-btn" type="button">BUY</button>
+        </div>
+        {% empty %}
+        <div style="padding:36px;text-align:center;color:var(--txt-muted);font-size:.85rem;">
+          No packages available right now.
+        </div>
+        {% endfor %}
+      </div>
+      <p class="pkg-hint">💳 Buy voucher → Get code via SMS → Use in Voucher tab</p>
+    </div>
+
+    <!-- Device info -->
+    <div class="device-row">
+      <span>🌐 IP: {{ ip_address|default:"—" }}</span>
+      <span>🖧 MAC: {{ mac_address|default:"—" }}</span>
+    </div>
+
+  </main>
+
+  <!-- ╔══════════ FOOTER ══════════╗ -->
+  <footer class="app-footer">
+    <div class="f-support">
+      <span>📞 Need help?</span>
+      <a href="tel:+256773015116" class="f-phone">+256 773 015 116</a>
+    </div>
+    <div class="f-powered">
+      🔒 Secure connection · Developed by @Eng.patrick
+    </div>
+  </footer>
+
+</div>
+
+
+<!-- ╔═════════════════════════════════════════
+     MODAL: Direct Payment (Buy Data)
+═════════════════════════════════════════╗ -->
+<div class="modal-overlay" id="directModal" onclick="closeDirectModalOutside(event)">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <button class="sheet-close" onclick="closeDirectModal()">✕</button>
+
+    <div class="sheet-title">💰 Pay &amp; Connect Instantly</div>
+
+    <div class="pkg-summary">
+      <div class="pkg-cell">
+        <div class="pkg-cell-lbl">Package</div>
+        <div class="pkg-cell-val" id="directModalPkg">—</div>
+      </div>
+      <div class="pkg-cell">
+        <div class="pkg-cell-lbl">Validity</div>
+        <div class="pkg-cell-val" id="directModalValidity">—</div>
+      </div>
+      <div class="pkg-cell">
+        <div class="pkg-cell-lbl">Price</div>
+        <div class="pkg-cell-val pv" id="directModalPrice">—</div>
+      </div>
+    </div>
+
+    <span class="sec-label" style="padding:0;margin-bottom:10px;">💰 Select Payment Method</span>
+    <div class="providers">
+      <div class="prov-btn prov-mtn sel" id="directMtnBtn" onclick="selectDirectProvider('mtn')">
+        <img src="{% static 'images/mtn.png' %}" alt="MTN">
+        <span class="prov-name">MTN MoMo</span>
+      </div>
+      <div class="prov-btn prov-air" id="directAirtelBtn" onclick="selectDirectProvider('airtel')">
+        <img src="{% static 'images/airtel.png' %}" alt="Airtel">
+        <span class="prov-name">Airtel Money</span>
+      </div>
+    </div>
+
+    <span class="sec-label modal-phone-label" style="padding:0;margin-bottom:10px;">📱 Phone Number</span>
+    <div class="phone-row">
+      <span class="phone-prefix">🇺🇬</span>
+      <input type="tel" class="phone-input" id="directPhone"
+             placeholder="0771234567" maxlength="10" inputmode="numeric">
+    </div>
+
+    <button type="button" class="sheet-action" onclick="processDirectPayment()">
+      <span id="directPayBtnText">💸 Pay &amp; Connect</span>
+      <div class="spin" id="directSpinner"></div>
+    </button>
+    <div id="directResult"></div>
+  </div>
+</div>
+
+
+<!-- ╔═════════════════════════════════════════
+     MODAL: Buy Voucher
+═════════════════════════════════════════╗ -->
+<div class="modal-overlay" id="voucherModal" onclick="closeVoucherModalOutside(event)">
+  <div class="modal-sheet">
+    <div class="sheet-handle"></div>
+    <button class="sheet-close" onclick="closeVoucherModal()">✕</button>
+
+    <div class="sheet-title">🛒 Buy Voucher Code</div>
+
+    <div class="pkg-summary">
+      <div class="pkg-cell">
+        <div class="pkg-cell-lbl">Package</div>
+        <div class="pkg-cell-val" id="voucherModalPkg">—</div>
+      </div>
+      <div class="pkg-cell">
+        <div class="pkg-cell-lbl">Validity</div>
+        <div class="pkg-cell-val" id="voucherModalValidity">—</div>
+      </div>
+      <div class="pkg-cell">
+        <div class="pkg-cell-lbl">Price</div>
+        <div class="pkg-cell-val pv" id="voucherModalPrice">—</div>
+      </div>
+    </div>
+
+    <span class="sec-label" style="padding:0;margin-bottom:10px;">💰 Select Payment Method</span>
+    <div class="providers">
+      <div class="prov-btn prov-mtn sel" id="voucherMtnBtn" onclick="selectVoucherProvider('mtn')">
+        <img src="{% static 'images/mtn.png' %}" alt="MTN">
+        <span class="prov-name">MTN MoMo</span>
+      </div>
+      <div class="prov-btn prov-air" id="voucherAirtelBtn" onclick="selectVoucherProvider('airtel')">
+        <img src="{% static 'images/airtel.png' %}" alt="Airtel">
+        <span class="prov-name">Airtel Money</span>
+      </div>
+    </div>
+
+    <span class="sec-label" style="padding:0;margin-bottom:10px;">📱 Phone Number</span>
+    <div class="phone-row">
+      <span class="phone-prefix">🇺🇬</span>
+      <input type="tel" class="phone-input" id="voucherPhone"
+             placeholder="0771234567" maxlength="10" inputmode="numeric">
+    </div>
+
+    <button type="button" class="sheet-action" onclick="processVoucherPurchase()">
+      <span id="voucherPayBtnText">💸 Buy Voucher</span>
+      <div class="spin" id="voucherSpinner"></div>
+    </button>
+    <div id="voucherResult"></div>
+  </div>
+</div>
+
+
+<!-- ── Floating WhatsApp Button ── -->
+<a href="https://wa.me/256773015116?text=Hello%2C%20I%20need%20help%20with%20the%20WiFi."
+   target="_blank" class="wa-float">
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="#fff">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+</a>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  var selectedDirectProvider  = 'mtn';
+  var selectedVoucherProvider = 'mtn';
+  var currentDirectPackageId  = null;
+  var currentVoucherPackageId = null;
+
+  /* ── Tabs ── */
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('panel-' + tab).classList.add('active');
+  }
+
+  /* ── Voucher input formatter ── */
+  function formatVoucherInput(input) {
+    var v = input.value.replace(/[^A-Za-z0-9]/g,'').toUpperCase();
+    if (v.length > 4)  v = v.slice(0,4)  + '-' + v.slice(4);
+    if (v.length > 9)  v = v.slice(0,9)  + '-' + v.slice(9);
+    if (v.length > 14) v = v.slice(0,14) + '-' + v.slice(14);
+    input.value = v;
+  }
+
+  /* ── MODAL: Direct Purchase ── */
+  function openDirectPurchaseModal(name, validity, price, packageId, isFreeStr) {
+    currentDirectPackageId = packageId;
+    var isFree = isFreeStr === 'true';
+
+    document.getElementById('directModalPkg').textContent      = name;
+    document.getElementById('directModalValidity').textContent = validity;
+    document.getElementById('directModalPrice').textContent    = isFree ? 'FREE' : 'UGX ' + price;
+    document.getElementById('directPhone').value               = '';
+    document.getElementById('directResult').innerHTML          = '';
+
+    var providersEl  = document.querySelector('#directModal .providers');
+    var phoneRowEl   = document.getElementById('directPhone').closest('.phone-row');
+    var phoneLabelEl = document.querySelector('.modal-phone-label');
+
+    if (isFree) {
+      providersEl.style.display                               = 'none';
+      phoneRowEl.style.display                                = 'none';
+      if (phoneLabelEl) phoneLabelEl.style.display            = 'none';
+      document.getElementById('directPayBtnText').textContent = '🎁 Activate Free Trial';
+    } else {
+      providersEl.style.display                               = 'flex';
+      phoneRowEl.style.display                                = 'flex';
+      if (phoneLabelEl) phoneLabelEl.style.display            = 'block';
+      document.getElementById('directPayBtnText').textContent = '💸 Pay & Connect';
+    }
+    selectDirectProvider('mtn');
+    document.getElementById('directModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function selectDirectProvider(provider) {
+    selectedDirectProvider = provider;
+    document.getElementById('directMtnBtn').classList.toggle('sel',    provider === 'mtn');
+    document.getElementById('directAirtelBtn').classList.toggle('sel', provider === 'airtel');
+  }
+
+  function processDirectPayment() {
+    var priceEl = document.getElementById('directModalPrice').textContent;
+    var isFree  = priceEl === 'FREE';
+    var mac     = '{{ mac_address }}';
+
+    if (!isFree) {
+      var phone = document.getElementById('directPhone').value.trim();
+      if (!/^0[0-9]{9}$/.test(phone)) {
+        shakeEl('directPhone');
+        showToast('❌ Enter a valid 10-digit number starting with 0');
+        return;
+      }
+    }
+
+    var btnTxt  = document.getElementById('directPayBtnText');
+    var spinner = document.getElementById('directSpinner');
+    btnTxt.textContent    = 'Processing...';
+    spinner.style.display = 'block';
+
+    var phone = isFree ? '0000000000' : document.getElementById('directPhone').value.trim();
+
+    fetch('https://kevidtechhotspot.com/payments/initiate/', {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+      body: JSON.stringify({
+        package_id  : currentDirectPackageId,
+        phone_number: phone,
+        provider    : isFree ? 'free' : selectedDirectProvider,
+        mac_address : mac,
+        ip_address  : '{{ ip_address }}',
+        is_free     : isFree,
+        router_id   : '{{ router_id }}'
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      btnTxt.textContent    = isFree ? '🎁 Activate Free Trial' : '💸 Pay & Connect';
+      spinner.style.display = 'none';
+
+      if (data.status === 'pending' || data.status === 'success') {
+        if (isFree || data.status === 'success') {
+          document.getElementById('directResult').innerHTML =
+            '<div class="r-ok"><div class="ico">✅</div><div class="msg">Connected!</div><div class="sub">Verifying internet connection...</div></div>';
+
+          setTimeout(function() {
+            var img = new Image();
+            img.onload  = function() { window.location.href = 'https://kevidtechhotspot.com/connected/?mac=' + mac; };
+            img.onerror = function() { window.location.href = 'https://kevidtechhotspot.com/connected/?mac=' + mac; };
+            img.src = 'http://connectivitycheck.gstatic.com/generate_204?t=' + Date.now();
+
+            setTimeout(function() {
+              window.location.href = 'https://kevidtechhotspot.com/connected/?mac=' + mac;
+            }, 1500);
+          }, 1000);
+
+        } else {
+          document.getElementById('directResult').innerHTML =
+            '<div class="r-info"><div>📱</div><strong>Check Your Phone</strong>Enter your PIN to confirm payment</div>';
+          if (data.order_id) pollDirectStatus(data.order_id);
+        }
+      } else {
+        document.getElementById('directResult').innerHTML =
+          '<div class="r-err">❌ ' + (data.message || 'Failed. Please try again.') + '</div>';
+      }
+    })
+    .catch(function() {
+      btnTxt.textContent    = isFree ? '🎁 Activate Free Trial' : '💸 Pay & Connect';
+      spinner.style.display = 'none';
+      showToast('❌ Network error. Please try again.');
+    });
+  }
+
+  function pollDirectStatus(orderId) {
+    var mac = '{{ mac_address }}';
+    var iv  = setInterval(function() {
+      fetch('https://kevidtechhotspot.com/payments/status/' + orderId + '/')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        
+        if (data.status === 'success') {
+            clearInterval(iv);
+            document.getElementById('directResult').innerHTML =
+              '<div class="r-ok"><div class="ico">✅</div><div class="msg">Connected Successfully!</div><div class="sub">Verifying internet connection...</div></div>';
+            showToast('✅ Connected! Enjoy your internet.');
+
+            // Trigger OS-level connectivity re-check so the captive
+            // portal popup auto-closes instead of staying stuck.
+            // Android checks generate_204, iOS/macOS checks hotspot-detect.html
+            setTimeout(function() {
+              var img = new Image();
+              img.onload  = function() { window.location.href = 'https://kevidtechhotspot.com/connected/?mac=' + mac; };
+              img.onerror = function() { window.location.href = 'https://kevidtechhotspot.com/connected/?mac=' + mac; };
+              img.src = 'http://connectivitycheck.gstatic.com/generate_204?t=' + Date.now();
+
+              // Fallback redirect regardless, in case image check hangs
+              setTimeout(function() {
+                window.location.href = 'https://kevidtechhotspot.com/connected/?mac=' + mac;
+              }, 1500);
+            }, 1000);
+
+        } else if (data.status === 'failed') {
+          clearInterval(iv);
+          document.getElementById('directResult').innerHTML =
+            '<div class="r-err">❌ Payment failed. Please try again.</div>';
+        }
+      });
+    }, 3000);
+    setTimeout(function() { clearInterval(iv); }, 45000);
+  }
+
+  function closeDirectModal()         { document.getElementById('directModal').classList.remove('open'); document.body.style.overflow = ''; }
+  function closeDirectModalOutside(e) { if (e.target === document.getElementById('directModal')) closeDirectModal(); }
+
+  /* ── MODAL: Voucher Purchase ── */
+  function openVoucherPurchaseModal(name, validity, price, packageId) {
+    currentVoucherPackageId = packageId;
+    document.getElementById('voucherModalPkg').textContent      = name;
+    document.getElementById('voucherModalValidity').textContent = validity;
+    document.getElementById('voucherModalPrice').textContent    = 'UGX ' + price;
+    document.getElementById('voucherPhone').value               = '';
+    document.getElementById('voucherResult').innerHTML          = '';
+    selectVoucherProvider('mtn');
+    document.getElementById('voucherModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function selectVoucherProvider(provider) {
+    selectedVoucherProvider = provider;
+    document.getElementById('voucherMtnBtn').classList.toggle('sel',    provider === 'mtn');
+    document.getElementById('voucherAirtelBtn').classList.toggle('sel', provider === 'airtel');
+  }
+
+  function processVoucherPurchase() {
+    var phone = document.getElementById('voucherPhone').value.trim();
+    if (!/^0[0-9]{9}$/.test(phone)) {
+      shakeEl('voucherPhone');
+      showToast('❌ Enter a valid 10-digit number starting with 0');
+      return;
+    }
+
+    var btnTxt  = document.getElementById('voucherPayBtnText');
+    var spinner = document.getElementById('voucherSpinner');
+    btnTxt.textContent    = 'Processing...';
+    spinner.style.display = 'block';
+
+    fetch('https://kevidtechhotspot.com/payments/buy-voucher/', {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+      body: JSON.stringify({
+        package_id  : currentVoucherPackageId,
+        phone_number: phone,
+        provider    : selectedVoucherProvider,
+        router_id   : '{{ router_id }}'
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      btnTxt.textContent    = '💸 Buy Voucher';
+      spinner.style.display = 'none';
+
+      if (data.status === 'pending' && data.order_id) {
+        pollVoucherStatus(data.order_id, phone);
+      } else {
+        document.getElementById('voucherResult').innerHTML =
+          '<div class="r-err">❌ ' + (data.message || 'Purchase failed. Please try again.') + '</div>';
+      }
+    })
+    .catch(function() {
+      btnTxt.textContent    = '💸 Buy Voucher';
+      spinner.style.display = 'none';
+      showToast('❌ Network error. Please try again.');
+    });
+  }
+
+  function pollVoucherStatus(orderId, phone) {
+    document.getElementById('voucherResult').innerHTML =
+      '<div class="r-info"><div>📱</div><strong>Check Your Phone</strong>Enter your PIN to confirm payment</div>';
+
+    var iv = setInterval(function() {
+      fetch('https://kevidtechhotspot.com/payments/buy-voucher/status/' + orderId + '/')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.status === 'success') {
+          clearInterval(iv);
+
+          document.querySelector('#voucherModal .pkg-summary').style.display  = 'none';
+          document.querySelector('#voucherModal .providers').style.display    = 'none';
+          document.querySelector('#voucherModal .phone-row').style.display    = 'none';
+          document.querySelector('#voucherModal .sheet-action').style.display = 'none';
+          document.querySelectorAll('#voucherModal .sec-label').forEach(function(el) { el.style.display = 'none'; });
+
+          document.getElementById('voucherResult').innerHTML =
+            '<div style="text-align:center; padding:10px 0;">' +
+              '<div style="font-size:2rem; margin-bottom:10px;">🎟️</div>' +
+              '<div style="font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.14em; color:var(--txt-muted); margin-bottom:12px;">Your Voucher Code</div>' +
+              '<input id="voucherCodeToCopy" type="text" value="' + data.voucher_code + '" readonly style="position:absolute; opacity:0; pointer-events:none; width:1px; height:1px;">' +
+              '<div style="display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:16px; background:rgba(245,166,35,0.08); border:1.5px solid rgba(245,166,35,0.3); border-radius:16px; padding:18px 16px;">' +
+                '<span style="font-family:\'Syne\',sans-serif; font-size:1.8rem; font-weight:800; color:var(--gold); letter-spacing:6px;">' + data.voucher_code + '</span>' +
+                '<button onclick="copyVoucherCode(\'' + data.voucher_code + '\')" id="copyBtnText" title="Copy code" style="background:rgba(245,166,35,0.15); border:1.5px solid rgba(245,166,35,0.3); border-radius:10px; cursor:pointer; width:40px; height:40px; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:1.1rem;">📋</button>' +
+              '</div>' +
+              '<div style="font-size:.75rem; color:var(--txt-muted); line-height:1.6; margin-bottom:14px;">Paste this code in the Voucher tab to connect.</div>' +
+              '<button onclick="goToVoucherTab()" style="width:100%; height:52px; background:linear-gradient(135deg, var(--gold), var(--gold-dark)); border-radius:60px; border:none; cursor:pointer; font-family:\'Syne\',sans-serif; font-size:.95rem; font-weight:800; color:var(--navy-deep); display:flex; align-items:center; justify-content:center; gap:8px;">🎟️ Use Voucher</button>' +
+            '</div>';
+          showToast('🎟️ Code: ' + data.voucher_code);
+
+        } else if (data.status === 'failed') {
+          clearInterval(iv);
+          document.getElementById('voucherResult').innerHTML =
+            '<div class="r-err">❌ Payment failed. Please try again.</div>';
+        }
+      })
+      .catch(function() {});
+    }, 3000);
+    setTimeout(function() { clearInterval(iv); }, 45000);
+  }
+
+  function copyVoucherCode(code) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(code).then(function() {
+        setCopied();
+      }).catch(function() {
+        mobileCopy(code);
+      });
+    } else {
+      mobileCopy(code);
+    }
+  }
+
+  function mobileCopy(code) {
+    var el = document.getElementById('voucherCodeToCopy');
+    if (!el) return;
+    el.style.opacity       = '1';
+    el.style.position      = 'fixed';
+    el.style.top           = '50%';
+    el.style.left          = '50%';
+    el.style.width         = '200px';
+    el.style.height        = '30px';
+    el.style.pointerEvents = 'auto';
+    el.focus();
+    el.select();
+    el.setSelectionRange(0, 99999);
+    try {
+      document.execCommand('copy');
+      setCopied();
+    } catch(e) {
+      showToast('📋 Long-press the code to copy manually.');
+    }
+    el.style.opacity       = '0';
+    el.style.pointerEvents = 'none';
+    el.style.position      = 'absolute';
+    el.style.width         = '1px';
+    el.style.height        = '1px';
+  }
+
+  function setCopied() {
+    var btn = document.getElementById('copyBtnText');
+    if (btn) btn.textContent = '✅';
+    showToast('✅ Code copied!');
+    setTimeout(function() {
+      var btn = document.getElementById('copyBtnText');
+      if (btn) btn.textContent = '📋';
+    }, 2500);
+  }
+
+  function closeVoucherModal()         { document.getElementById('voucherModal').classList.remove('open'); document.body.style.overflow = ''; }
+  function closeVoucherModalOutside(e) { if (e.target === document.getElementById('voucherModal')) closeVoucherModal(); }
+  function goToVoucherTab() {
+  closeVoucherModal();
+  var buyDataBtn = document.querySelectorAll('.tab-btn')[0];
+  switchTab('buy', buyDataBtn);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(function() {
+    document.getElementById('quickVoucherInput').focus();
+  }, 300);
+  }
+  /* ── Quick redeem from Buy Data tab ── */
+function quickRedeemVoucher() {
+  var input = document.getElementById('quickVoucherInput');
+  var code  = input.value.trim();
+  if (!code) { showToast('❌ Please enter a voucher code.'); return; }
+
+  var btn = document.querySelector('.quick-voucher-btn');
+  btn.textContent = '...';
+
+  fetch('https://kevidtechhotspot.com/payments/redeem-voucher/', {
+    method : 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+    body: JSON.stringify({
+      voucher_code: code.replace(/-/g,''),
+      mac_address : '{{ mac_address }}',
+      ip_address  : '{{ ip_address }}',
+      router_id   : '{{ router_id }}'
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    btn.textContent = 'Enter';
+    if (data.status === 'success') {
+      showToast('✅ Connected! Verifying...');
+      setTimeout(function() {
+        var img = new Image();
+        img.onload  = function() { window.location.href = '/connected/?mac={{ mac_address }}'; };
+        img.onerror = function() { window.location.href = '/connected/?mac={{ mac_address }}'; };
+        img.src = 'http://connectivitycheck.gstatic.com/generate_204?t=' + Date.now();
+
+        setTimeout(function() {
+          window.location.href = '/connected/?mac={{ mac_address }}';
+        }, 1500);
+      }, 500);
+
+    } else {
+      showToast('❌ ' + (data.message || 'Invalid voucher code.'));
+      shakeEl('quickVoucherInput');
+    }
+  })
+  .catch(function() {
+    btn.textContent = 'Enter';
+    showToast('❌ Network error. Please try again.');
+  });
+}
+
+  /* ── Redeem voucher ── */
+  function redeemVoucher() {
+    var code = document.getElementById('voucherInput').value.trim();
+    if (!code) { showToast('❌ Please enter a voucher code.'); return; }
+
+    var btnTxt  = document.getElementById('voucherRedeemBtnText');
+    var spinner = document.getElementById('voucherRedeemSpinner');
+    btnTxt.textContent    = 'Connecting...';
+    spinner.style.display = 'block';
+
+    fetch('https://kevidtechhotspot.com/payments/redeem-voucher/', {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+      body: JSON.stringify({
+        voucher_code: code.replace(/-/g,''),
+        mac_address : '{{ mac_address }}',
+        ip_address  : '{{ ip_address }}',
+        router_id   : '{{ router_id }}'
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      btnTxt.textContent    = '🔌 Connect to Internet';
+      spinner.style.display = 'none';
+      if (data.status === 'success') {
+      document.getElementById('voucherRedeemStatus').innerHTML =
+        '<div class="r-ok"><div class="ico">✅</div><div class="msg">Voucher Redeemed!</div><div class="sub">Verifying internet connection...</div></div>';
+
+      setTimeout(function() {
+        var img = new Image();
+        img.onload  = function() { window.location.href = '/connected/?mac={{ mac_address }}'; };
+        img.onerror = function() { window.location.href = '/connected/?mac={{ mac_address }}'; };
+        img.src = 'http://connectivitycheck.gstatic.com/generate_204?t=' + Date.now();
+
+        setTimeout(function() {
+          window.location.href = '/connected/?mac={{ mac_address }}';
+        }, 1500);
+      }, 1000);
+
+      } else {
+        document.getElementById('voucherRedeemStatus').innerHTML =
+          '<div class="r-err">❌ ' + (data.message || 'Invalid voucher code.') + '</div>';
+      }
+    })
+    .catch(function() {
+      btnTxt.textContent    = '🔌 Connect to Internet';
+      spinner.style.display = 'none';
+      showToast('❌ Network error. Please try again.');
+    });
+  }
+
+  /* ── Helpers ── */
+  function shakeEl(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.style.borderColor = '#EF4444';
+    el.style.animation   = 'shake 0.4s ease';
+    setTimeout(function() { el.style.animation = ''; el.style.borderColor = ''; }, 500);
+  }
+
+  function showToast(msg) {
+    var old = document.querySelector('.toast');
+    if (old) old.remove();
+    var t = document.createElement('div');
+    t.className   = 'toast';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function() { t.remove(); }, 3000);
+  }
+
+  function getCookie(name) {
+    var val = null;
+    if (document.cookie) {
+      document.cookie.split(';').forEach(function(c) {
+        c = c.trim();
+        if (c.startsWith(name + '=')) val = decodeURIComponent(c.slice(name.length + 1));
+      });
+    }
+    return val;
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { closeDirectModal(); closeVoucherModal(); }
+  });
+</script>
+{% endblock %}

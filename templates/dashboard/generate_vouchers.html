@@ -1,0 +1,117 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Generate Vouchers{% endblock %}
+{% block page_title %}Generate Vouchers{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Generate Vouchers</h5>
+        <p>Create a batch of unique voucher codes for a package</p>
+    </div>
+    <a href="{% url 'dashboard:vouchers' %}" class="btn-back">← Back to Vouchers</a>
+</div>
+
+<!-- ── Form ──────────────────────────────────────────── -->
+<form method="post" action="{% url 'dashboard:generate_vouchers' %}">
+    {% csrf_token %}
+
+    <div class="dash-table mb-2">
+        <div class="dash-table-header">
+            <h6>Voucher Configuration</h6>
+        </div>
+        <div class="card-body">
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Package <span class="required">*</span>
+                    </label>
+                    <select name="package" required class="form-select">
+                        <option value="">— Select a package —</option>
+                        {% for package in packages %}
+                        <option value="{{ package.id }}">
+                            {{ package.name }} —
+                            UGX {{ package.price|floatformat:0 }} —
+                            {{ package.duration }} {{ package.duration_unit }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Number of Vouchers <span class="required">*</span>
+                    </label>
+                    <input type="number" name="quantity"
+                           value="1" min="1" max="500"
+                           required class="form-input">
+                    <p class="form-hint">Maximum 500 vouchers per batch</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Voucher Prefix (optional — 1 letter max)
+                    </label>
+                    <input type="text" name="prefix"
+                           placeholder="e.g. A" maxlength="1"
+                           class="form-input"
+                           style="text-transform:uppercase;">
+                    <p class="form-hint">Prefix is added to front of code e.g. "A4KX92"</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">
+                        Code Length <span class="required">*</span>
+                    </label>
+                    <input type="number" name="code_length"
+                           value="6" min="5" max="12"
+                           required class="form-input">
+                    <p class="form-hint">Between 5 and 12 characters including prefix</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Batch Reference (optional)</label>
+                    <input type="text" name="batch_reference"
+                           placeholder='e.g. "Morning-Batch-1"'
+                           class="form-input">
+                    <p class="form-hint">Groups vouchers from the same batch together</p>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Assign to Agent (optional)</label>
+                    <select name="agent" class="form-select">
+                        <option value="">— No Agent (Walk-in / Online) —</option>
+                        {% for agent in agents %}
+                        <option value="{{ agent.id }}">
+                            {{ agent.name }} — {{ agent.location }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <p class="form-hint">Assign these vouchers to a specific agent for tracking</p>
+                </div>
+
+                <div class="form-group full-width">
+                    <label class="form-check">
+                        <input type="checkbox" name="is_giveaway">
+                        Mark as Giveaway (not counted as revenue)
+                    </label>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="btn-group">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Generate Vouchers
+        </button>
+        <a href="{% url 'dashboard:vouchers' %}" class="btn btn-outline">Cancel</a>
+    </div>
+
+</form>
+
+{% endblock %}

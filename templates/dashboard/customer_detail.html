@@ -1,0 +1,222 @@
+{% extends 'dashboard/base.html' %}
+{% load humanize %}
+
+{% block title %}Customer Detail{% endblock %}
+{% block page_title %}Customer Detail{% endblock %}
+
+{% block content %}
+
+<!-- ── Back Button ────────────────────────────────────── -->
+<div class="mb-2">
+    <a href="{% url 'dashboard:customers' %}" class="btn-back">
+        <i class="bi bi-arrow-left"></i> Back to Customers
+    </a>
+</div>
+
+<!-- ── Profile Card ──────────────────────────────────── -->
+<div class="card mb-2">
+    <div class="profile-header">
+        <div class="profile-avatar-lg">
+            <i class="bi bi-person-fill"></i>
+        </div>
+        <div class="profile-info">
+            <h5>{{ device.phone_number|default:"Unknown" }}</h5>
+            <p>{{ device.mac_address }}</p>
+        </div>
+        <div>
+            {% if device.is_blocked %}
+                <span class="badge badge-warning">Blocked</span>
+            {% elif active_session %}
+                <span class="badge badge-success">Active</span>
+            {% elif sessions.exists %}
+                <span class="badge badge-failed">Expired</span>
+            {% else %}
+                <span class="badge badge-muted">No Sessions</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mini-stats">
+        <div class="mini-stat">
+            <p class="mini-label">Total Spent</p>
+            <p class="mini-value text-success">UGX {{ device.total_spent|floatformat:0|intcomma }}</p>
+        </div>
+        <div class="mini-stat">
+            <p class="mini-label">Sessions</p>
+            <p class="mini-value" style="color:var(--c-primary);">{{ sessions.count }}</p>
+        </div>
+        <div class="mini-stat">
+            <p class="mini-label">Most Used</p>
+            <p class="mini-value">{{ top_package_name }}</p>
+        </div>
+        <div class="mini-stat">
+            <p class="mini-label">Joined</p>
+            <p class="mini-value">{{ device.first_seen|date:"d M Y" }}</p>
+        </div>
+        <div class="mini-stat">
+            <p class="mini-label">Last Seen</p>
+            <p class="mini-value">{{ device.last_seen|timesince }} ago</p>
+        </div>
+        <div class="mini-stat">
+            <p class="mini-label">Router</p>
+            <p class="mini-value">{{ device.last_router.identity|default:"—" }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- ── Active Session ─────────────────────────────────── -->
+{% if active_session %}
+<div class="dash-table mb-2 highlight-card">
+    <h6>🟢 Active Session</h6>
+    <div class="highlight-grid">
+        <div>
+            <p class="hl-label">Package</p>
+            <p class="hl-value">{{ active_session.package.name }}</p>
+        </div>
+        <div>
+            <p class="hl-label">Started</p>
+            <p class="hl-value">{{ active_session.created_at|date:"d M, H:i" }}</p>
+        </div>
+        <div>
+            <p class="hl-label">Expires</p>
+            <p class="hl-value text-danger">{{ active_session.expiry_time|date:"d M, H:i" }}</p>
+        </div>
+        <div>
+            <p class="hl-label">IP Address</p>
+            <p class="hl-value" style="font-family:monospace; font-size:12px;">{{ active_session.ip_address|default:"—" }}</p>
+        </div>
+        <div>
+            <p class="hl-label">Location</p>
+            <p class="hl-value">{{ active_session.router.location|default:"—" }}</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- ── Session History ────────────────────────────────── -->
+<div class="dash-table mb-2 session-history">
+    <div class="dash-table-header"><h6>Session History</h6></div>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-num">#</th>
+                    <th class="col-package">Package</th>
+                    <th class="col-started">Started</th>
+                    <th class="col-expired">Expired</th>
+                    <th class="col-ip">IP Address</th>
+                    <th class="col-router">Router</th>
+                    <th class="col-status">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for session in sessions %}
+                <tr>
+                    <td class="col-num text-muted" style="font-size:12px;">{{ forloop.counter }}</td>
+                    <td class="col-package font-semibold">{{ session.package.name }}</td>
+                    <td class="col-started text-muted" style="font-size:12px;">{{ session.created_at|date:"d M Y, H:i" }}</td>
+                    <td class="col-expired text-muted" style="font-size:12px;">{{ session.expiry_time|date:"d M Y, H:i" }}</td>
+                    <td class="col-ip" style="font-family:monospace; font-size:12px;">{{ session.ip_address|default:"—" }}</td>
+                    <td class="col-router" style="font-size:12px;">
+                        {{ session.router.identity|default:"—" }}
+                        {% if session.router.location %}
+                        <span class="text-muted" style="display:block; font-size:11px;">{{ session.router.location }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="col-status">
+                        {% if session.status == 'active' %}
+                            <span class="badge badge-success">Active</span>
+                        {% else %}
+                            <span class="badge badge-failed">Expired</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="empty-state">No sessions yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ── Payment History ────────────────────────────────── -->
+<div class="dash-table mb-2 payment-history">
+    <div class="dash-table-header"><h6>Payment History</h6></div>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-num">#</th>
+                    <th class="col-package">Package</th>
+                    <th class="col-amount">Amount</th>
+                    <th class="col-provider">Provider</th>
+                    <th class="col-date">Date</th>
+                    <th class="col-status">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td class="col-num text-muted" style="font-size:12px;">{{ forloop.counter }}</td>
+                    <td class="col-package font-semibold">{{ order.package.name }}</td>
+                    <td class="col-amount font-bold text-success">UGX {{ order.amount|floatformat:0|intcomma }}</td>
+                    <td class="col-provider" style="font-size:12px; text-transform:uppercase;">{{ order.provider }}</td>
+                    <td class="col-date text-muted" style="font-size:12px;">{{ order.created_at|date:"d M Y, H:i" }}</td>
+                    <td class="col-status">
+                        {% if order.status == 'success' %}
+                            <span class="badge badge-success">Paid</span>
+                        {% elif order.status == 'pending' %}
+                            <span class="badge badge-pending">Pending</span>
+                        {% else %}
+                            <span class="badge badge-failed">Failed</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="empty-state">No payments yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ── Danger Zone ────────────────────────────────────── -->
+<div class="dash-table danger-zone">
+    <h6>Danger Zone</h6>
+    <p>Deleting this customer removes all their sessions and payment records permanently.</p>
+    <form method="post"
+          action="{% url 'dashboard:customer_delete' device.id %}"
+          class="delete-form">
+        {% csrf_token %}
+        <div class="delete-initial">
+            <button type="button" onclick="showDelete(this)" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Delete Customer
+            </button>
+        </div>
+        <div class="delete-confirm" style="display:none; gap:8px;">
+            <button type="submit" class="btn-cut-yes" style="padding:8px 20px;">
+                <i class="bi bi-check-lg"></i> Yes, Delete
+            </button>
+            <button type="button" onclick="hideDelete(this)" class="btn-cut-no" style="padding:8px 20px;">
+                <i class="bi bi-x-lg"></i> Cancel
+            </button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showDelete(btn) {
+    var form = btn.closest('.delete-form');
+    form.querySelector('.delete-initial').style.display = 'none';
+    form.querySelector('.delete-confirm').style.display = 'flex';
+}
+function hideDelete(btn) {
+    var form = btn.closest('.delete-form');
+    form.querySelector('.delete-initial').style.display = 'block';
+    form.querySelector('.delete-confirm').style.display = 'none';
+}
+</script>
+{% endblock %}

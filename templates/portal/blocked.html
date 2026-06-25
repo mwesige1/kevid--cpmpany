@@ -1,0 +1,107 @@
+{% extends 'portal/base.html' %}
+{% load static %}
+
+{% block title %}Access Blocked{% endblock %}
+
+{% block content %}
+
+<div class="bg-canvas bg-canvas-red"></div>
+<div class="bg-grid bg-grid-red"></div>
+
+<div class="page">
+
+  <header class="app-header" style="animation:fadeDown .7s ease both;">
+    <div class="logo-pill danger">
+      <span style="font-size:18px;">🚫</span>
+      <div class="logo-txt">Access Blocked</div>
+    </div>
+  </header>
+
+  <main class="main-content">
+
+    <!-- Blocked Banner -->
+    <div class="blocked-banner">
+      <div class="blocked-icon">🚫</div>
+      <h2>Access Denied</h2>
+      <p>Your device has been blocked from this network</p>
+    </div>
+
+    <!-- Reason -->
+    <div class="section-card">
+      <div class="section-head">⚠️ Reason</div>
+      <div class="section-body">
+        <div class="reason-box">
+          <span style="font-size:18px;flex-shrink:0;">⛔</span>
+          <div>
+            <h6>Why am I blocked?</h6>
+            <p>
+              {% if block_reason %}{{ block_reason }}
+              {% else %}Your device has been blocked by the network administrator. This may be due to a policy violation, suspicious activity, or a manual block.{% endif %}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Device Info -->
+    <div class="section-card">
+      <div class="section-head">🖥️ Device Information</div>
+      <div class="section-body">
+        <div class="info-row"><span class="lbl">MAC Address</span><span class="val">{{ mac_address|default:"Unknown" }}</span></div>
+        <div class="info-row"><span class="lbl">IP Address</span><span class="val">{{ ip_address|default:"Unknown" }}</span></div>
+        <div class="info-row"><span class="lbl">Network</span><span class="val">{{ settings.business_name|default:"WiFi Portal" }}</span></div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="section-card">
+      <div class="section-head">🔧 What can I do?</div>
+      <div class="section-body">
+        <a href="https://kevidtechhotspot.com/" class="btn-main">🏠 Back to Portal</a>
+        <a href="tel:{{ settings.support_phone|default:'' }}" class="btn-sec">
+          📞 Call Support{% if settings.support_phone %} — {{ settings.support_phone }}{% endif %}
+        </a>
+      </div>
+    </div>
+
+    <!-- Appeal -->
+    <div style="padding: 0 14px;">
+      <div class="appeal-box">
+        <p>
+          <strong style="color:var(--gold-light);">Think this is a mistake?</strong>
+          Contact our support team and we'll review your case immediately.
+          Have your MAC address ready: <strong style="color:var(--txt);">{{ mac_address|default:"unknown" }}</strong>.
+          {% if settings.support_email %}
+            Email us at <a href="mailto:{{ settings.support_email }}">{{ settings.support_email }}</a>.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="app-footer">
+    🔒 Secure connection · Powered by {{ settings.business_name|default:"Optimum" }}
+  </footer>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function checkBlockStatus() {
+  const mac = '{{ mac_address }}';
+  if (!mac) return;
+  fetch('https://kevidtechhotspot.com/session-status/?mac=' + mac)
+  .then(r => r.json())
+  .then(data => {
+    if (data.status !== 'blocked') {
+      window.location.href = 'https://kevidtechhotspot.com/?mac=' + mac;
+    }
+  })
+  .catch(() => {});
+}
+setInterval(checkBlockStatus, 3000);
+</script>
+{% endblock %}

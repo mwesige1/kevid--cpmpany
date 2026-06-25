@@ -1,0 +1,900 @@
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:24] "GET /success.txt?ipv4 HTTP/1.1" 400 80517
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:24] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:25] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:25] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:25] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:25] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:25] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:48] "GET /canonical.html HTTP/1.1" 400 80081
+[05/May/2026 10:04:48] "GET /success.txt?ipv4 HTTP/1.1" 400 80517
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:48] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:48] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:48] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:48] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:48] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:50] "GET /success.txt?ipv4 HTTP/1.1" 400 80519
+[05/May/2026 10:04:50] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:50] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:50] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:50] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:50] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:50] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'crl.ngrok-agent.com'. You may need to add 'crl.ngrok-agent.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'crl.ngrok-agent.com'. You may need to add 'crl.ngrok-agent.com' to ALLOWED_HOSTS.
+[05/May/2026 10:04:52] "GET /ngrok.crl HTTP/1.1" 400 79156
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:02] "GET /success.txt?ipv4 HTTP/1.1" 400 80517
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:02] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:02] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:03] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:03] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:03] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:03] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:09] "GET /success.txt?ipv4 HTTP/1.1" 400 80517
+[05/May/2026 10:05:09] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:09] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:09] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:09] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:09] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:09] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:10] "GET /success.txt?ipv4 HTTP/1.1" 400 80517
+[05/May/2026 10:05:10] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:10] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:10] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:10] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:11] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:11] "GET /canonical.html HTTP/1.1" 400 80081
+Invalid HTTP_HOST header: 'crl.ngrok-agent.com'. You may need to add 'crl.ngrok-agent.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'crl.ngrok-agent.com'. You may need to add 'crl.ngrok-agent.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:22] "GET /ngrok.crl HTTP/1.1" 400 79154
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:35] "GET /canonical.html HTTP/1.1" 400 80083
+[05/May/2026 10:05:35] "GET /success.txt?ipv4 HTTP/1.1" 400 80519
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:35] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:35] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:35] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:35] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:35] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:36] "GET /success.txt?ipv4 HTTP/1.1" 400 80519
+[05/May/2026 10:05:36] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:36] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:36] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:36] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:36] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'detectportal.firefox.com'. You may need to add 'detectportal.firefox.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:36] "GET /canonical.html HTTP/1.1" 400 80083
+Invalid HTTP_HOST header: 'crl.ngrok-agent.com'. You may need to add 'crl.ngrok-agent.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'crl.ngrok-agent.com'. You may need to add 'crl.ngrok-agent.com' to ALLOWED_HOSTS.
+[05/May/2026 10:05:53] "GET /ngrok.crl HTTP/1.1" 400 79156
+Invalid HTTP_HOST header: 'crl.ngrok-agent.com'. You may need to add 'crl.ngrok-agent.com' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/utils/deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/optimum/Desktop/wifi_portal/env/lib/python3.12/site-packages/django/http/request.py", line 206, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'crl.ngrok-agent.com'. You may need to add 'crl.ngrok-agent.com' to ALLOWED_HOSTS.
+[05/May/2026 10:06:24] "GET /ngrok.crl HTTP/1.1" 400 79156

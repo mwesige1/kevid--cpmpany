@@ -1,0 +1,223 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Withdrawals{% endblock %}
+{% block page_title %}Withdrawals{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Withdrawals</h5>
+        <p>Manage Mobile Money withdrawal requests from your collected revenue</p>
+    </div>
+    <a href="{% url 'dashboard:create_withdrawal' %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg"></i> Request Withdrawal
+    </a>
+</div>
+
+<!-- ── Balance Hero Card ──────────────────────────────── -->
+<div class="balance-banner">
+    <div>
+        <p class="balance-label">
+            <i class="bi bi-phone-fill"></i> Available MoMo Balance
+        </p>
+        <h2 class="balance-value">
+            UGX {{ momo_balance|default:"0"|floatformat:0 }}
+        </h2>
+        <p class="balance-sub">Total collected minus total withdrawn</p>
+    </div>
+    <div class="balance-cards">
+        <div class="balance-mini">
+            <p class="period-label">Total Collected</p>
+            <p class="period-value">UGX {{ total_collected|default:"0"|floatformat:0 }}</p>
+        </div>
+        <div class="balance-mini">
+            <p class="period-label">Total Withdrawn</p>
+            <p class="period-value">UGX {{ total_withdrawn|default:"0"|floatformat:0 }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- ── Status Cards ───────────────────────────────────── -->
+<div class="card-grid mb-2">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-warning">
+            <i class="bi bi-hourglass-split"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Pending Requests</p>
+            <h4>{{ pending_count|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-success">
+            <i class="bi bi-check-circle-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Completed</p>
+            <h4>{{ completed_count|default:"0" }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-primary">
+            <i class="bi bi-list-check"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Total Requests</p>
+            <h4>{{ withdrawals|length }}</h4>
+        </div>
+    </div>
+</div>
+
+<!-- ── Status Filter Tabs ────────────────────────────── -->
+<div class="tab-pills">
+    <a href="{% url 'dashboard:withdrawals' %}"
+       class="tab-pill {% if not status_filter %}active{% endif %}">All</a>
+    <a href="?status=pending"
+       class="tab-pill {% if status_filter == 'pending' %}active{% endif %}">Pending</a>
+    <a href="?status=completed"
+       class="tab-pill {% if status_filter == 'completed' %}active{% endif %}">Completed</a>
+    <a href="?status=failed"
+       class="tab-pill {% if status_filter == 'failed' %}active{% endif %}">Failed</a>
+    <a href="?status=cancelled"
+       class="tab-pill {% if status_filter == 'cancelled' %}active{% endif %}">Cancelled</a>
+</div>
+
+<!-- ── Withdrawals Table ───────────────────────────────── -->
+<div class="dash-table withdrawals-table">
+    <div class="dash-table-header">
+        <h6>Withdrawal History</h6>
+    </div>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-num">#</th>
+                    <th class="col-amount">Amount</th>
+                    <th class="col-momo">MoMo Number</th>
+                    <th class="col-provider">Provider</th>
+                    <th class="col-name">Account Name</th>
+                    <th class="col-status">Status</th>
+                    <th class="col-requested">Requested</th>
+                    <th class="col-completed">Completed</th>
+                    <th class="col-action">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for withdrawal in withdrawals %}
+                <tr>
+                    <td class="col-num text-muted" style="font-size:12px;">
+                        {{ forloop.counter }}
+                    </td>
+                    <td class="col-amount font-bold" style="font-size:15px;">
+                        UGX {{ withdrawal.amount|floatformat:0 }}
+                    </td>
+                    <td class="col-momo font-semibold">
+                        {{ withdrawal.mobile_number|default:"—" }}
+                    </td>
+                    <td class="col-provider" style="font-size:12px;">
+                        {{ withdrawal.provider|default:"—" }}
+                    </td>
+                    <td class="col-name" style="font-size:12px;">
+                        {{ withdrawal.account_name|default:"—" }}
+                    </td>
+                    <td class="col-status">
+                        {% if withdrawal.status == 'completed' %}
+                            <span class="badge badge-success"><i class="bi bi-check-circle-fill"></i> Completed</span>
+                        {% elif withdrawal.status == 'pending' %}
+                            <span class="badge badge-pending"><i class="bi bi-hourglass-split"></i> Pending</span>
+                        {% elif withdrawal.status == 'cancelled' %}
+                            <span class="badge badge-muted"><i class="bi bi-x-circle"></i> Cancelled</span>
+                        {% else %}
+                            <span class="badge badge-failed"><i class="bi bi-x-circle-fill"></i> Failed</span>
+                        {% endif %}
+                    </td>
+                    <td class="col-requested text-muted" style="font-size:12px;">
+                        {{ withdrawal.created_at|date:"d M Y" }}<br>
+                        <span style="font-size:11px;">{{ withdrawal.created_at|date:"H:i" }}</span>
+                    </td>
+                    <td class="col-completed text-muted" style="font-size:12px;">
+                        {% if withdrawal.completed_at %}
+                            {{ withdrawal.completed_at|date:"d M Y" }}<br>
+                            <span style="font-size:11px;">{{ withdrawal.completed_at|date:"H:i" }}</span>
+                        {% else %}
+                            <span style="color:#d1d5db;">—</span>
+                        {% endif %}
+                    </td>
+                    <td class="col-action">
+                        {% if withdrawal.status == 'pending' %}
+                        <div class="action-group">
+                            <form method="post"
+                                  action="{% url 'dashboard:update_withdrawal_status' withdrawal.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="status" value="completed">
+                                <button type="submit" class="btn-complete">✓ Complete</button>
+                            </form>
+                            <form method="post"
+                                  action="{% url 'dashboard:update_withdrawal_status' withdrawal.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="status" value="failed">
+                                <button type="submit" class="btn-failed">✗ Failed</button>
+                            </form>
+                            <form method="post"
+                                  action="{% url 'dashboard:update_withdrawal_status' withdrawal.id %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="status" value="cancelled">
+                                <button type="submit" class="btn-cancel">Cancel</button>
+                            </form>
+                        </div>
+                        {% else %}
+                        <form method="post"
+                              action="{% url 'dashboard:delete_withdrawal' withdrawal.id %}"
+                              id="del-wd-{{ withdrawal.id }}">
+                            {% csrf_token %}
+                            <div class="block-confirm" id="confirm-wd-{{ withdrawal.id }}">
+                                <button type="submit" class="btn-cut-yes">Yes</button>
+                                <button type="button"
+                                        onclick="cancelWdDel('{{ withdrawal.id }}')"
+                                        class="btn-cut-no">No</button>
+                            </div>
+                            <button type="button"
+                                    id="btn-wd-{{ withdrawal.id }}"
+                                    onclick="confirmWdDel('{{ withdrawal.id }}')"
+                                    class="btn-cut">Delete</button>
+                        </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="empty-state">
+                        <i class="bi bi-arrow-up-circle" style="display:block;"></i>
+                        <p class="font-semibold" style="color:var(--c-text-2); margin:0 0 6px;">
+                            No withdrawals yet
+                        </p>
+                        <a href="{% url 'dashboard:create_withdrawal' %}" class="btn btn-primary btn-sm">
+                            Request First Withdrawal
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function confirmWdDel(id) {
+    document.getElementById('btn-wd-' + id).style.display     = 'none';
+    document.getElementById('confirm-wd-' + id).style.display = 'flex';
+}
+
+function cancelWdDel(id) {
+    document.getElementById('confirm-wd-' + id).style.display = 'none';
+    document.getElementById('btn-wd-' + id).style.display     = 'inline-flex';
+}
+</script>
+{% endblock %}

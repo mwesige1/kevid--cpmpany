@@ -1,0 +1,227 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Send Message{% endblock %}
+{% block page_title %}Send Message{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Send Message</h5>
+        <p>Send an SMS or WhatsApp message to a customer or phone number</p>
+    </div>
+    <a href="{% url 'dashboard:messages' %}" class="btn-back">← Back to Messages</a>
+</div>
+
+<div class="grid-8-4">
+
+    <!-- Left Column — Form -->
+    <div>
+        <form method="post" action="{% url 'dashboard:send_message' %}">
+            {% csrf_token %}
+
+            <!-- Recipient -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header">
+                    <h6>Recipient</h6>
+                </div>
+                <div class="card-body">
+
+                    <div class="form-group">
+                        <label class="form-label" style="margin-bottom:10px;">Send To</label>
+                        <div class="radio-group">
+                            <label class="form-radio">
+                                <input type="radio" name="recipient_type"
+                                       value="number" checked onclick="toggleRecipient()">
+                                Specific Number
+                            </label>
+                            <label class="form-radio">
+                                <input type="radio" name="recipient_type"
+                                       value="all" onclick="toggleRecipient()">
+                                All Customers
+                            </label>
+                            <label class="form-radio">
+                                <input type="radio" name="recipient_type"
+                                       value="active" onclick="toggleRecipient()">
+                                Active Customers
+                            </label>
+                            <label class="form-radio">
+                                <input type="radio" name="recipient_type"
+                                       value="expired" onclick="toggleRecipient()">
+                                Expired Customers
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="phoneField">
+                        <label class="form-label">
+                            Phone Number <span class="required">*</span>
+                        </label>
+                        <input type="text" name="recipient" id="recipientInput"
+                               placeholder="e.g. 0771234567" class="form-input">
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Message -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header">
+                    <h6>Message</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Channel <span class="required">*</span>
+                            </label>
+                            <select name="channel" required class="form-select">
+                                <option value="SMS">SMS</option>
+                                <option value="WhatsApp">WhatsApp</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Quick Template</label>
+                            <select onchange="applyTemplate(this.value)" class="form-select">
+                                <option value="">— Choose a template —</option>
+                                <option value="Your WiFi session has expired. Visit our portal to reconnect. Thank you!">Session Expired</option>
+                                <option value="Your WiFi session is about to expire in 30 minutes. Renew now to stay connected!">Expiry Warning</option>
+                                <option value="Thank you for using our WiFi service! We hope you had a great experience.">Thank You</option>
+                                <option value="Special offer! Get 24 hours of WiFi for only UGX 2,000 today. Visit our portal to connect!">Promotional Offer</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">
+                                Message Content <span class="required">*</span>
+                            </label>
+                            <textarea name="content" id="messageContent"
+                                      rows="5" required
+                                      placeholder="Type your message here..."
+                                      oninput="updateCharCount()"
+                                      class="form-textarea"></textarea>
+                            <div class="flex-between mt-1">
+                                <p class="form-hint">Keep SMS under 160 characters to avoid split messages.</p>
+                                <p id="charCount" class="form-hint">0 / 160</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-send-fill"></i> Send Message
+                </button>
+                <a href="{% url 'dashboard:messages' %}" class="btn btn-outline">Cancel</a>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Right Column — Tips -->
+    <div>
+        <div class="dash-table mb-2">
+            <div class="dash-table-header">
+                <h6>Messaging Tips</h6>
+            </div>
+            <div class="card-body">
+                <div class="tip-item">
+                    <p class="tip-title">
+                        <i class="bi bi-phone-fill" style="color:#ca8a04;"></i> SMS
+                    </p>
+                    <p class="tip-text">
+                        160 characters max per SMS. Longer messages
+                        are split and cost more. Keep it short and clear.
+                    </p>
+                </div>
+                <div class="tip-item">
+                    <p class="tip-title">
+                        <i class="bi bi-whatsapp" style="color:#16a34a;"></i> WhatsApp
+                    </p>
+                    <p class="tip-text">
+                        WhatsApp allows longer messages and supports
+                        emojis. Requires WhatsApp Business API setup
+                        in Settings.
+                    </p>
+                </div>
+                <div class="tip-item">
+                    <p class="tip-title">
+                        <i class="bi bi-people-fill" style="color:var(--c-primary);"></i> Bulk Messages
+                    </p>
+                    <p class="tip-text">
+                        Sending to All or Active customers will message
+                        every customer with a registered phone number.
+                        Use bulk messaging responsibly.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Messages -->
+        <div class="dash-table">
+            <div class="dash-table-header">
+                <h6>Recently Sent</h6>
+            </div>
+            <div class="card-body">
+                {% for msg in recent_messages %}
+                <div class="recent-item">
+                    <div class="recent-item-info">
+                        <p class="recent-amount">{{ msg.phone_number }}</p>
+                        <p class="recent-date">{{ msg.message|truncatechars:50 }}</p>
+                    </div>
+                    {% if msg.channel == 'SMS' %}
+                        <span class="badge badge-warning">SMS</span>
+                    {% else %}
+                        <span class="badge badge-success">WA</span>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <p class="text-muted text-center" style="padding:16px 0; font-size:13px; margin:0;">
+                    No messages sent yet.
+                </p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleRecipient() {
+    var selected = document.querySelector('input[name="recipient_type"]:checked').value;
+    var phoneField = document.getElementById('phoneField');
+    var recipientInput = document.getElementById('recipientInput');
+
+    if (selected === 'number') {
+        phoneField.style.display = 'block';
+        recipientInput.required  = true;
+    } else {
+        phoneField.style.display = 'none';
+        recipientInput.required  = false;
+    }
+}
+
+function applyTemplate(text) {
+    if (text) {
+        document.getElementById('messageContent').value = text;
+        updateCharCount();
+    }
+}
+
+function updateCharCount() {
+    var content = document.getElementById('messageContent').value;
+    var count   = document.getElementById('charCount');
+    count.textContent = content.length + ' / 160';
+    count.style.color = content.length > 160 ? '#dc2626' : '#9ca3af';
+}
+</script>
+{% endblock %}

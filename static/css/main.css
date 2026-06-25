@@ -1,0 +1,3025 @@
+/* ============================================
+   KEVID TECH DASHBOARD — main.css
+   Mobile-first responsive stylesheet
+   ============================================ */
+
+/* ── 1. CSS Variables ─────────────────────── */
+:root {
+    --sidebar-w: 240px;
+
+    /* Brand */
+    --c-sidebar:#0a0f2c;
+    --c-body: #f8fafc;
+    --c-white: #ffffff;
+    --c-primary: #2563eb;
+    --c-primary-hover: #1d4ed8;
+    --c-green: #22c55e;
+
+    /* Text */
+    --c-text: #1a1a2e;
+    --c-text-2: #374151;
+    --c-text-muted: #9ca3af;
+
+    /* Borders */
+    --c-border: #e8ecf0;
+    --c-border-light: #f3f4f6;
+
+    /* Status */
+    --c-success-bg: #f0fdf4;
+    --c-success: #16a34a;
+    --c-success-border: #bbf7d0;
+
+    --c-warning-bg: #fffbeb;
+    --c-warning: #d97706;
+    --c-warning-border: #fde68a;
+
+    --c-danger-bg: #fef2f2;
+    --c-danger: #dc2626;
+    --c-danger-border: #fecaca;
+
+    --c-muted-bg: #f8fafc;
+    --c-muted-border: #e5e7eb;
+
+    /* Radius */
+    --r-sm: 8px;
+    --r-md: 10px;
+    --r-lg: 16px;
+
+    /* Shadow */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+
+/* ── 2. Reset & Base ──────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--c-body);
+    color: var(--c-text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+a { text-decoration: none; color: inherit; }
+img { max-width: 100%; display: block; }
+table { border-collapse: collapse; width: 100%; }
+
+
+/* ── 3. Layout Shell ──────────────────────── */
+.main-content {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 769px) {
+    .main-content {
+        margin-left: var(--sidebar-w);
+    }
+}
+
+
+/* ── 4. Sidebar ───────────────────────────── */
+.sidebar {
+    width: var(--sidebar-w);
+    height: 100vh;
+    height: 100dvh;
+    background: var(--c-sidebar);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+@media (min-width: 769px) {
+    .sidebar {
+        transform: translateX(0);
+    }
+}
+
+/* Dark overlay behind sidebar on mobile */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 150;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* Brand area */
+.sidebar-brand {
+    padding: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.brand-name {
+    font-size: 16px;
+    font-weight: 800;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.brand-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    margin-top: 2px;
+    display: block;
+}
+
+.brand-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--c-green);
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+    animation: blink 2s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+}
+
+/* X button inside sidebar — mobile only */
+.sidebar-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    border-radius: var(--r-sm);
+    color: rgba(255,255,255,0.6);
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sidebar-close:hover {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+}
+
+@media (min-width: 769px) {
+    .sidebar-close { display: none; }
+}
+
+/* Nav scroll area */
+.sidebar-nav {
+    padding: 12px;
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.nav-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.25);
+    padding: 14px 12px 6px;
+    display: block;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    min-height: 44px;
+    border-radius: var(--r-md);
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-bottom: 2px;
+}
+
+.nav-item:hover {
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.85);
+}
+
+.nav-item.active {
+    background: rgba(37,99,235,0.2);
+    color: #60a5fa;
+}
+
+.nav-item i {
+    font-size: 18px;
+    width: 22px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* Sidebar footer */
+.sidebar-footer {
+    padding: 12px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    min-height: 44px;
+    border-radius: var(--r-md);
+    background: rgba(255,255,255,0.08);
+    color: #f87171;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: rgba(248,113,113,0.15);
+    color: #ef4444;
+}
+
+
+/* ── 5. Topbar ────────────────────────────── */
+.topbar {
+    background: var(--c-white);
+    border-bottom: 1px solid var(--c-border);
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+@media (min-width: 769px) {
+    .topbar { padding: 16px 28px; }
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+/* Hamburger — visible on mobile only */
+.hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 22px;
+    color: var(--c-text);
+    border-radius: var(--r-sm);
+    flex-shrink: 0;
+    transition: background 0.2s;
+}
+
+.hamburger:hover { background: var(--c-border-light); }
+
+@media (min-width: 769px) {
+    .hamburger { display: none; }
+}
+
+.topbar-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--c-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (min-width: 769px) {
+    .topbar-title { font-size: 18px; }
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.admin-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--c-text-2);
+}
+
+/* Hide username on very small phones, show avatar only */
+.admin-name { display: none; }
+
+@media (min-width: 480px) {
+    .admin-name { display: inline; }
+}
+
+.admin-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1a237e, #0d47a1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+
+/* ── 6. Page Content ──────────────────────── */
+.page-content {
+    padding: 16px;
+    flex: 1;
+    overflow-x: hidden;
+}
+
+@media (min-width: 769px) {
+    .page-content { padding: 28px; }
+}
+
+/* ── 7. Grid System ───────────────────────── */
+.card-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 576px) {
+    .card-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 992px) {
+    .card-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 1200px) {
+    .card-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.grid-2 {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 769px) {
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+}
+
+.grid-1 {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+}
+
+
+/* ── 8. Stat Cards ────────────────────────── */
+.stat-card {
+    background: var(--c-white);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    padding: 20px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.stat-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--c-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--c-text);
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+@media (min-width: 769px) {
+    .stat-value { font-size: 28px; }
+}
+
+.stat-sub {
+    font-size: 12px;
+    color: var(--c-text-muted);
+}
+
+.stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--r-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+
+/* ── 9. Tables ────────────────────────────── */
+.dash-table {
+    background: var(--c-white);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+}
+
+.dash-table-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--c-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+@media (min-width: 769px) {
+    .dash-table-header { padding: 18px 22px; }
+}
+
+.dash-table-header h6 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 0;
+}
+
+/* Horizontal scroll wrapper for tables on mobile */
+.table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 769px) {
+    .table-wrap { overflow-x: auto; }
+}
+
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+@media (min-width: 769px) {
+    .table { white-space: nowrap; }
+}
+
+.table th {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--c-text-muted);
+    border-bottom: 1px solid var(--c-border);
+    padding: 12px 16px;
+    background: var(--c-body);
+    text-align: left;
+}
+
+.table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--c-border-light);
+    color: var(--c-text-2);
+    vertical-align: middle;
+}
+
+@media (min-width: 769px) {
+    .table th,
+    .table td { padding: 14px 22px; }
+}
+
+.table tr:last-child td { border-bottom: none; }
+.table tr:hover { background: var(--c-body); }
+
+
+/* ── 10. Badges ───────────────────────────── */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.badge-success, .badge-active {
+    background: var(--c-success-bg);
+    color: var(--c-success);
+    border: 1px solid var(--c-success-border);
+}
+
+.badge-pending, .badge-warning {
+    background: var(--c-warning-bg);
+    color: var(--c-warning);
+    border: 1px solid var(--c-warning-border);
+}
+
+.badge-failed, .badge-danger {
+    background: var(--c-danger-bg);
+    color: var(--c-danger);
+    border: 1px solid var(--c-danger-border);
+}
+
+.badge-expired, .badge-muted {
+    background: var(--c-muted-bg);
+    color: var(--c-text-muted);
+    border: 1px solid var(--c-muted-border);
+}
+
+
+/* ── 11. Buttons ──────────────────────────── */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: var(--r-md);
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    min-height: 44px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-sm {
+    padding: 6px 14px;
+    font-size: 12px;
+    min-height: 36px;
+}
+
+.btn-primary {
+    background: var(--c-primary);
+    color: #fff;
+}
+.btn-primary:hover { background: var(--c-primary-hover); }
+
+.btn-success {
+    background: var(--c-success-bg);
+    color: var(--c-success);
+    border-color: var(--c-success-border);
+}
+
+.btn-danger {
+    background: var(--c-danger-bg);
+    color: var(--c-danger);
+    border-color: var(--c-danger-border);
+}
+.btn-danger:hover { background: #fecaca; }
+
+.btn-outline {
+    background: transparent;
+    border-color: var(--c-border);
+    color: var(--c-text-2);
+}
+.btn-outline:hover { background: var(--c-body); }
+
+.btn-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+
+/* ── 12. Forms ────────────────────────────── */
+.form-card {
+    background: var(--c-white);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    padding: 20px;
+}
+
+@media (min-width: 769px) {
+    .form-card { padding: 28px; max-width: 640px; }
+}
+
+.form-group { margin-bottom: 20px; }
+
+.form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--c-text-2);
+    margin-bottom: 6px;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-md);
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--c-text);
+    background: var(--c-white);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    min-height: 44px;
+    appearance: none;
+}
+
+.form-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--c-primary);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.form-input::placeholder { color: var(--c-text-muted); }
+
+.form-hint {
+    font-size: 12px;
+    color: var(--c-text-muted);
+    margin-top: 4px;
+}
+
+.form-error {
+    font-size: 12px;
+    color: var(--c-danger);
+    margin-top: 4px;
+}
+
+
+/* ── 13. Modals ───────────────────────────── */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 300;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.modal-overlay.active { display: flex; }
+
+.modal-box {
+    background: var(--c-white);
+    border-radius: var(--r-lg);
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 0;
+}
+
+.modal-close {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: var(--c-body);
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    font-size: 18px;
+    color: var(--c-text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.modal-close:hover {
+    background: var(--c-border);
+    color: var(--c-text);
+}
+
+
+/* ── 14. Alerts ───────────────────────────── */
+.alert {
+    padding: 14px 16px;
+    border-radius: var(--r-md);
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert-success {
+    background: var(--c-success-bg);
+    color: var(--c-success);
+    border: 1px solid var(--c-success-border);
+}
+
+.alert-danger {
+    background: var(--c-danger-bg);
+    color: var(--c-danger);
+    border: 1px solid var(--c-danger-border);
+}
+
+.alert-warning {
+    background: var(--c-warning-bg);
+    color: var(--c-warning);
+    border: 1px solid var(--c-warning-border);
+}
+
+
+/* ── 15. Utilities ────────────────────────── */
+.text-center { text-align: center; }
+.text-right  { text-align: right; }
+.text-muted  { color: var(--c-text-muted); }
+.text-success { color: var(--c-success); }
+.text-danger  { color: var(--c-danger); }
+.text-warning { color: var(--c-warning); }
+
+.font-bold     { font-weight: 700; }
+.font-semibold { font-weight: 600; }
+
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mt-3 { margin-top: 24px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.mb-3 { margin-bottom: 24px; }
+
+.flex         { display: flex; }
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.flex-center  { display: flex; align-items: center; justify-content: center; }
+.flex-wrap    { flex-wrap: wrap; }
+.gap-1 { gap: 8px; }
+.gap-2 { gap: 16px; }
+
+.w-full  { width: 100%; }
+.hidden  { display: none; }
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ── 16. Greeting Banner ──────────────────── */
+.greeting-banner {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    border-radius: var(--r-lg);
+    padding: 24px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    color: #fff;
+}
+
+@media (min-width: 769px) {
+    .greeting-banner { padding: 28px 32px; margin-bottom: 28px; }
+}
+
+.greeting-banner .greeting-date {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    font-weight: 600;
+    margin: 0 0 6px;
+}
+
+.greeting-banner .greeting-title {
+    font-size: 20px;
+    font-weight: 900;
+    margin: 0 0 6px;
+}
+
+@media (min-width: 769px) {
+    .greeting-banner .greeting-title { font-size: 22px; }
+}
+
+.greeting-banner .greeting-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    margin: 0;
+}
+
+.greeting-stat {
+    text-align: right;
+}
+
+.greeting-stat p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    margin: 0 0 4px;
+}
+
+.greeting-stat h2 {
+    font-size: 40px;
+    font-weight: 900;
+    margin: 0;
+}
+
+@media (min-width: 769px) {
+    .greeting-stat h2 { font-size: 48px; }
+}
+
+
+/* ── 17. Dashboard Stat Cards (icon-left) ─── */
+.dash-stat-card {
+    background: var(--c-white);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: all 0.2s ease;
+}
+
+.dash-stat-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.dash-stat-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: var(--r-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.dash-stat-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.dash-stat-info p {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--c-text-muted);
+    margin: 0 0 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.dash-stat-info h4 {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--c-text);
+    margin: 0;
+    line-height: 1.2;
+}
+
+@media (min-width: 769px) {
+    .dash-stat-info h4 { font-size: 20px; }
+}
+
+.dash-stat-info small {
+    font-size: 11px;
+    color: var(--c-text-muted);
+}
+
+
+/* ── 18. Icon Color Combos ────────────────── */
+.icon-success { background: var(--c-success-bg); color: var(--c-success); }
+.icon-primary { background: #eff6ff; color: var(--c-primary); }
+.icon-warning { background: #fefce8; color: #ca8a04; }
+.icon-danger  { background: var(--c-danger-bg); color: var(--c-danger); }
+.icon-purple  { background: #fdf4ff; color: #9333ea; }
+
+
+/* ── 19. Section Header (title + link) ────── */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.section-header h6 {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--c-text);
+    margin: 0;
+}
+
+.section-header a {
+    font-size: 12px;
+    color: var(--c-primary);
+    font-weight: 600;
+}
+
+
+/* ── 20. Grid — 8/4 Split ─────────────────── */
+.grid-8-4 {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 769px) {
+    .grid-8-4 { grid-template-columns: 2fr 1fr; }
+}
+
+
+/* ── 21. Router Health Items ──────────────── */
+.router-item {
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--c-border-light);
+}
+
+.router-item:last-child {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+.router-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.router-item-header p {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 0;
+}
+
+.router-meta {
+    font-size: 11px;
+    color: var(--c-text-muted);
+    margin: 2px 0 0;
+}
+
+/* Generic white card */
+.card {
+    background: var(--c-white);
+    border: 1px solid var(--c-border);
+    border-radius: var(--r-lg);
+    padding: 20px;
+}
+
+@media (min-width: 769px) {
+    .card { padding: 24px; }
+}
+
+/* Empty state placeholder */
+.empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--c-text-muted);
+}
+
+.empty-state i {
+    font-size: 48px;
+    margin-bottom: 12px;
+    opacity: 0.3;
+}
+
+.empty-state p { font-size: 14px; }
+
+
+/* ACTIVE SESSIONS CSS/
+/* ── 22. Page Header ──────────────────────── */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.page-header h5 {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--c-text);
+    margin: 0;
+}
+
+.page-header p {
+    font-size: 13px;
+    color: var(--c-text-muted);
+    margin: 4px 0 0;
+}
+
+.live-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--c-success-bg);
+    padding: 8px 14px;
+    border-radius: var(--r-md);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-success);
+}
+
+.live-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--c-success);
+    display: inline-block;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.4; }
+}
+
+
+/* ── 23. Tab Pills ────────────────────────── */
+.tab-pills {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.tab-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid var(--c-muted-border);
+    background: var(--c-white);
+    color: #6b7280;
+    min-height: 40px;
+}
+
+.tab-pill.active {
+    background: var(--c-primary);
+    color: #fff;
+    border-color: var(--c-primary);
+}
+
+
+/* ── 24. Active Badge with Dot ────────────── */
+.badge-active-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--c-success-bg);
+    color: var(--c-success);
+    border: 1px solid var(--c-success-border);
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.badge-active-dot .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--c-success);
+    animation: pulse 2s infinite;
+}
+
+
+/* ── 25. Cut/Disconnect Buttons ───────────── */
+.cut-form {
+    display: inline-flex;
+}
+
+.btn-cut {
+    background: var(--c-danger-bg);
+    color: var(--c-danger);
+    border: none;
+    border-radius: var(--r-sm);
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+    transition: all 0.2s;
+}
+
+.btn-cut:hover { background: #fecaca; }
+
+.btn-cut-yes {
+    background: var(--c-danger);
+    color: #fff;
+    border: none;
+    border-radius: var(--r-sm);
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+}
+
+.btn-cut-no {
+    background: var(--c-border-light);
+    color: var(--c-text-2);
+    border: none;
+    border-radius: var(--r-sm);
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+}
+
+
+/* ── 26. Countdown ────────────────────────── */
+.countdown {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c-primary);
+}
+
+.countdown.expiring {
+    color: var(--c-warning);
+}
+
+.countdown.expired {
+    color: var(--c-danger);
+}
+
+/* ── 27. Stats Row (always 4 across on desktop) ── */
+.stats-row {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 576px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 769px) {
+    .stats-row { grid-template-columns: repeat(4, 1fr); }
+}
+/* ── 28. Responsive Table Columns ─────────── */
+/* Hide by default (mobile-first), show on desktop */
+.tab-online .col-num,
+.tab-online .col-mac,
+.tab-online .col-package,
+.tab-online .col-started,
+.tab-online .col-ip,
+.tab-online .col-status,
+.tab-offline .col-num,
+.tab-offline .col-mac,
+.tab-offline .col-package,
+.tab-offline .col-ip,
+.tab-offline .col-status,
+.tab-offline .col-action {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .tab-online .col-num,
+    .tab-online .col-mac,
+    .tab-online .col-package,
+    .tab-online .col-started,
+    .tab-online .col-ip,
+    .tab-online .col-status,
+    .tab-offline .col-num,
+    .tab-offline .col-mac,
+    .tab-offline .col-package,
+    .tab-offline .col-ip,
+    .tab-offline .col-status,
+    .tab-offline .col-action {
+        display: table-cell;
+    }
+}
+
+/* General utility — use anywhere */
+.mobile-hide { display: none; }
+
+/* General utility — use anywhere */
+@media (max-width: 768px) {
+    .mobile-hide { display: none !important; }
+}
+/* ============================================
+   PAGE: dashboard/customers.html
+   ============================================ */
+
+/* ── 30. Search Box ───────────────────────── */
+/* SHARED: customers, payments, vouchers, etc. */
+.search-box {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+@media (min-width: 769px) {
+    .search-box { max-width: 460px; }
+}
+
+.search-input-wrap {
+    position: relative;
+    flex: 1;
+}
+
+.search-input-wrap i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--c-text-muted);
+    font-size: 14px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 9px 12px 9px 36px;
+    border: 1px solid var(--c-muted-border);
+    border-radius: var(--r-md);
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--c-text);
+    background: var(--c-white);
+    min-height: 42px;
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--c-primary);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.search-input::placeholder { color: var(--c-text-muted); }
+
+
+/* ── 31. Customer Cell (avatar + info) ────── */
+/* PAGE: dashboard/customers.html              */
+.customer-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.customer-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--c-primary);
+    flex-shrink: 0;
+}
+
+.customer-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 0;
+}
+
+.customer-sub {
+    font-size: 11px;
+    color: var(--c-text-muted);
+    margin: 0;
+}
+
+
+/* ── 32. Action Buttons (View / Delete) ───── */
+/* SHARED: customers, leads, equipment, etc.   */
+.btn-view {
+    background: #eff6ff;
+    color: var(--c-primary);
+    border: none;
+    border-radius: var(--r-sm);
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+    transition: all 0.2s;
+}
+
+.action-group {
+    display: flex;
+    gap: 6px;
+}
+
+@media (max-width: 768px) {
+    .action-group {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+/* Delete form reuses cut-form pattern */
+.delete-form { display: inline-flex; }
+
+
+/* ── 33. Customers Table — Mobile Columns ─── */
+/* PAGE: dashboard/customers.html              */
+.customers-table .col-num,
+.customers-table .col-mac,
+.customers-table .col-package,
+.customers-table .col-spent,
+.customers-table .col-sessions,
+.customers-table .col-status,
+.customers-table .col-joined {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .customers-table .col-num,
+    .customers-table .col-mac,
+    .customers-table .col-package,
+    .customers-table .col-spent,
+    .customers-table .col-sessions,
+    .customers-table .col-status,
+    .customers-table .col-joined {
+        display: table-cell;
+    }
+}
+
+/* ============================================
+   PAGE: dashboard/expired_sessions.html
+   ============================================ */
+
+/* ── 34. Filter Bar (search + select) ─────── */
+/* SHARED: expired_sessions, payments, etc.    */
+.filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.filter-input {
+    border: 1px solid var(--c-muted-border);
+    border-radius: var(--r-md);
+    padding: 8px 14px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--c-text);
+    background: var(--c-white);
+    min-height: 40px;
+    width: 100%;
+    transition: border-color 0.2s;
+}
+
+@media (min-width: 769px) {
+    .filter-input { width: 220px; }
+}
+
+.filter-input:focus {
+    outline: none;
+    border-color: var(--c-primary);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.filter-input::placeholder { color: var(--c-text-muted); }
+
+.filter-select {
+    border: 1px solid var(--c-muted-border);
+    border-radius: var(--r-md);
+    padding: 8px 14px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--c-text);
+    background: var(--c-white);
+    min-height: 40px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239ca3af' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--c-primary);
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+
+/* ── 35. Expired Table — Mobile Columns ───── */
+/* PAGE: dashboard/expired_sessions.html       */
+.expired-table .col-num,
+.expired-table .col-mac,
+.expired-table .col-package,
+.expired-table .col-amount,
+.expired-table .col-duration,
+.expired-table .col-reason {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .expired-table .col-num,
+    .expired-table .col-mac,
+    .expired-table .col-package,
+    .expired-table .col-amount,
+    .expired-table .col-duration,
+    .expired-table .col-reason {
+        display: table-cell;
+    }
+}
+
+/* ============================================
+   PAGE: dashboard/devices.html
+   ============================================ */
+
+/* ── 36. Block / Unblock Buttons ──────────── */
+/* PAGE: dashboard/devices.html                */
+.btn-block {
+    background: var(--c-danger-bg);
+    border: 1px solid var(--c-danger-border);
+    color: var(--c-danger);
+    padding: 5px 12px;
+    border-radius: var(--r-sm);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+    transition: all 0.2s;
+}
+
+.btn-unblock {
+    background: var(--c-success-bg);
+    border: 1px solid var(--c-success-border);
+    color: var(--c-success);
+    padding: 5px 12px;
+    border-radius: var(--r-sm);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+    transition: all 0.2s;
+}
+
+.block-confirm {
+    display: none;
+    gap: 4px;
+}
+
+
+/* ── 37. Devices Table — Mobile Columns ───── */
+/* PAGE: dashboard/devices.html                */
+.devices-table .col-mac,
+.devices-table .col-sessions,
+.devices-table .col-first-seen,
+.devices-table .col-last-seen,
+.devices-table .col-status {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .devices-table .col-mac,
+    .devices-table .col-sessions,
+    .devices-table .col-first-seen,
+    .devices-table .col-last-seen,
+    .devices-table .col-status {
+        display: table-cell;
+    }
+}
+/* ============================================
+   PAGE: dashboard/feedback.html
+   ============================================ */
+
+/* ── 38. Star Rating Display ──────────────── */
+/* PAGE: dashboard/feedback.html               */
+.star-rating {
+    display: flex;
+    gap: 2px;
+}
+
+.star-rating .bi-star-fill { color: #f59e0b; font-size: 13px; }
+.star-rating .bi-star { color: #d1d5db; font-size: 13px; }
+
+.comment-text {
+    font-size: 13px;
+    color: var(--c-text-2);
+    max-width: 280px;
+}
+
+.comment-empty {
+    color: #d1d5db;
+    font-size: 12px;
+}
+
+
+/* ── 39. Feedback Table — Mobile Columns ──── */
+/* PAGE: dashboard/feedback.html               */
+.feedback-table .col-num,
+.feedback-table .col-package,
+.feedback-table .col-date {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .feedback-table .col-num,
+    .feedback-table .col-package,
+    .feedback-table .col-date {
+        display: table-cell;
+    }
+}
+
+
+/* ============================================
+   PAGE: dashboard/leads.html
+   ============================================ */
+
+/* ── 40. Extra Badge Variants ─────────────── */
+/* SHARED: leads, vouchers, etc.               */
+.badge-info {
+    background: #eff6ff;
+    color: var(--c-primary);
+    border: 1px solid #bfdbfe;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.badge-purple {
+    background: #fdf4ff;
+    color: #9333ea;
+    border: 1px solid #e9d5ff;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.badge-neutral {
+    background: #f3f4f6;
+    color: var(--c-text-2);
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+/* ── 41. Leads Table — Mobile Columns ─────── */
+/* PAGE: dashboard/leads.html                  */
+.leads-table .col-num,
+.leads-table .col-source,
+.leads-table .col-package,
+.leads-table .col-assigned,
+.leads-table .col-status,
+.leads-table .col-date {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .leads-table .col-num,
+    .leads-table .col-source,
+    .leads-table .col-package,
+    .leads-table .col-assigned,
+    .leads-table .col-status,
+    .leads-table .col-date {
+        display: table-cell;
+    }
+}
+
+/* ============================================
+   PAGE: dashboard/create_lead.html (+ all forms)
+   ============================================ */
+
+/* ── 42. Card Body (inner padding) ────────── */
+/* SHARED: all create/edit form pages          */
+.card-body {
+    padding: 20px;
+}
+
+@media (min-width: 769px) {
+    .card-body { padding: 24px; }
+}
+
+.form-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 576px) {
+    .form-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+.form-grid .full-width {
+    grid-column: 1 / -1;
+}
+
+.required { color: var(--c-danger); }
+
+.btn-back {
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.cancel-link {
+    display: block;
+    text-align: center;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #6b7280;
+}
+/* ── 44. Toggle & Action Buttons ──────────── */
+/* SHARED: packages, advertisements, etc.      */
+.btn-toggle {
+    background: var(--c-warning-bg);
+    color: var(--c-warning);
+    border: 1px solid var(--c-warning-border);
+    border-radius: var(--r-sm);
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.btn-toggle:hover { background: #fde68a; }
+
+/* Stack actions vertically on mobile for breathing room */
+@media (max-width: 768px) {
+    .packages-table .action-group {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .packages-table .btn-toggle,
+    .packages-table .btn-cut {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+
+/* ── 45. Packages Table — Mobile Columns ──── */
+/* PAGE: dashboard/packages.html               */
+.packages-table .col-num,
+.packages-table .col-speed,
+.packages-table .col-data,
+.packages-table .col-devices,
+.packages-table .col-type,
+.packages-table .col-status {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .packages-table .col-num,
+    .packages-table .col-speed,
+    .packages-table .col-data,
+    .packages-table .col-devices,
+    .packages-table .col-type,
+    .packages-table .col-status {
+        display: table-cell;
+    }
+}
+
+/* ── 46. Form Checkbox ────────────────────── */
+/* SHARED: create_package, create_lead, etc.   */
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--c-text-2);
+    min-height: 44px;
+}
+
+.form-check input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--c-primary);
+}
+
+
+/* ── 47. Three-Column Form Grid ───────────── */
+/* PAGE: dashboard/create_package.html         */
+.form-grid-3 {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 576px) {
+    .form-grid-3 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 992px) {
+    .form-grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ============================================
+   PAGE: dashboard/vouchers.html
+   ============================================ */
+
+/* ── 48. Voucher Code Style ───────────────── */
+/* PAGE: dashboard/vouchers.html               */
+.voucher-code {
+    font-family: monospace;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 1px;
+    color: var(--c-text);
+}
+
+
+/* ── 49. Vouchers Table — Mobile Columns ──── */
+/* PAGE: dashboard/vouchers.html               */
+.vouchers-table .col-package,
+.vouchers-table .col-sale-type,
+.vouchers-table .col-agent,
+.vouchers-table .col-created {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .vouchers-table .col-package,
+    .vouchers-table .col-sale-type,
+    .vouchers-table .col-agent,
+    .vouchers-table .col-created {
+        display: table-cell;
+    }
+}
+/* ============================================
+   PAGE: dashboard/payments.html
+   ============================================ */
+
+/* ── 50. Payments Table — Mobile Columns ──── */
+/* PAGE: dashboard/payments.html               */
+.payments-table .col-num,
+.payments-table .col-receipt,
+.payments-table .col-type,
+.payments-table .col-date {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .payments-table .col-num,
+    .payments-table .col-receipt,
+    .payments-table .col-type,
+    .payments-table .col-date {
+        display: table-cell;
+    }
+}
+
+
+/* ============================================
+   PAGE: dashboard/expenses.html
+   ============================================ */
+
+/* ── 51. Icon Orange Variant ──────────────── */
+/* SHARED: expenses, etc.                      */
+.icon-orange { background: #fff7ed; color: #ea580c; }
+
+
+/* ── 52. Edit Button ──────────────────────── */
+/* SHARED: expenses, equipment, routers, etc.  */
+.btn-edit {
+    background: #eff6ff;
+    color: var(--c-primary);
+    border: none;
+    border-radius: var(--r-sm);
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+}
+
+.btn-edit:hover { background: #dbeafe; }
+
+
+/* ── 53. Expenses Table — Mobile Columns ──── */
+/* PAGE: dashboard/expenses.html               */
+.expenses-table .col-num,
+.expenses-table .col-category,
+.expenses-table .col-method,
+.expenses-table .col-vendor,
+.expenses-table .col-date {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .expenses-table .col-num,
+    .expenses-table .col-category,
+    .expenses-table .col-method,
+    .expenses-table .col-vendor,
+    .expenses-table .col-date {
+        display: table-cell;
+    }
+}
+
+/* Stack expense actions on mobile */
+@media (max-width: 768px) {
+    .expenses-table .action-group {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+
+/* ============================================
+   PAGE: dashboard/financial_analytics.html
+   ============================================ */
+
+/* ── 54. Period Card (simple stat) ────────── */
+/* PAGE: dashboard/financial_analytics.html    */
+.period-card {
+    background: var(--c-white);
+    border: 1px solid var(--c-border);
+    border-radius: 12px;
+    padding: 16px 20px;
+}
+
+.period-card .period-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--c-text-muted);
+    text-transform: uppercase;
+    margin: 0 0 6px;
+}
+
+.period-card .period-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--c-text);
+    margin: 0;
+}
+
+.period-card .period-sub {
+    font-size: 11px;
+    color: var(--c-text-muted);
+    margin: 4px 0 0;
+}
+
+
+/* ── 55. Legend Items ─────────────────────── */
+/* PAGE: dashboard/financial_analytics.html    */
+.legend-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.legend-item:last-child { margin-bottom: 0; }
+
+.legend-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--c-text-2);
+}
+
+.legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.legend-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c-text);
+}
+
+
+/* ── 56. Break-Even Grid ──────────────────── */
+/* PAGE: dashboard/financial_analytics.html    */
+.breakeven-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.breakeven-item {
+    background: var(--c-body);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.breakeven-item .period-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--c-text-muted);
+    text-transform: uppercase;
+    margin: 0 0 6px;
+}
+
+.breakeven-item .period-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--c-text);
+    margin: 0;
+}
+
+.breakeven-highlight {
+    grid-column: span 2;
+    background: #eff6ff;
+}
+
+.breakeven-highlight .period-label {
+    color: var(--c-primary);
+}
+
+.breakeven-highlight .period-value {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--c-primary);
+}
+
+
+/* ── 57. Date Range Filter ────────────────── */
+/* PAGE: dashboard/financial_analytics.html    */
+.date-filter {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.date-filter span {
+    font-size: 12px;
+    color: var(--c-text-muted);
+}
+
+/* ============================================
+   PAGE: dashboard/voucher_agents.html
+   ============================================ */
+
+/* ── 58. Agents Table — Mobile Columns ────── */
+/* PAGE: dashboard/voucher_agents.html         */
+.agents-table .col-location,
+.agents-table .col-commission,
+.agents-table .col-assigned,
+.agents-table .col-sold,
+.agents-table .col-available,
+.agents-table .col-status {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .agents-table .col-location,
+    .agents-table .col-commission,
+    .agents-table .col-assigned,
+    .agents-table .col-sold,
+    .agents-table .col-available,
+    .agents-table .col-status {
+        display: table-cell;
+    }
+}
+
+/* ============================================
+   PAGE: dashboard/withdrawals.html
+   ============================================ */
+
+/* ── 59. Balance Hero Banner ──────────────── */
+/* PAGE: dashboard/withdrawals.html            */
+.balance-banner {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    border-radius: 20px;
+    padding: 28px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    color: #fff;
+}
+
+@media (min-width: 769px) {
+    .balance-banner { padding: 32px; }
+}
+
+.balance-banner .balance-label {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    font-weight: 600;
+    margin: 0 0 8px;
+}
+
+.balance-banner .balance-value {
+    font-size: 32px;
+    font-weight: 900;
+    margin: 0 0 6px;
+}
+
+@media (min-width: 769px) {
+    .balance-banner .balance-value { font-size: 42px; }
+}
+
+.balance-banner .balance-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.6);
+    margin: 0;
+}
+
+.balance-cards {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.balance-mini {
+    background: rgba(255,255,255,0.15);
+    border-radius: 14px;
+    padding: 16px 20px;
+    text-align: center;
+    min-width: 130px;
+}
+
+.balance-mini .period-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 6px;
+}
+
+.balance-mini .period-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: #fff;
+    margin: 0;
+}
+
+
+/* ── 60. Status Action Buttons ────────────── */
+/* PAGE: dashboard/withdrawals.html            */
+.btn-complete {
+    background: #dcfce7;
+    color: var(--c-success);
+    border: none;
+    border-radius: var(--r-sm);
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    min-height: 30px;
+    transition: all 0.2s;
+}
+
+.btn-failed {
+    background: var(--c-danger-bg);
+    color: var(--c-danger);
+    border: none;
+    border-radius: var(--r-sm);
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    min-height: 30px;
+    transition: all 0.2s;
+}
+
+.btn-cancel {
+    background: #f3f4f6;
+    color: #6b7280;
+    border: none;
+    border-radius: var(--r-sm);
+    padding: 5px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    min-height: 30px;
+    transition: all 0.2s;
+}
+
+
+/* ── 61. Withdrawals Table — Mobile Columns ─ */
+/* PAGE: dashboard/withdrawals.html            */
+.withdrawals-table .col-num,
+.withdrawals-table .col-provider,
+.withdrawals-table .col-status,
+.withdrawals-table .col-requested,
+.withdrawals-table .col-completed {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .withdrawals-table .col-num,
+    .withdrawals-table .col-provider,
+    .withdrawals-table .col-status,
+    .withdrawals-table .col-requested,
+    .withdrawals-table .col-completed {
+        display: table-cell;
+    }
+}
+
+@media (max-width: 768px) {
+    .withdrawals-table .action-group {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+/* ── 62. Warning Notice Box ───────────────── */
+/* SHARED: create_withdrawal, etc.             */
+.notice-warning {
+    background: var(--c-warning-bg);
+    border: 1px solid var(--c-warning-border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.notice-warning i {
+    color: var(--c-warning);
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.notice-warning .notice-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #92400e;
+    margin: 0 0 4px;
+}
+
+.notice-warning .notice-text {
+    font-size: 12px;
+    color: #92400e;
+    margin: 0;
+}
+
+
+/* ── 63. Balance Highlight Box ────────────── */
+/* PAGE: dashboard/create_withdrawal.html      */
+.balance-highlight {
+    background: var(--c-success-bg);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.balance-highlight .period-label {
+    font-size: 12px;
+    color: var(--c-success);
+    font-weight: 700;
+    margin: 0 0 8px;
+}
+
+.balance-highlight .period-value {
+    font-size: 28px;
+    font-weight: 900;
+    color: #15803d;
+    margin: 0;
+}
+
+
+/* ── 64. Recent List Items ────────────────── */
+/* SHARED: create_withdrawal, detail pages     */
+.recent-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--c-border-light);
+}
+
+.recent-item:last-child { border-bottom: none; }
+
+.recent-item-info p { margin: 0; }
+
+.recent-item-info .recent-amount {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c-text);
+}
+
+.recent-item-info .recent-date {
+    font-size: 11px;
+    color: var(--c-text-muted);
+}
+
+/* ============================================
+   PAGE: dashboard/routers.html
+   ============================================ */
+
+/* ── 65. Small Icon Buttons ───────────────── */
+/* SHARED: routers, equipment, etc.            */
+.btn-icon {
+    border: none;
+    border-radius: var(--r-sm);
+    padding: 5px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+    font-family: inherit;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.btn-icon-warning { background: #fefce8; color: #ca8a04; }
+.btn-icon-success { background: #f0fdf4; color: var(--c-success); }
+.btn-icon-danger  { background: var(--c-danger-bg); color: var(--c-danger); }
+
+
+/* ── 66. Routers Table — Mobile Columns ───── */
+/* PAGE: dashboard/routers.html                */
+.routers-table .col-num,
+.routers-table .col-ip,
+.routers-table .col-connection,
+.routers-table .col-sessions,
+.routers-table .col-last-seen {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .routers-table .col-num,
+    .routers-table .col-ip,
+    .routers-table .col-connection,
+    .routers-table .col-sessions,
+    .routers-table .col-last-seen {
+        display: table-cell;
+    }
+}
+
+@media (max-width: 768px) {
+    .routers-table .action-group {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+/* ── 67. Setup Guide Steps ────────────────── */
+/* PAGE: dashboard/create_router.html          */
+.step-item {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.step-item:last-child { margin-bottom: 0; }
+
+.step-number {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--c-primary);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.step-text {
+    font-size: 12px;
+    color: var(--c-text-2);
+    margin: 0;
+    line-height: 1.5;
+}
+/* ============================================
+   PAGE: dashboard/equipment.html
+   ============================================ */
+
+/* ── 68. Equipment Table — Mobile Columns ─── */
+/* PAGE: dashboard/equipment.html              */
+.equipment-table .col-num,
+.equipment-table .col-type,
+.equipment-table .col-model,
+.equipment-table .col-serial,
+.equipment-table .col-status,
+.equipment-table .col-location {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .equipment-table .col-num,
+    .equipment-table .col-type,
+    .equipment-table .col-model,
+    .equipment-table .col-serial,
+    .equipment-table .col-status,
+    .equipment-table .col-location {
+        display: table-cell;
+    }
+}
+/* ============================================
+   PAGE: dashboard/advertisements.html
+   ============================================ */
+
+/* ── 69. Ads Table — Mobile Columns ───────── */
+/* PAGE: dashboard/advertisements.html         */
+.ads-table .col-num,
+.ads-table .col-preview,
+.ads-table .col-type,
+.ads-table .col-duration,
+.ads-table .col-impressions {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .ads-table .col-num,
+    .ads-table .col-preview,
+    .ads-table .col-type,
+    .ads-table .col-duration,
+    .ads-table .col-impressions {
+        display: table-cell;
+    }
+}
+/* ============================================
+   PAGE: dashboard/messages.html
+   ============================================ */
+
+/* ── 70. Messages Table — Mobile Columns ──── */
+/* PAGE: dashboard/messages.html               */
+.messages-table .col-num,
+.messages-table .col-status,
+.messages-table .col-date,
+.messages-table .col-action {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .messages-table .col-num,
+    .messages-table .col-status,
+    .messages-table .col-date,
+    .messages-table .col-action {
+        display: table-cell;
+    }
+}
+
+/* ── 71. Radio Options Row ────────────────── */
+/* SHARED: send_message, etc.                  */
+.radio-group {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.form-radio {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--c-text-2);
+}
+
+.form-radio input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--c-primary);
+}
+
+
+/* ── 72. Tip Card Items ───────────────────── */
+/* PAGE: dashboard/send_message.html           */
+.tip-item {
+    margin-bottom: 16px;
+}
+
+.tip-item:last-child { margin-bottom: 0; }
+
+.tip-item .tip-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 0 0 4px;
+}
+
+.tip-item .tip-text {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 0;
+}
+/* ============================================
+   PAGE: dashboard/settings.html
+   ============================================ */
+
+/* ── 73. Settings Tabs ────────────────────── */
+/* PAGE: dashboard/settings.html               */
+.settings-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 28px;
+    border-bottom: 2px solid var(--c-border-light);
+    flex-wrap: wrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.settings-tab-btn {
+    padding: 10px 16px;
+    border: none;
+    background: none;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    color: var(--c-text-muted);
+    transition: all 0.2s;
+    white-space: nowrap;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+}
+
+.settings-tab-btn.active {
+    color: var(--c-primary);
+    border-bottom-color: var(--c-primary);
+}
+
+@media (min-width: 769px) {
+    .settings-tab-btn { padding: 10px 20px; }
+}
+
+/* Color picker row */
+.color-picker-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.color-picker-row input[type="color"] {
+    width: 48px;
+    height: 40px;
+    border: none;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    padding: 2px;
+}
+
+/* Section divider inside forms */
+.form-divider {
+    border: none;
+    border-top: 1px solid var(--c-border-light);
+    margin: 8px 0;
+}
+
+.form-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 16px 0;
+}
+
+/* ============================================
+   PAGE: dashboard/team_roles.html
+   ============================================ */
+
+/* ── 74. Role Cards ───────────────────────── */
+/* PAGE: dashboard/team_roles.html             */
+.role-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+    margin-bottom: 20px;
+}
+
+@media (min-width: 769px) {
+    .role-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.role-card {
+    background: var(--c-white);
+    border-radius: var(--r-lg);
+    border: 1px solid var(--c-border-light);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+}
+
+.role-card-primary { border: 2px solid var(--c-primary); }
+
+.role-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.role-header-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.role-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.role-name {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--c-text);
+    margin: 0;
+}
+
+.role-sub {
+    font-size: 12px;
+    color: var(--c-text-muted);
+    margin: 0;
+}
+
+.role-desc {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.role-badge {
+    background: #eff6ff;
+    border-radius: var(--r-md);
+    padding: 12px;
+    margin-bottom: 16px;
+    font-size: 12px;
+    color: var(--c-primary);
+    font-weight: 700;
+}
+
+
+/* ── 75. Permission Config Panel ──────────── */
+/* PAGE: dashboard/team_roles.html             */
+.config-panel {
+    display: none;
+    margin-bottom: 24px;
+}
+
+.config-panel.active { display: block; }
+
+.config-card {
+    background: var(--c-white);
+    border-radius: var(--r-lg);
+    border: 1px solid var(--c-muted-border);
+    padding: 24px;
+    box-shadow: var(--shadow-md);
+}
+
+.config-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.perm-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 769px) {
+    .perm-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.perm-group {
+    background: var(--c-body);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.perm-group-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--c-text-2);
+    margin: 0 0 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.perm-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--c-muted-border);
+}
+
+.perm-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.perm-item label {
+    font-size: 13px;
+    color: var(--c-text-2);
+    margin: 0;
+    cursor: pointer;
+}
+
+.perm-item input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--c-primary);
+}
+
+
+/* ── 76. Users Table — Mobile Columns ─────── */
+/* PAGE: dashboard/team_roles.html             */
+.users-table .col-num,
+.users-table .col-username,
+.users-table .col-email,
+.users-table .col-login {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .users-table .col-num,
+    .users-table .col-username,
+    .users-table .col-email,
+    .users-table .col-login {
+        display: table-cell;
+    }
+}
+
+/* ============================================
+   PAGE: dashboard/router_detail.html
+   ============================================ */
+
+/* ── 77. Status Banner ────────────────────── */
+/* PAGE: dashboard/router_detail.html          */
+.status-banner {
+    border-radius: 14px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.status-banner-online {
+    background: var(--c-success-bg);
+    border: 1px solid var(--c-success-border);
+}
+
+.status-banner-offline {
+    background: var(--c-danger-bg);
+    border: 1px solid var(--c-danger-border);
+}
+
+.status-dot-lg {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+
+/* ── 78. Config Info Grid ─────────────────── */
+/* PAGE: dashboard/router_detail.html          */
+.config-grid {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 576px) {
+    .config-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 992px) {
+    .config-grid { grid-template-columns: repeat(6, 1fr); }
+}
+
+.config-item .config-label {
+    font-size: 11px;
+    color: var(--c-text-muted);
+    font-weight: 700;
+    margin: 0 0 4px;
+}
+
+.config-item .config-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--c-text-2);
+    font-family: monospace;
+    margin: 0;
+}
+
+
+/* ── 79. Router Sessions — Mobile Columns ─── */
+/* PAGE: dashboard/router_detail.html          */
+.router-sessions .col-num,
+.router-sessions .col-mac,
+.router-sessions .col-started,
+.router-sessions .col-ip {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .router-sessions .col-num,
+    .router-sessions .col-mac,
+    .router-sessions .col-started,
+    .router-sessions .col-ip {
+        display: table-cell;
+    }
+}
+/* ============================================
+   PAGE: dashboard/customer_detail.html
+   ============================================ */
+
+/* ── 80. Profile Card ─────────────────────── */
+/* PAGE: dashboard/customer_detail.html        */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.profile-avatar-lg {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #eff6ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--c-primary);
+    flex-shrink: 0;
+}
+
+.profile-info { flex: 1; }
+.profile-info h5 { font-weight: 800; color: var(--c-text); margin: 0; }
+.profile-info p { font-size: 12px; color: var(--c-text-muted); margin: 4px 0 0; font-family: monospace; }
+
+
+/* ── 81. Mini Stats Grid ──────────────────── */
+/* PAGE: dashboard/customer_detail.html        */
+.mini-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1px;
+    background: var(--c-muted-border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.mini-stat {
+    background: var(--c-white);
+    padding: 16px;
+    text-align: center;
+}
+
+.mini-stat .mini-label {
+    font-size: 11px;
+    color: var(--c-text-muted);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin: 0 0 4px;
+}
+
+.mini-stat .mini-value {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--c-text);
+    margin: 0;
+}
+
+
+/* ── 82. Highlight Card (active session) ──── */
+/* SHARED: customer_detail, etc.               */
+.highlight-card {
+    border-left: 4px solid var(--c-success);
+    padding: 20px;
+}
+
+.highlight-card h6 {
+    font-weight: 700;
+    color: var(--c-success);
+    margin: 0 0 12px;
+}
+
+.highlight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+}
+
+.highlight-grid .hl-label {
+    font-size: 11px;
+    color: var(--c-text-muted);
+    margin: 0;
+}
+
+.highlight-grid .hl-value {
+    font-weight: 700;
+    color: var(--c-text);
+    margin: 0;
+}
+
+
+/* ── 83. Danger Zone ──────────────────────── */
+/* SHARED: customer_detail, etc.               */
+.danger-zone {
+    padding: 20px;
+    border-left: 4px solid var(--c-danger);
+}
+
+.danger-zone h6 {
+    font-weight: 700;
+    color: var(--c-danger);
+    margin: 0 0 8px;
+}
+
+.danger-zone p {
+    font-size: 13px;
+    color: var(--c-text-muted);
+    margin: 0 0 16px;
+}
+
+
+/* ── 84. Customer Detail — Mobile Columns ─── */
+/* PAGE: dashboard/customer_detail.html        */
+.session-history .col-num,
+.session-history .col-ip,
+.session-history .col-router {
+    display: none;
+}
+
+.payment-history .col-num,
+.payment-history .col-provider,
+.payment-history .col-date {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .session-history .col-num,
+    .session-history .col-ip,
+    .session-history .col-router,
+    .payment-history .col-num,
+    .payment-history .col-provider,
+    .payment-history .col-date {
+        display: table-cell;
+    }
+}
+
+/* ============================================
+   PAGE: dashboard/agent_detail.html
+   ============================================ */
+
+/* ── 85. Agent Vouchers — Mobile Columns ──── */
+/* PAGE: dashboard/agent_detail.html           */
+.agent-vouchers .col-num,
+.agent-vouchers .col-package,
+.agent-vouchers .col-used-by,
+.agent-vouchers .col-used-at,
+.agent-vouchers .col-created {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .agent-vouchers .col-num,
+    .agent-vouchers .col-package,
+    .agent-vouchers .col-used-by,
+    .agent-vouchers .col-used-at,
+    .agent-vouchers .col-created {
+        display: table-cell;
+    }
+}

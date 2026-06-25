@@ -1,0 +1,149 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Request Withdrawal{% endblock %}
+{% block page_title %}Request Withdrawal{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Request Withdrawal</h5>
+        <p>Withdraw collected revenue to your Mobile Money account</p>
+    </div>
+    <a href="{% url 'dashboard:withdrawals' %}" class="btn-back">← Back to Withdrawals</a>
+</div>
+
+<div class="grid-8-4">
+
+    <!-- Left Column — Form -->
+    <div>
+        <form method="post" action="{% url 'dashboard:create_withdrawal' %}">
+            {% csrf_token %}
+
+            <div class="dash-table mb-2">
+                <div class="dash-table-header">
+                    <h6>Withdrawal Details</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-grid">
+
+                        <div class="form-group full-width">
+                            <label class="form-label">
+                                Amount to Withdraw (UGX) <span class="required">*</span>
+                            </label>
+                            <input type="number" name="amount" required
+                                   placeholder="e.g. 500000"
+                                   min="1000" step="500"
+                                   class="form-input">
+                            <p class="form-hint">Minimum withdrawal: UGX 1,000</p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Mobile Money Provider <span class="required">*</span>
+                            </label>
+                            <select name="provider" required class="form-select">
+                                <option value="">— Select Provider —</option>
+                                <option value="MTN MoMo">MTN Mobile Money</option>
+                                <option value="Airtel Money">Airtel Money</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Mobile Money Number <span class="required">*</span>
+                            </label>
+                            <input type="text" name="mobile_number" required
+                                   placeholder="e.g. 0771234567"
+                                   maxlength="10"
+                                   class="form-input">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">
+                                Account Holder Name <span class="required">*</span>
+                            </label>
+                            <input type="text" name="account_name" required
+                                   placeholder="e.g. Patrick Ssemwanga"
+                                   class="form-input">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Warning Notice -->
+            <div class="notice-warning">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <div>
+                    <p class="notice-title">Before you submit</p>
+                    <p class="notice-text">
+                        Make sure the Mobile Money number and account name are correct.
+                        Withdrawals sent to wrong numbers cannot be reversed.
+                        A confirmation email will be sent before processing.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-send-fill"></i> Submit Withdrawal Request
+                </button>
+                <a href="{% url 'dashboard:withdrawals' %}" class="btn btn-outline">Cancel</a>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Right Column — Balance Info -->
+    <div>
+        <div class="dash-table mb-2">
+            <div class="dash-table-header">
+                <h6>Available Balance</h6>
+            </div>
+            <div class="card-body" style="text-align:center;">
+                <div class="balance-highlight">
+                    <p class="period-label">CURRENT MOMO BALANCE</p>
+                    <p class="period-value">UGX {{ momo_balance|default:"0"|floatformat:0 }}</p>
+                </div>
+                <p class="text-muted" style="font-size:12px;">
+                    This is the total revenue collected via Mobile Money
+                    that is available for withdrawal.
+                </p>
+            </div>
+        </div>
+
+        <!-- Recent Withdrawals -->
+        <div class="dash-table">
+            <div class="dash-table-header">
+                <h6>Recent Withdrawals</h6>
+            </div>
+            <div class="card-body">
+                {% for w in recent_withdrawals %}
+                <div class="recent-item">
+                    <div class="recent-item-info">
+                        <p class="recent-amount">UGX {{ w.amount|floatformat:0 }}</p>
+                        <p class="recent-date">{{ w.requested_at|date:"d M Y" }}</p>
+                    </div>
+                    {% if w.status == 'completed' %}
+                        <span class="badge badge-success">Done</span>
+                    {% elif w.status == 'pending' %}
+                        <span class="badge badge-pending">Pending</span>
+                    {% else %}
+                        <span class="badge badge-failed">Failed</span>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <p class="text-muted text-center" style="padding:16px 0; font-size:13px;">
+                    No withdrawals yet.
+                </p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

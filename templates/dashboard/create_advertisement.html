@@ -1,0 +1,176 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Create Advertisement{% endblock %}
+{% block page_title %}Create Advertisement{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Create Advertisement</h5>
+        <p>Set up a new ad to display on the captive portal</p>
+    </div>
+    <a href="{% url 'dashboard:advertisements' %}" class="btn-back">← Back to Advertisements</a>
+</div>
+
+<!-- ── Form ──────────────────────────────────────────── -->
+<form method="post" action="{% url 'dashboard:create_advertisement' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="grid-8-4">
+
+        <!-- Left Column -->
+        <div>
+
+            <!-- Basic Info -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header"><h6>Ad Content</h6></div>
+                <div class="card-body">
+                    <div class="form-grid">
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Ad Title <span class="required">*</span></label>
+                            <input type="text" name="title" required
+                                   placeholder="e.g. Rolex Special Offer — Only 2,000 UGX" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Ad Type <span class="required">*</span></label>
+                            <select name="ad_type" required id="adType"
+                                    onchange="toggleMediaField()" class="form-select">
+                                <option value="Banner">Banner (Image)</option>
+                                <option value="Video">Video</option>
+                                <option value="Text">Text Only</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Display Duration (seconds) <span class="required">*</span></label>
+                            <input type="number" name="display_duration" required
+                                   value="10" min="3" max="120" class="form-input">
+                            <p class="form-hint">How long the ad shows before the portal loads. Min 3s.</p>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Description / Ad Text</label>
+                            <textarea name="description" rows="3"
+                                      placeholder="Ad body text shown to customers..."
+                                      class="form-textarea"></textarea>
+                        </div>
+
+                        <div class="form-group full-width" id="mediaUploadField">
+                            <label class="form-label">Media File (Image / Video)</label>
+                            <input type="file" name="media_file" accept="image/*,video/*" class="form-input">
+                            <p class="form-hint">Images: JPG, PNG, GIF. Videos: MP4. Max 20MB.</p>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="form-label">Click-Through URL (optional)</label>
+                            <input type="url" name="click_url"
+                                   placeholder="e.g. https://yourbusiness.com/offer" class="form-input">
+                            <p class="form-hint">Where customers go if they tap the ad.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scheduling -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header"><h6>Schedule</h6></div>
+                <div class="card-body">
+                    <div class="form-grid">
+
+                        <div class="form-group">
+                            <label class="form-label">Start Date</label>
+                            <input type="date" name="start_date" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">End Date</label>
+                            <input type="date" name="end_date" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Active From (Time)</label>
+                            <input type="time" name="active_from" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Active Until (Time)</label>
+                            <input type="time" name="active_until" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Max Impressions</label>
+                            <input type="number" name="max_impressions"
+                                   placeholder="Leave blank for unlimited" min="1" class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Priority</label>
+                            <input type="number" name="priority" value="1" min="1" max="10" class="form-input">
+                            <p class="form-hint">Higher number = shown more often. Range 1–10.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column -->
+        <div>
+
+            <!-- Status -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header"><h6>Status</h6></div>
+                <div class="card-body">
+                    <label class="form-check">
+                        <input type="checkbox" name="is_active" checked>
+                        Active (show on portal)
+                    </label>
+                    <p class="form-hint mt-1">Uncheck to save as draft without displaying it yet.</p>
+                </div>
+            </div>
+
+            <!-- Active Days -->
+            <div class="dash-table mb-2">
+                <div class="dash-table-header"><h6>Active Days</h6></div>
+                <div class="card-body">
+                    <p class="form-hint mb-2">Which days should this ad run?</p>
+                    {% for day in days %}
+                    <label class="form-check" style="margin-bottom:8px;">
+                        <input type="checkbox" name="active_days" value="{{ day }}" checked>
+                        {{ day }}
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Save -->
+            <div class="dash-table">
+                <div class="card-body">
+                    <button type="submit" class="btn btn-primary w-full">
+                        <i class="bi bi-megaphone-fill"></i> Create Ad
+                    </button>
+                    <a href="{% url 'dashboard:advertisements' %}" class="cancel-link">Cancel</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleMediaField() {
+    var type  = document.getElementById('adType').value;
+    var field = document.getElementById('mediaUploadField');
+    field.style.display = (type === 'Text') ? 'none' : 'block';
+}
+</script>
+{% endblock %}

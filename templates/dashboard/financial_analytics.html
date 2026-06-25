@@ -1,0 +1,289 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Financial Analytics{% endblock %}
+{% block page_title %}Financial Analytics{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Financial Analytics</h5>
+        <p>Full profit and loss reporting, revenue breakdown and ROI analysis</p>
+    </div>
+    <form method="get" class="date-filter">
+        <input type="date" name="date_from" value="{{ date_from }}" class="filter-input" style="width:auto;">
+        <span>to</span>
+        <input type="date" name="date_to" value="{{ date_to }}" class="filter-input" style="width:auto;">
+        <button type="submit" class="btn btn-primary btn-sm">Apply</button>
+        {% if date_from or date_to %}
+        <a href="{% url 'dashboard:financial_analytics' %}" class="btn btn-outline btn-sm">Clear</a>
+        {% endif %}
+    </form>
+</div>
+
+<!-- ── P&L Summary Cards ──────────────────────────────── -->
+<div class="stats-row mb-2">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-success">
+            <i class="bi bi-graph-up-arrow"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Total Revenue</p>
+            <h4>UGX {{ total_revenue|default:"0"|floatformat:0 }}</h4>
+            <small>This month: UGX {{ month_rev.total|default:"0"|floatformat:0 }}</small>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-danger">
+            <i class="bi bi-graph-down-arrow"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Total Expenses</p>
+            <h4>UGX {{ total_expenses|default:"0"|floatformat:0 }}</h4>
+            <small>This month: UGX {{ month_expenses|default:"0"|floatformat:0 }}</small>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-primary">
+            <i class="bi bi-cash-coin"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Net Profit</p>
+            <h4 class="{% if net_profit >= 0 %}text-success{% else %}text-danger{% endif %}">
+                UGX {{ net_profit|default:"0"|floatformat:0 }}
+            </h4>
+            <small>Margin: {{ profit_margin|default:"0" }}%</small>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-purple">
+            <i class="bi bi-percent"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>ROI</p>
+            <h4 class="{% if roi >= 0 %}text-success{% else %}text-danger{% endif %}">
+                {{ roi|default:"0"|floatformat:1 }}%
+            </h4>
+            <small class="{% if revenue_growth >= 0 %}text-success{% else %}text-danger{% endif %}">
+                MoM growth: {{ revenue_growth|default:"0" }}%
+            </small>
+        </div>
+    </div>
+</div>
+
+<!-- ── Quick Period Cards ─────────────────────────────── -->
+<div class="stats-row mb-2">
+    <div class="period-card">
+        <p class="period-label">Today</p>
+        <p class="period-value">UGX {{ today_rev.total|default:"0"|floatformat:0 }}</p>
+        <p class="period-sub">{{ today_rev.count|default:"0" }} transaction{{ today_rev.count|pluralize }}</p>
+    </div>
+    <div class="period-card">
+        <p class="period-label">Yesterday</p>
+        <p class="period-value">UGX {{ yesterday_rev.total|default:"0"|floatformat:0 }}</p>
+        <p class="period-sub">{{ yesterday_rev.count|default:"0" }} transaction{{ yesterday_rev.count|pluralize }}</p>
+    </div>
+    <div class="period-card">
+        <p class="period-label">This Week</p>
+        <p class="period-value">UGX {{ week_rev.total|default:"0"|floatformat:0 }}</p>
+        <p class="period-sub">{{ week_rev.count|default:"0" }} transaction{{ week_rev.count|pluralize }}</p>
+    </div>
+    <div class="period-card">
+        <p class="period-label">This Year</p>
+        <p class="period-value">UGX {{ year_rev.total|default:"0"|floatformat:0 }}</p>
+        <p class="period-sub">{{ year_rev.count|default:"0" }} transaction{{ year_rev.count|pluralize }}</p>
+    </div>
+</div>
+
+<!-- ── Revenue vs Expenses Chart ──────────────────────── -->
+<div class="grid-8-4 mb-2">
+    <div class="card">
+        <h6 class="font-bold mb-2" style="color:var(--c-text);">
+            Revenue vs Expenses vs Profit — Last 6 Months
+        </h6>
+        <canvas id="revenueChart" height="120"></canvas>
+    </div>
+
+    <div class="card">
+        <h6 class="font-bold mb-2" style="color:var(--c-text);">Revenue by Source</h6>
+        <canvas id="sourceChart" height="180"></canvas>
+        <div class="mt-2">
+            <div class="legend-item">
+                <div class="legend-label">
+                    <span class="legend-dot" style="background:#2563eb;"></span>
+                    Online (MoMo)
+                </div>
+                <span class="legend-value">UGX {{ online_revenue|default:"0"|floatformat:0 }}</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-label">
+                    <span class="legend-dot" style="background:#16a34a;"></span>
+                    Walk-in (Cash)
+                </div>
+                <span class="legend-value">UGX {{ walkin_revenue|default:"0"|floatformat:0 }}</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-label">
+                    <span class="legend-dot" style="background:#9333ea;"></span>
+                    Agent Sales
+                </div>
+                <span class="legend-value">UGX {{ agent_revenue|default:"0"|floatformat:0 }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Top Packages + Expense Breakdown ───────────────── -->
+<div class="grid-2 mb-2">
+    <div class="card">
+        <h6 class="font-bold mb-2" style="color:var(--c-text);">Top Performing Packages</h6>
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Package</th>
+                        <th class="text-right">Orders</th>
+                        <th class="text-right">Revenue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pkg in top_packages %}
+                    <tr>
+                        <td class="font-semibold">{{ pkg.package__name|default:"—" }}</td>
+                        <td class="text-right font-bold" style="color:var(--c-primary);">{{ pkg.total_orders }}</td>
+                        <td class="text-right font-bold text-success">UGX {{ pkg.total_revenue|floatformat:0 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="empty-state">No data yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <h6 class="font-bold mb-2" style="color:var(--c-text);">Expenses by Category</h6>
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th class="text-right">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cat in expense_by_category %}
+                    <tr>
+                        <td class="font-semibold">{{ cat.expense_type|default:"General" }}</td>
+                        <td class="text-right font-bold text-danger">UGX {{ cat.total|floatformat:0 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="empty-state">No expenses recorded yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ── Break-Even & Monthly P&L ───────────────────────── -->
+<div class="grid-2 mb-2">
+    <div class="card">
+        <h6 class="font-bold mb-2" style="color:var(--c-text);">Break-Even Analysis</h6>
+        <div class="breakeven-grid">
+            <div class="breakeven-item">
+                <p class="period-label">Fixed Costs</p>
+                <p class="period-value">UGX {{ fixed_costs|default:"0"|floatformat:0 }}</p>
+            </div>
+            <div class="breakeven-item">
+                <p class="period-label">Avg Revenue/Day</p>
+                <p class="period-value">UGX {{ avg_daily_revenue|default:"0"|floatformat:0 }}</p>
+            </div>
+            <div class="breakeven-item breakeven-highlight">
+                <p class="period-label">Days to Break Even</p>
+                <p class="period-value">{{ breakeven_days|default:"—" }} days</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h6 class="font-bold mb-2" style="color:var(--c-text);">Monthly P&L Summary</h6>
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th class="text-right">Revenue</th>
+                        <th class="text-right">Expenses</th>
+                        <th class="text-right">Profit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in monthly_pl %}
+                    <tr>
+                        <td class="font-semibold">{{ row.month }}</td>
+                        <td class="text-right font-bold text-success">{{ row.revenue|floatformat:0 }}</td>
+                        <td class="text-right font-bold text-danger">{{ row.expenses|floatformat:0 }}</td>
+                        <td class="text-right font-bold {% if row.profit >= 0 %}text-success{% else %}text-danger{% endif %}">
+                            {{ row.profit|floatformat:0 }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="empty-state">No data yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+/* ── Revenue vs Expenses vs Profit Chart ──── */
+var revenueCtx = document.getElementById('revenueChart').getContext('2d');
+new Chart(revenueCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ chart_labels|safe }},
+        datasets: [
+            { label: 'Revenue',  data: {{ revenue_data|safe }},  backgroundColor: 'rgba(37,99,235,0.85)', borderRadius: 6 },
+            { label: 'Expenses', data: {{ expense_data|safe }},  backgroundColor: 'rgba(220,38,38,0.75)', borderRadius: 6 },
+            { label: 'Profit',   data: {{ profit_data|safe }},   backgroundColor: 'rgba(22,163,74,0.75)', borderRadius: 6 }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { position: 'top', labels: { font: { family: 'Inter', size: 12 } } } },
+        scales: {
+            y: { beginAtZero: true, ticks: { font: { family: 'Inter', size: 11 }, callback: function(v) { return 'UGX ' + v.toLocaleString(); } }, grid: { color: '#f3f4f6' } },
+            x: { ticks: { font: { family: 'Inter', size: 11 } }, grid: { display: false } }
+        }
+    }
+});
+
+/* ── Revenue by Source Doughnut ────────────── */
+var sourceCtx = document.getElementById('sourceChart').getContext('2d');
+new Chart(sourceCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Online (MoMo)', 'Walk-in (Cash)', 'Agent Sales'],
+        datasets: [{ data: [{{ online_revenue|default:0 }}, {{ walkin_revenue|default:0 }}, {{ agent_revenue|default:0 }}], backgroundColor: ['#2563eb', '#16a34a', '#9333ea'], borderWidth: 0, hoverOffset: 6 }]
+    },
+    options: { responsive: true, cutout: '70%', plugins: { legend: { display: false } } }
+});
+</script>
+{% endblock %}

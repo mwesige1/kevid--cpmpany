@@ -1,0 +1,234 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Team Roles{% endblock %}
+{% block page_title %}Team Roles{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Team Roles & Permissions</h5>
+        <p>Configure what each role can access and do in the dashboard</p>
+    </div>
+</div>
+
+<!-- ── Roles Overview ─────────────────────────────────── -->
+<div class="role-grid">
+
+    <!-- Super Admin -->
+    <div class="role-card role-card-primary">
+        <div class="role-header">
+            <div class="role-icon" style="background:var(--c-primary); color:#fff;">
+                <i class="bi bi-shield-fill-check"></i>
+            </div>
+            <div>
+                <p class="role-name">Super Admin</p>
+                <p class="role-sub">Full system access</p>
+            </div>
+        </div>
+        <div class="role-badge">ALL PERMISSIONS ENABLED</div>
+        <p class="role-desc">
+            Super Admin has unrestricted access to every feature,
+            setting, financial report, and user management action.
+            Cannot be restricted.
+        </p>
+    </div>
+
+    <!-- Manager -->
+    <div class="role-card">
+        <div class="role-header-between">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="role-icon" style="background:#fef9c3; color:#ca8a04;">
+                    <i class="bi bi-person-badge-fill"></i>
+                </div>
+                <div>
+                    <p class="role-name">Manager</p>
+                    <p class="role-sub">{{ manager_permission_count }} permissions</p>
+                </div>
+            </div>
+            <button onclick="openConfig('manager')" class="btn-view">Configure</button>
+        </div>
+        <p class="role-desc">
+            Managers can view all sections including financial reports
+            and revenue data but cannot change system settings or
+            manage user accounts.
+        </p>
+    </div>
+
+    <!-- Staff -->
+    <div class="role-card">
+        <div class="role-header-between">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="role-icon" style="background:#f0fdf4; color:var(--c-success);">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                <div>
+                    <p class="role-name">Staff</p>
+                    <p class="role-sub">{{ staff_permission_count }} permissions</p>
+                </div>
+            </div>
+            <button onclick="openConfig('staff')" class="btn-view">Configure</button>
+        </div>
+        <p class="role-desc">
+            Staff can only see active sessions, devices, and basic
+            operations. They cannot access financial reports,
+            withdrawals, or system settings.
+        </p>
+    </div>
+
+</div>
+
+<!-- ── Permission Config Panel ───────────────────────── -->
+<div class="config-panel" id="configPanel">
+    <div class="config-card">
+
+        <div class="config-header">
+            <h6 id="configTitle" class="font-bold" style="margin:0;">
+                Configure Role Permissions
+            </h6>
+            <button onclick="closeConfig()" class="btn btn-outline btn-sm">
+                ✕ Close
+            </button>
+        </div>
+
+        <form method="post" action="{% url 'dashboard:team_roles' %}">
+            {% csrf_token %}
+            <input type="hidden" name="role" id="configRoleInput">
+
+            <div class="perm-grid">
+
+                <!-- Sessions & Devices -->
+                <div class="perm-group">
+                    <p class="perm-group-title">📡 Sessions & Devices</p>
+                    {% for perm in session_permissions %}
+                    <div class="perm-item">
+                        <label for="perm_{{ perm.key }}">{{ perm.label }}</label>
+                        <input type="checkbox" id="perm_{{ perm.key }}" name="{{ perm.key }}">
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Payments & Finance -->
+                <div class="perm-group">
+                    <p class="perm-group-title">💰 Payments & Finance</p>
+                    {% for perm in finance_permissions %}
+                    <div class="perm-item">
+                        <label for="perm_{{ perm.key }}">{{ perm.label }}</label>
+                        <input type="checkbox" id="perm_{{ perm.key }}" name="{{ perm.key }}">
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Management -->
+                <div class="perm-group">
+                    <p class="perm-group-title">⚙️ Management</p>
+                    {% for perm in management_permissions %}
+                    <div class="perm-item">
+                        <label for="perm_{{ perm.key }}">{{ perm.label }}</label>
+                        <input type="checkbox" id="perm_{{ perm.key }}" name="{{ perm.key }}">
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+
+            <div class="btn-group mt-3" style="padding-top:20px; border-top:1px solid var(--c-border-light);">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-save"></i> Save Permissions
+                </button>
+                <button type="button" onclick="closeConfig()" class="btn btn-outline">Cancel</button>
+                <span id="saveMsg" style="display:none; font-size:13px; color:var(--c-success); font-weight:600;">
+                    ✅ Permissions saved!
+                </span>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- ── System Users Table ─────────────────────────────── -->
+<div class="dash-table users-table">
+    <div class="dash-table-header">
+        <h6>System Users</h6>
+    </div>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-num">#</th>
+                    <th class="col-name">Name</th>
+                    <th class="col-username">Username</th>
+                    <th class="col-email">Email</th>
+                    <th class="col-role">Role</th>
+                    <th class="col-login">Last Login</th>
+                    <th class="col-status">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in system_users %}
+                <tr>
+                    <td class="col-num text-muted" style="font-size:12px;">{{ forloop.counter }}</td>
+                    <td class="col-name font-semibold">{{ u.get_full_name|default:u.username }}</td>
+                    <td class="col-username" style="font-family:monospace; font-size:12px;">{{ u.username }}</td>
+                    <td class="col-email">{{ u.email|default:"—" }}</td>
+                    <td class="col-role">
+                        {% if u.is_superuser %}
+                            <span class="badge badge-info">Super Admin</span>
+                        {% elif u.is_staff %}
+                            <span class="badge badge-warning">Manager</span>
+                        {% else %}
+                            <span class="badge badge-success">Staff</span>
+                        {% endif %}
+                    </td>
+                    <td class="col-login text-muted" style="font-size:12px;">
+                        {{ u.last_login|date:"d M Y, H:i"|default:"Never" }}
+                    </td>
+                    <td class="col-status">
+                        {% if u.is_active %}
+                            <span class="badge badge-success">Active</span>
+                        {% else %}
+                            <span class="badge badge-failed">Inactive</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <i class="bi bi-people" style="display:block;"></i>
+                        No users found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var managerPerms = {{ manager_perms_json|safe }};
+var staffPerms   = {{ staff_perms_json|safe }};
+
+function openConfig(role) {
+    var titles = { manager: 'Configure Manager Permissions', staff: 'Configure Staff Permissions' };
+    var perms  = role === 'manager' ? managerPerms : staffPerms;
+
+    document.getElementById('configTitle').textContent   = titles[role];
+    document.getElementById('configRoleInput').value     = role;
+    document.getElementById('configPanel').classList.add('active');
+
+    document.querySelectorAll('#configPanel input[type="checkbox"]').forEach(function(cb) {
+        cb.checked = perms.includes(cb.name);
+    });
+
+    document.getElementById('configPanel').scrollIntoView({ behavior: 'smooth' });
+}
+
+function closeConfig() {
+    document.getElementById('configPanel').classList.remove('active');
+}
+</script>
+{% endblock %}

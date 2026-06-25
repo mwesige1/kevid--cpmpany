@@ -1,0 +1,53 @@
+# Python
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+
+# Django
+staticfiles/
+media/
+logs/
+*.log
+
+# Environment — NEVER commit these
+.env
+*.env
+
+# Database
+*.sqlite3
+*.db
+
+# Docker
+postgres_data/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*.orig
+
+# OS
+.DS_Store
+Thumbs.db
+thumbs.db
+
+# Coverage
+.coverage
+htmlcov/
+
+# pytest
+.pytest_cache/
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Virtual environment
+env/
+
+# HTML files folder
+html files/

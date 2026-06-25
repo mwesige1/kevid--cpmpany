@@ -1,0 +1,148 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Payments{% endblock %}
+{% block page_title %}Payments{% endblock %}
+
+{% block content %}
+
+<!-- ── Header Row ────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h5>Payments</h5>
+        <p>All payment transactions — online and walk-in</p>
+    </div>
+    <a href="{% url 'dashboard:record_payment' %}" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg"></i> Record Payment
+    </a>
+</div>
+
+<!-- ── KPI Cards ─────────────────────────────────────── -->
+<div class="stats-row mb-2">
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-success">
+            <i class="bi bi-cash-coin"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Total Revenue</p>
+            <h4>UGX {{ total_revenue|default:"0"|floatformat:0 }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-primary">
+            <i class="bi bi-phone-fill"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Online (MoMo)</p>
+            <h4>UGX {{ online_revenue|default:"0"|floatformat:0 }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-warning">
+            <i class="bi bi-cash-stack"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>Walk-in (Cash)</p>
+            <h4>UGX {{ walkin_revenue|default:"0"|floatformat:0 }}</h4>
+        </div>
+    </div>
+
+    <div class="dash-stat-card">
+        <div class="dash-stat-icon icon-purple">
+            <i class="bi bi-calendar-month"></i>
+        </div>
+        <div class="dash-stat-info">
+            <p>This Month</p>
+            <h4>UGX {{ month_revenue|default:"0"|floatformat:0 }}</h4>
+        </div>
+    </div>
+</div>
+
+<!-- ── Filter Tabs ────────────────────────────────────── -->
+<div class="tab-pills">
+    <a href="?" class="tab-pill {% if not status_filter %}active{% endif %}">All</a>
+    <a href="?provider=online" class="tab-pill {% if status_filter == 'online' %}active{% endif %}">Online (MoMo)</a>
+    <a href="?provider=walk_in" class="tab-pill {% if status_filter == 'walk_in' %}active{% endif %}">Walk-in (Cash)</a>
+    <a href="?provider=voucher" class="tab-pill {% if status_filter == 'voucher' %}active{% endif %}">Voucher</a>
+</div>
+
+<!-- ── Payments Table ────────────────────────────────── -->
+<div class="dash-table payments-table">
+    <div class="dash-table-header">
+        <h6>Transaction History</h6>
+    </div>
+    <div class="table-wrap">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-num">#</th>
+                    <th class="col-receipt">Receipt No.</th>
+                    <th class="col-customer">Device / Customer</th>
+                    <th class="col-package">Package</th>
+                    <th class="col-amount">Amount</th>
+                    <th class="col-type">Type</th>
+                    <th class="col-status">Status</th>
+                    <th class="col-date">Date & Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td class="col-num text-muted" style="font-size:12px;">
+                        {{ forloop.counter }}
+                    </td>
+                    <td class="col-receipt" style="font-family:monospace; font-size:12px;">
+                        {{ payment.reference_id|default:"—" }}
+                    </td>
+                    <td class="col-customer font-semibold">
+                        {{ payment.device.mac_address|default:"—" }}
+                        <br>
+                        <span class="text-muted" style="font-size:11px; font-weight:400;">
+                            {{ payment.phone_number|default:"" }}
+                        </span>
+                    </td>
+                    <td class="col-package">
+                        {{ payment.package.name|default:"—" }}
+                    </td>
+                    <td class="col-amount font-bold text-success">
+                        UGX {{ payment.amount|floatformat:0 }}
+                    </td>
+                    <td class="col-type">
+                        {% if payment.provider == 'mtn' %}
+                            <span class="badge badge-info"><i class="bi bi-phone-fill"></i> MTN MoMo</span>
+                        {% elif payment.provider == 'airtel' %}
+                            <span class="badge badge-failed"><i class="bi bi-phone-fill"></i> Airtel</span>
+                        {% elif payment.provider == 'walk_in' %}
+                            <span class="badge badge-warning"><i class="bi bi-cash"></i> Walk-in</span>
+                        {% else %}
+                            <span class="badge badge-muted">{{ payment.provider }}</span>
+                        {% endif %}
+                    </td>
+                    <td class="col-status">
+                        {% if payment.status == 'success' %}
+                            <span class="badge badge-success">Success</span>
+                        {% elif payment.status == 'pending' %}
+                            <span class="badge badge-pending">Pending</span>
+                        {% else %}
+                            <span class="badge badge-failed">Failed</span>
+                        {% endif %}
+                    </td>
+                    <td class="col-date text-muted" style="font-size:12px;">
+                        {{ payment.created_at|date:"d M Y, H:i" }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        <i class="bi bi-credit-card" style="display:block;"></i>
+                        No payments recorded yet.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
