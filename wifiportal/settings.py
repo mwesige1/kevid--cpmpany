@@ -180,6 +180,8 @@ CSRF_TRUSTED_ORIGINS = [
     'http://127.0.0.1:8081',
     'https://reburial-mating-effort.ngrok-free.dev',
     'http://192.168.1.22:8081',
+    'http://localhost:8084',
+    'http://127.0.0.1:8084',
 
 ]
 CSRF_COOKIE_SAMESITE = 'Lax'

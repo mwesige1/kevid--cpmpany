@@ -387,6 +387,14 @@ img    { max-width: 100%; height: auto; display: block; }
 }
 .phone-input::placeholder { color: var(--txt-muted); letter-spacing: 0; }
 
+.phone-input:-webkit-autofill,
+.phone-input:-webkit-autofill:hover,
+.phone-input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px transparent inset;
+    -webkit-text-fill-color: var(--txt);
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 .sheet-action {
     width: 100%; height: 52px; margin-top: 16px;
     background: linear-gradient(135deg, var(--gold), #E69500);
