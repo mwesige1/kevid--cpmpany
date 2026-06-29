@@ -428,11 +428,11 @@
               }, 1500);
             }, 1000);
 
-        } else if (data.status === 'failed') {
-          clearInterval(iv);
-          document.getElementById('directResult').innerHTML =
-            '<div class="r-err">❌ Payment failed. Please try again.</div>';
-        }
+       } else if (data.status === 'failed') {
+        clearInterval(iv);
+         document.getElementById('directResult').innerHTML =
+         '<div class="r-err">❌ ' + (data.message || 'Payment failed. Please try again.') + '</div>';
+      }
       });
     }, 3000);
     setTimeout(function() { clearInterval(iv); }, 45000);
@@ -534,10 +534,11 @@
           showToast('🎟️ Code: ' + data.voucher_code);
 
         } else if (data.status === 'failed') {
-          clearInterval(iv);
-          document.getElementById('voucherResult').innerHTML =
-            '<div class="r-err">❌ Payment failed. Please try again.</div>';
+        clearInterval(iv);
+        document.getElementById('voucherResult').innerHTML =
+        '<div class="r-err">❌ ' + (data.message || 'Payment failed. Please try again.') + '</div>';
         }
+        
       })
       .catch(function() {});
     }, 3000);

@@ -241,7 +241,7 @@ def payment_status(request, order_id):
         return cors({'status': 'success'})
 
     if order.status == 'failed':
-        return cors({'status': 'failed'})
+        return cors({'status': 'failed', 'message': order.failure_reason or 'Payment failed. Please try again.'})
 
     # ── Step 3 — Check with IOTEC ─────────────────────
     provider_status = iotec.check_payment_status(order.reference_id)
@@ -301,7 +301,7 @@ def payment_status(request, order_id):
         # Payment rejected or timed out
         order.status = 'failed'
         order.save()
-        return cors({'status': 'failed'})
+        return cors({'status': 'failed', 'message': order.failure_reason or 'Payment failed. Please try again.'})
 
     else:
         # Still waiting for customer to confirm on phone
@@ -563,7 +563,8 @@ def iotec_callback(request):
             print(f"Router access error: {e}")
 
     elif status == 'failed':
-        order.status = 'failed'
+        order.status         = 'failed'
+        order.failure_reason = data.get('statusMessage', '')
         order.save()
 
     # Always return 200 to IOTEC

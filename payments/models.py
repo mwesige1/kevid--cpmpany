@@ -58,6 +58,8 @@ class Order(models.Model):
                        default='pending'
                    )
 
+    failure_reason = models.CharField(max_length=255, blank=True, null=True)
+
     # ── Reference IDs ──────────────────────────────────
     # Our own unique ID sent to MTN/Airtel to track this transaction
     reference_id  = models.CharField(max_length=100, unique=True)
