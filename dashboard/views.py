@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from datetime import timedelta
 import json as json_module
 
+from payments import iotec
 from portal.models import Package, Device, WiFiSession, Customer
 from payments.models import Order, Voucher, VoucherAgent, Withdrawal
 from dashboard.models import (
@@ -1093,7 +1094,9 @@ def withdrawals(request):
         status='completed'
     ).aggregate(total=Sum('amount'))['total'] or 0
 
-    available_balance = total_collected - total_withdrawn
+    from payments import iotec
+    real_balance      = iotec.get_wallet_balance()
+    available_balance = real_balance if real_balance is not None else total_collected - total_withdrawn
 
     # Status counts
     pending_count   = Withdrawal.objects.filter(status='pending').count()

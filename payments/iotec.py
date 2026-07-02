@@ -213,6 +213,37 @@ def request_disbursement(phone_number, amount, withdrawal_id, provider='mtn'):
         }
 
 
+
+def get_wallet_balance():
+    """
+    Retrieves the real current balance from IOTEC wallet.
+    Returns the actual balance as a float, or None if it fails.
+    """
+    token = get_access_token()
+    if not token:
+        return None
+
+    try:
+        response = requests.get(
+            f"{settings.IOTEC_BASE_URL}/api/wallet-balance/{settings.IOTEC_WALLET_ID}",
+            headers={
+                'Authorization': f'Bearer {token}',
+                'Content-Type' : 'application/json',
+            },
+            timeout=10
+        )
+
+        if response.status_code == 200:
+            data = response.json()
+            return float(data.get('actualBalance', 0))
+
+        print(f"IOTEC balance error: {response.status_code} — {response.text}")
+        return None
+
+    except Exception as e:
+        print(f"IOTEC balance unexpected error: {e}")
+        return None
+
 def check_payment_status(reference_id):
     """
     Checks the status of an IOTEC payment by transaction ID.
