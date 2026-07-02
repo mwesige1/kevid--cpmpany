@@ -167,6 +167,12 @@
                             <span class="badge badge-pending">Pending</span>
                         {% else %}
                             <span class="badge badge-failed">Failed</span>
+
+                            {% if order.failure_reason %}
+                                <div style="font-size:11px; color:var(--txt-muted); margin-top:3px;">
+                                    {{ order.failure_reason }}
+                                    </div>
+                                {% endif %}
                         {% endif %}
                     </td>
                     <td class="text-muted" style="font-size:12px;">

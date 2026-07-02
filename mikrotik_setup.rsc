@@ -11,7 +11,7 @@
 # ═══════════════════════════════════════════════════════════════
 
 # ── FIXED SETTINGS — DO NOT CHANGE ─────────────────────────────
-:local portalDomain     "kevidtechhotspot.com"
+:local portalDomain     "optimuminnovationhotspot.com"
 :local lanIP            "192.168.88.1"
 :local lanNetwork       "192.168.88.0/24"
 :local poolStart        "192.168.88.2"
@@ -114,7 +114,7 @@
 :put "Step 7: Configuring WiFi..."
 :if ([:len [/interface wireless find]] > 0) do={
     /interface wireless set [find] \
-        ssid="FASTER WIFI" \
+        ssid="KABALAGALA INTERNET" \
         mode=ap-bridge \
         disabled=no
     :if ([:len [/interface bridge port find interface="wlan1" bridge=bridge1]] = 0) do={
