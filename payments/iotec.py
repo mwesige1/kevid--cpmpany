@@ -129,6 +129,88 @@ def request_payment(phone_number, amount, order_id, provider='mtn'):
             'status' : 'error',
             'message': 'An unexpected error occurred. Please try again.'
         }
+    
+
+def request_disbursement(phone_number, amount, withdrawal_id, provider='mtn'):
+    """
+    Initiates a mobile money disbursement via IOTEC Pay.
+    Sends money FROM our wallet TO a recipient's mobile number.
+    Used for processing withdrawal requests from the dashboard.
+    Args:
+        phone_number:   Recipient's mobile number (e.g. 0771234567)
+        amount:         Amount in UGX
+        withdrawal_id:  Our internal withdrawal ID for reconciliation
+        provider:       'mtn' or 'airtel' (informational only)
+    Returns:
+        dict with 'status' and 'reference_id' or 'message'
+    """
+    # Step 1 — Get access token
+    token = get_access_token()
+    if not token:
+        return {
+            'status' : 'error',
+            'message': 'Payment service is currently unavailable. Please try again shortly.'
+        }
+
+    # Step 2 — Format phone number
+    if phone_number.startswith('+256'):
+        phone_number = '0' + phone_number[4:]
+    elif phone_number.startswith('256'):
+        phone_number = '0' + phone_number[3:]
+
+    # Step 3 — Build disbursement payload
+    payload = {
+        'category'  : 'MobileMoney',
+        'currency'  : 'UGX',
+        'walletId'  : settings.IOTEC_WALLET_ID,
+        'externalId': str(withdrawal_id),
+        'payee'     : phone_number,
+        'amount'    : float(amount),
+        'payeeNote' : 'Kevid Tech Withdrawal',
+        'payerNote' : f'Withdrawal #{withdrawal_id}',
+    }
+
+    try:
+        # Step 4 — Send disbursement request to IOTEC
+        response = requests.post(
+            f"{settings.IOTEC_BASE_URL}/api/disbursements/disburse",
+            json=payload,
+            headers={
+                'Authorization': f'Bearer {token}',
+                'Content-Type' : 'application/json',
+            },
+            timeout=30
+        )
+
+        if response.status_code == 200:
+            data         = response.json()
+            reference_id = data.get('id')
+            status       = data.get('status', '').lower()
+
+            if reference_id:
+                print(f"✅ IOTEC disbursement initiated: {reference_id} — status: {status}")
+                return {
+                    'status'      : 'pending',
+                    'reference_id': reference_id,
+                }
+
+        print(f"IOTEC disbursement error: {response.status_code} — {response.text}")
+        return {
+            'status' : 'error',
+            'message': 'Disbursement failed. Please try again.'
+        }
+
+    except requests.exceptions.Timeout:
+        return {
+            'status' : 'error',
+            'message': 'Payment server took too long to respond. Please try again.'
+        }
+    except Exception as e:
+        print(f"IOTEC disbursement unexpected error: {e}")
+        return {
+            'status' : 'error',
+            'message': 'An unexpected error occurred. Please try again.'
+        }
 
 
 def check_payment_status(reference_id):

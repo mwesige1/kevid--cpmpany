@@ -16,7 +16,7 @@ from dashboard.models import (
 )
 from network.models import MikroTikRouter
 from django.db.models import Count, Sum, Q
-
+from django.contrib import messages
 
 # ── Authentication Views ───────────────────────────────────
 
@@ -1162,17 +1162,41 @@ def create_withdrawal(request):
 def update_withdrawal_status(request, withdrawal_id):
     """
     Updates the status of a withdrawal request.
-    Admin can mark as completed, failed or cancelled.
+    When marking as completed, calls IOTEC disbursement API
+    to actually send money to the recipient's mobile number.
     """
     withdrawal = get_object_or_404(Withdrawal, id=withdrawal_id)
 
     if request.method == 'POST':
         new_status = request.POST.get('status')
-        if new_status in ['completed', 'failed', 'cancelled']:
-            withdrawal.status = new_status
-            if new_status == 'completed':
+
+        if new_status == 'completed':
+            # ── Call IOTEC to actually send the money ──
+            from payments import iotec
+            result = iotec.request_disbursement(
+                phone_number  = withdrawal.mobile_number,
+                amount        = withdrawal.amount,
+                withdrawal_id = withdrawal.id,
+                provider      = withdrawal.provider,
+            )
+
+            if result['status'] == 'pending':
+                # IOTEC accepted the disbursement
+                withdrawal.status       = 'completed'
                 withdrawal.completed_at = timezone.now()
                 withdrawal.verified     = True
+                withdrawal.save()
+            else:
+                # IOTEC rejected — keep as pending, don't mark complete
+                # The admin will see it's still pending and can retry
+                messages.error(
+                    request,
+                    f"Disbursement failed: {result.get('message', 'Unknown error')}"
+                )
+                return redirect('dashboard:withdrawals')
+
+        elif new_status in ['failed', 'cancelled']:
+            withdrawal.status = new_status
             withdrawal.save()
 
     return redirect('dashboard:withdrawals')
