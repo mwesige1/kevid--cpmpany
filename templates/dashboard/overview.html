@@ -133,7 +133,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Device</th>
+                    <th>Phone Number</th>
                     <th>Package</th>
                     <th>Amount</th>
                     <th>Provider</th>
@@ -145,7 +145,7 @@
                 {% for order in recent_orders %}
                 <tr>
                     <td class="font-semibold" style="font-family:monospace; font-size:12px;">
-                        {{ order.device.mac_address|slice:"-8:" }}
+                      {{ order.phone_number }}
                     </td>
                     <td>{{ order.package.name|default:"—" }}</td>
                     <td class="font-bold text-success">
