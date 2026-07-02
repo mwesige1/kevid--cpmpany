@@ -18,24 +18,40 @@ from network.mikrotik import (
 )
 
 
-@login_required
-def router_health(request, router_id):
+@csrf_exempt
+def router_health(request, identity):
     """
-    Returns real-time health data for a specific router.
-    Called by dashboard JavaScript every 30 seconds.
+    Dual-purpose health endpoint:
+    - GET  → called by dashboard JS every 30s to display router stats
+    - POST → called by MikroTik router to report its own CPU/memory stats
     """
     try:
-        router    = get_object_or_404(MikroTikRouter, id=router_id)
-        reachable = is_router_reachable(router.connection_address)
+        router = get_object_or_404(MikroTikRouter, identity=identity)
 
-        if reachable:
-            router.status    = 'online'
-            router.last_seen = timezone.now()
-        else:
-            router.status = 'offline'
+        if request.method == 'POST':
+            # ── Router reporting its own stats ─────────
+            # MikroTik POSTs its CPU/memory to us
+            # We save them directly to the router record
+            try:
+                data         = json.loads(request.body)
+                cpu_load     = float(data.get('cpu_load', 0))
+                free_memory  = int(data.get('free_memory', 0))
+                total_memory = int(data.get('total_memory', 1))
 
-        router.save()
+                router.cpu_usage    = cpu_load
+                router.memory_usage = round(
+                    ((total_memory - free_memory) / total_memory) * 100, 1
+                ) if total_memory > 0 else 0
+                router.last_seen    = timezone.now()
+                router.status       = 'online'
+                router.save()
 
+                return JsonResponse({'message': 'Health stats updated'}, status=200)
+
+            except Exception as e:
+                return JsonResponse({'error': str(e)}, status=400)
+
+        # ── Dashboard requesting stats (GET) ───────────
         return JsonResponse({
             'status'      : router.status,
             'cpu_usage'   : router.cpu_display,
@@ -180,13 +196,15 @@ def router_reboot(request, router_id):
     return JsonResponse({'status': 'error', 'message': 'Method not allowed'}, status=405)
 
 @login_required
-def router_refresh_stats(request, router_id):
+def router_refresh_stats(request, identity):
     """
     Fetches fresh CPU and memory stats from router.
     Called by dashboard Refresh button.
     Returns JSON for live update without page reload.
+    For remote routers — returns stored stats since VPS
+    cannot reach private router IPs directly.
     """
-    router = get_object_or_404(MikroTikRouter, id=router_id)
+    router = get_object_or_404(MikroTikRouter, identity=identity)
     stats  = get_router_stats(router.connection_address)
 
     if stats:
@@ -201,10 +219,15 @@ def router_refresh_stats(request, router_id):
             'memory' : router.memory_usage,
         })
 
-    router.status = 'offline'
-    router.save()
-    return JsonResponse({'status': 'offline', 'cpu': 0, 'memory': 0})
-
+    # ── Remote router — return stored stats ───────────
+    # VPS cannot reach private router IPs directly.
+    # Stats are updated when router reports via POST to
+    # /network/router/{identity}/health/ during polling.
+    return JsonResponse({
+        'status': router.status,
+        'cpu'   : router.cpu_usage,
+        'memory': router.memory_usage,
+    })
 
 @login_required
 def grant_access(request):
@@ -371,11 +394,10 @@ def get_commands(request, router_identity):
         status='pending'
     ).order_by('created_at')
 
-    if not commands.exists():
-        return HttpResponse('# No commands\r\n', content_type='text/plain')
+    lines = []
 
     base_url = 'https://kevidtechhotspot.com'
-    lines    = []
+    
 
     for cmd in commands:
         mac = cmd.mac_address
@@ -418,6 +440,20 @@ def get_commands(request, router_identity):
             f'output=none'
         )
 
+        # ── Report router health stats to Django ───────────
+    # Runs on every poll regardless of pending commands
+    # Router reads its own CPU/memory and POSTs to Django
+    health_url = f'{base_url}/network/router/{router_identity}/health/'
+    lines.append(f':local cpuLoad [/system resource get cpu-load]')
+    lines.append(f':local freeMem [/system resource get free-memory]')
+    lines.append(f':local totalMem [/system resource get total-memory]')
+    lines.append(
+        f'/tool fetch url="{health_url}" '
+        f'http-method=post '
+        f'http-header-field="Content-Type: application/json" '
+        f'http-data="{{\\\"cpu_load\\\":$cpuLoad,\\\"free_memory\\\":$freeMem,\\\"total_memory\\\":$totalMem}}" '
+        f'output=none'
+    )
     script = '\r\n'.join(lines) + '\r\n'
     return HttpResponse(script, content_type='text/plain')
 
