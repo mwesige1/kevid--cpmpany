@@ -16,14 +16,14 @@ urlpatterns = [
     # ── Router Health ──────────────────────────────────
     # Returns real-time health data for a specific router
     path(
-        'router/<int:router_id>/health/',
+        'router/<str:identity>/health/',
         views.router_health,
         name='router_health'
     ),
 
     # Refresh CPU and memory stats from router
     path(
-        'router/<int:router_id>/refresh/',
+        'router/<str:identity>/refresh/',
         views.router_refresh_stats,
         name='router_refresh'
     ),
