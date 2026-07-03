@@ -170,7 +170,9 @@ def overview(request):
         status='completed'
     ).aggregate(total=Sum('amount'))['total'] or 0
 
-    momo_balance = total_collected - total_withdrawn
+    from payments import iotec
+    real_balance = iotec.get_wallet_balance()
+    momo_balance = real_balance if real_balance is not None else total_collected - total_withdrawn
 
     # ── Additional Stats ───────────────────────────────
     available_vouchers = Voucher.objects.filter(
